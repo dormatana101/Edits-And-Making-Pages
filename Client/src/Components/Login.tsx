@@ -5,35 +5,43 @@ import { useNavigate } from 'react-router-dom';
 import { IoLockClosedOutline } from "react-icons/io5";
 import { RxAvatar } from "react-icons/rx";
 import { FcGoogle } from "react-icons/fc"; // Import Google icon
+import { login } from '../Services/authService'; 
+import { validateEmail, validatePassword } from '../utiles/Login_validation'; // Adjust the path as necessary
+
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-
-  const handleLogin = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        // Handle successful login
-        console.log('Login successful:', data);
-        navigate('/dashboard');
-      } else {
-        // Handle login error
-        console.error('Login failed:', data);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
+    const handleLogin = async (event: React.FormEvent) => {
+        event.preventDefault();
+        if (!validateEmail(email)) {
+          setErrorMessage('Invalid Email Address');
+          setTimeout(() => {
+              setErrorMessage('');
+          }, 3000);
+          return;
       }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
+
+      if (!validatePassword(password)) {
+          setErrorMessage('Password must be at least 6 characters long');
+          setTimeout(() => {
+              setErrorMessage('');
+          }, 3000);
+          return;
+      }
+        setErrorMessage('');
+        const result = await login(email, password);
+        if (result.success) {
+            navigate('/dashboard');
+        } else {
+            setErrorMessage(result.message);
+            setTimeout(() => {
+                setErrorMessage('');
+            }, 2000);
+        }
+    };
   return (
     <div>
       <div className="container">
@@ -60,6 +68,7 @@ function Login() {
               />
             </div>
             <button onClick={handleLogin}>Login Now</button>
+            {errorMessage && <p className='error-message'>{errorMessage}</p>}
             <div className="footer">
               <p>or Sign in with</p>
               <button className="google-login">
@@ -80,6 +89,7 @@ function Login() {
       </div>
     </div>
   );
-}
+};
+
 
 export default Login;
