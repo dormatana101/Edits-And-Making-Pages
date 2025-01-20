@@ -1,12 +1,16 @@
 import '../css/Login.css';
 import React, { useState } from 'react';
 import EaseLogo from '../images/EaseLogo.png';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Импорт Link
 import { IoLockClosedOutline } from "react-icons/io5";
 import { RxAvatar } from "react-icons/rx";
+<<<<<<< Edit-register
+import { FcGoogle } from "react-icons/fc";
+=======
 import { FcGoogle } from "react-icons/fc"; // Import Google icon
 import { login } from '../Services/authService'; 
 import { validateEmail, validatePassword } from '../utiles/Login_validation'; // Adjust the path as necessary
+>>>>>>> main
 
 
 function Login() {
@@ -24,6 +28,20 @@ function Login() {
           return;
       }
 
+<<<<<<< Edit-register
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Login successful:', data);
+        navigate('/dashboard');
+      } else {
+        console.error('Login failed:', data);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+=======
       if (!validatePassword(password)) {
           setErrorMessage('Password must be at least 6 characters long');
           setTimeout(() => {
@@ -42,6 +60,7 @@ function Login() {
             }, 2000);
         }
     };
+>>>>>>> main
   return (
     <div>
       <div className="container">
@@ -70,6 +89,9 @@ function Login() {
             <button onClick={handleLogin}>Login Now</button>
             {errorMessage && <p className='error-message'>{errorMessage}</p>}
             <div className="footer">
+              <p>
+                Don't have an account? <Link to="/register">Register here</Link>
+              </p>
               <p>or Sign in with</p>
               <button className="google-login">
                 <FcGoogle className="google-icon" />Google
