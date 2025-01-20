@@ -1,0 +1,66 @@
+.fullscreen-bg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: light dark;
+}
+
+.register-container {
+    background: white;
+    padding: 30px;
+    width: 400px; 
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center; 
+}
+
+.Headline {
+    text-align: center;
+    color: #9181F4;
+}
+
+form input {
+    width: 80%; 
+    padding: 10px;
+    margin: 10px auto 20px auto; 
+    border: 1px solid #ccc;
+    color: #2e2e2e;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #F0EDFF;
+    display: block; 
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px; 
+    font-size: 14px;
+    color: #2e2e2e;
+}
+
+form button {
+    background: #6200ee;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 50%;
+    margin-top: 15px;
+    transition: background 0.3s ease;
+    display: block; 
+    margin-left: auto; 
+    margin-right: auto; 
+}
+
+form button:hover {
+    background: #4500b5;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: -15px;
+    margin-bottom: 20px; 
+}
