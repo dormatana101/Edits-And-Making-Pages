@@ -53,22 +53,22 @@ const login = async (req: Request, res: Response) => {
     try {
         const user = await userModel.findOne({ email: req.body.email });
         if (!user) {
-            res.status(400).send('wrong username or password');
+            res.status(400).json({ message: 'wrong username or password' });
             return;
         }
         const validPassword = await bcrypt.compare(req.body.password, user.password);
         if (!validPassword) {
-            res.status(400).send('wrong username or password');
+            res.status(400).json({ message: 'wrong username or password' });
             return;
         }
         if (!process.env.TOKEN_SECRET) {
-            res.status(500).send('Server Error');
+            res.status(500).json({ message: 'Server Error' });
             return;
         }
         // generate token
         const tokens = generateToken(user._id);
         if (!tokens) {
-            res.status(500).send('Server Error');
+            res.status(500).json({ message: 'Server Error' });
             return;
         }
         if (!user.refreshToken) {
