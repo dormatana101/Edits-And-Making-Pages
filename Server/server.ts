@@ -2,18 +2,23 @@ require("dotenv").config();
 import express, { Express } from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import cors from "cors";
 import authRoutes from "./routes/auth_route";
+
 const app = express();
 
-app.use(bodyParser.json());
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-  res.header("Access-Control-Allow-Methods", "*");
-  next();
-});
-app.use("/auth", authRoutes);
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true,
+  })
+);
 
+app.use(bodyParser.json());
+
+// Роуты
+app.use("/auth", authRoutes);
 
 const initApp = () => {
   return new Promise<Express>((resolve, reject) => {
