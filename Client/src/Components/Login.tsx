@@ -36,6 +36,7 @@ function Login() {
         setErrorMessage('');
         const result = await login(email, password);
         if (result.success) {
+            localStorage.setItem('token', result.accessToken);
             navigate('/dashboard');
         } else {
             setErrorMessage(result.message);

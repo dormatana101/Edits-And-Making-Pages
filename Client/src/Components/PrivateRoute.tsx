@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import axios from 'axios';
+import { fetchProtectedData } from '../Services/authService';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    
+
     useEffect(() => {
-        axios.get('/auth/login').then((res:any) => {0
-        setIsAuthenticated(res.data.isAuthenticated);
-        setLoading(false);
-        });
+        const checkAuth = async () => {
+            const res = await fetchProtectedData();
+            if (res.success) {
+                setIsAuthenticated(true);
+            }
+            setLoading(false);
+        };
+
+        checkAuth();
     }, []);
-    
+
     if (loading) {
         return <div>Loading...</div>;
     }
-    
+
     if (!isAuthenticated) {
-        return <Navigate to="/" />;
+        return <Navigate to="/login" />;
     }
-    
+
     return <>{children}</>;
 }
 

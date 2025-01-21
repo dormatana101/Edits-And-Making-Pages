@@ -209,6 +209,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 export default {
     register,
     login,
-    refresh
+    refresh,
+    authMiddleware
    // logout
 };
