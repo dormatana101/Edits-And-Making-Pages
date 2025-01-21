@@ -11,6 +11,7 @@ router.post("/login", authController.login);
 router.get('/protected-route', authController.authMiddleware, (req, res) => {
     res.send('This is a protected route');
 });
+
 router.post("/refresh", authController.refresh);
 
 //router.post("/logout", authController.logout);

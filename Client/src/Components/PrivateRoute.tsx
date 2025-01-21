@@ -8,9 +8,14 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const checkAuth = async () => {
+            console.log("Checking authentication...");
             const res = await fetchProtectedData();
+
             if (res.success) {
+                console.log("Auth check result:", res.message || "Success");
                 setIsAuthenticated(true);
+            } else {
+                console.log("Auth check result failed:", res.message);
             }
             setLoading(false);
         };
@@ -23,6 +28,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     }
 
     if (!isAuthenticated) {
+        console.log("Authentication failed");
         return <Navigate to="/login" />;
     }
 
