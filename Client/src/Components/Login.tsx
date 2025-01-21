@@ -17,60 +17,35 @@ function Login() {
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    console.log('Login button clicked');
-    console.log(`Email entered: ${email}`);
-    console.log(`Password entered: ${password}`);
-
     if (!validateEmail(email)) {
         setErrorMessage('Invalid Email Address');
-        console.log('Validation failed: Invalid Email Address');
         setTimeout(() => setErrorMessage(''), 3000);
         return;
     }
 
     if (!validatePassword(password)) {
         setErrorMessage('Password must be at least 6 characters long');
-        console.log('Validation failed: Weak password');
         setTimeout(() => setErrorMessage(''), 3000);
         return;
     }
 
     setErrorMessage('');
-    console.log('Validation passed. Attempting login...');
 
     const result = await login(email, password);
 
-    console.log('Login result:', result);
-
     if (result.success) {
-        console.log('Login successful. Token received:', result.accessToken);
-        
         localStorage.setItem('accessToken', result.accessToken);
         localStorage.setItem('username', result.data.username);
 
-        const storedToken = localStorage.getItem('accessToken');
-        const storedUsername = localStorage.getItem('username');
-        
-        if (storedToken && storedUsername) {
-            console.log('Token saved in localStorage:', storedToken);
-            console.log('Username saved in localStorage:', storedUsername);
-        } else {
-            console.error('Failed to save token or username in localStorage');
-        }
-
         navigate('/dashboard');
     } else {
-        console.error('Login failed:', result.message);
         setErrorMessage(result.message);
         setTimeout(() => setErrorMessage(''), 2000);
     }
 };
 
-
-
-
   return (
-    <div>
+    <div className="login-page">
       <div className="container">
         <div className="left">
           <div className="form-container">
