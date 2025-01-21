@@ -8,28 +8,50 @@ type tTokens = {
     refreshToken: string
 }
 
-const register = async (req: Request, res: Response) => {
+const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const password = req.body.password;
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        const user = await userModel.create({
-            email: req.body.email,
-            password: hashedPassword,
-        });
-        res.status(200).send(user);
-    } catch (err) {
-        res.status(400).send(err);
+      const { username, email, password } = req.body;
+  
+      if (!username || !email || !password) {
+        res.status(400).json({ message: 'Username, email, and password are required' });
+        return;
+      }
+  
+      const existingUser = await userModel.findOne({ $or: [{ email }, { username }] });
+      if (existingUser) {
+        if (existingUser.email === email) {
+          res.status(409).json({ message: 'Email is already registered' });
+          return;
+        }
+        if (existingUser.username === username) {
+          res.status(409).json({ message: 'Username is already taken' });
+          return;
+        }
+      }
+  
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+  
+
+      const user = await userModel.create({
+        username,
+        email,
+        password: hashedPassword,
+      });
+  
+      res.status(201).json({
+        message: 'User registered successfully',
+        user: { username: user.username, email: user.email, _id: user._id },
+      });
+    } catch (error) {
+      console.error('Error during registration:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
-};
-
-
-
+  };
 const generateToken = (userId: string): tTokens | null => {
     if (!process.env.TOKEN_SECRET) {
         return null;
     }
-    // generate token
     const random = Math.random().toString();
     const accessToken = jwt.sign({
         _id: userId,
@@ -49,46 +71,52 @@ const generateToken = (userId: string): tTokens | null => {
         refreshToken: refreshToken
     };
 };
-const login = async (req: Request, res: Response) => {
+const login = async (req: Request, res: Response): Promise<void> => {
     try {
-        const user = await userModel.findOne({ email: req.body.email });
-        if (!user) {
-            res.status(400).json({ message: 'wrong username or password' });
-            return;
-        }
-        const validPassword = await bcrypt.compare(req.body.password, user.password);
-        if (!validPassword) {
-            res.status(400).json({ message: 'wrong username or password' });
-            return;
-        }
-        if (!process.env.TOKEN_SECRET) {
-            res.status(500).json({ message: 'Server Error' });
-            return;
-        }
-        // generate token
-        const tokens = generateToken(user._id);
-        if (!tokens) {
-            res.status(500).json({ message: 'Server Error' });
-            return;
-        }
-        if (!user.refreshToken) {
-            user.refreshToken = [];
-        }
-        user.refreshToken.push(tokens.refreshToken);
-        await user.save();
-        res.status(200).send(
-            {
-                accessToken: tokens.accessToken,
-                refreshToken: tokens.refreshToken,
-                _id: user._id,
-                isAuthenticated: true
-            });
+      const { email, password } = req.body;
+  
+      if (!email || !password) {
+        res.status(400).json({ message: 'Email and password are required' });
+        return;
+      }
+  
+      const user = await userModel.findOne({ email });
+      if (!user) {
+        res.status(400).json({ message: 'Wrong email or password' });
+        return;
+      }
 
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (!validPassword) {
+        res.status(400).json({ message: 'Wrong email or password' });
+        return;
+      }
+  
+      const tokens = generateToken(user._id);
+      if (!tokens) {
+        res.status(500).json({ message: 'Failed to generate tokens' });
+        return;
+      }
+  
+      if (!user.refreshToken) {
+        user.refreshToken = [];
+      }
+      user.refreshToken.push(tokens.refreshToken);
+      await user.save();
+  
+      res.status(200).json({
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        _id: user._id,
+        username: user.username, 
+        isAuthenticated: true,
+      });
     } catch (err) {
-        res.status(400).send(err);
+      console.error('Error during login:', err);
+      res.status(500).json({ message: 'Internal server error' });
     }
-};
-
+  };
+  
 type tUser = Document<unknown, {}, IUser> & IUser & Required<{
     _id: string;
 }> & {
