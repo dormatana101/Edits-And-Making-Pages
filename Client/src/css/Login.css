@@ -1,10 +1,11 @@
-body {
+/* Стили для страницы логина */
+.login-page {
   margin: 0;
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100vh; /* Центрируем страницу */
 }
 
 .container {
@@ -15,12 +16,11 @@ body {
   border-radius: 10px;
   overflow: hidden;
 }
-.google-login{
-  background-color: #E53434;
-}
-.google-icon{
+
+.google-icon {
   margin-right: 10px;
 }
+
 .left {
   flex: 1;
   background-color: #fff;
@@ -61,11 +61,12 @@ h1 {
   font-size: 24px;
   color: #333;
 }
-.error-message
-{
+
+.error-message {
   color: red;
   font-size: 14px;
 }
+
 p {
   margin-bottom: 30px;
   font-size: 14px;
@@ -84,7 +85,7 @@ p {
 
 .input-container input {
   width: 100%;
-  padding: 10px 15px 10px 40px; /* Added left padding for the icon */
+  padding: 10px 15px 10px 40px;
   border: 1px solid #ddd;
   border-radius: 10px;
   font-size: 16px;
@@ -97,13 +98,22 @@ p {
   transform: translateY(-50%);
   color: #666;
   font-size: 20px;
-  color:#1C1C1C;
+  color: #1C1C1C;
 }
-
-button {
+.login-button {
   width: 38%;
   padding: 10px;
   background-color: #509CDB;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.google-login {
+  background-color: #E53434;
+  width: 38%;
+  padding: 10px;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -114,9 +124,11 @@ button {
 button:hover {
   background-color: #3e73be;
 }
-.google-login:hover{
+
+.google-login:hover {
   background-color: #e53434a8;
 }
+
 .footer {
   margin-top: 20px;
   font-size: 14px;

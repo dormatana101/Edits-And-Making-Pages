@@ -1,5 +1,5 @@
 import "../css/Login.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EaseLogo from "../images/EaseLogo.png";
 import { useNavigate, Link } from "react-router-dom"; 
 import { IoLockClosedOutline } from "react-icons/io5";
@@ -13,6 +13,13 @@ function Login() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.body.classList.add("login-page");
+    return () => {
+      document.body.classList.remove("login-page");
+    };
+  }, []);
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -69,14 +76,14 @@ function Login() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <button onClick={handleLogin}>Login Now</button>
+            <button className="login-button" onClick={handleLogin}>Login Now</button>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
             <div className="footer">
               <p>
                 Don't have an account? <Link to="/register">Register here</Link>
               </p>
               <p>or Sign in with</p>
-              <button className="google-login">
+              <button  className="google-login">
                 <FcGoogle className="google-icon" />
                 Google
               </button>

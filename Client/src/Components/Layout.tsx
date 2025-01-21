@@ -1,13 +1,21 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom"; 
+import { Link, Outlet, useNavigate } from "react-router-dom"; 
 import "../css/Layout.css";
 
 const Layout: React.FC = () => {
+  const navigate = useNavigate(); 
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("username");
+    navigate("/login"); 
+  };
+
   return (
     <div className="dashboard-container">
       <header className="top-bar">
         <h2>Ease Platform</h2>
-        <button className="logout-button">Logout</button>
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
       </header>
 
       <aside className="sidebar">
