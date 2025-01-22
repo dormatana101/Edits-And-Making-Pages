@@ -49,7 +49,13 @@ function Login() {
         setErrorMessage(result.message);
         setTimeout(() => setErrorMessage(''), 2000);
     }
-};
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      handleLogin(event); 
+    }
+  };
 
   return (
     <div className="login-page">
@@ -65,6 +71,7 @@ function Login() {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={handleKeyDown} 
               />
             </div>
             <div className="input-container">
@@ -74,6 +81,7 @@ function Login() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={handleKeyDown} 
               />
             </div>
             <button className="login-button" onClick={handleLogin}>Login Now</button>
@@ -83,7 +91,7 @@ function Login() {
                 Don't have an account? <Link to="/register">Register here</Link>
               </p>
               <p>or Sign in with</p>
-              <button  className="google-login">
+              <button className="google-login">
                 <FcGoogle className="google-icon" />
                 Google
               </button>
