@@ -3,6 +3,7 @@
     align-items: center;
     justify-content: center;
     background: light dark;
+    height: 100vh;
 }
 
 .register-container {

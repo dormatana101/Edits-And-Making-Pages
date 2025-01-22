@@ -4,21 +4,45 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import cors from "cors";
 import authRoutes from "./routes/auth_route";
+import postsRoutes from './routes/posts'; 
+import commentsRoutes from './routes/comments'; 
+import swaggerUi from 'swagger-ui-express'; // импортируем Swagger UI
+import swaggerJsDoc from "swagger-jsdoc";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
-  })
-);
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+  next();
+});
 app.use(bodyParser.json());
 
-// Роуты
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API Documentation',
+      version: '1.0.0',
+      description: 'API Documentation for the project',
+    },
+  },
+  apis: ['./routes/*.ts'], 
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+
+
+// Роуты для API
 app.use("/auth", authRoutes);
+app.use("/posts", postsRoutes);
+app.use("/comments", commentsRoutes);
+
 
 const initApp = () => {
   return new Promise<Express>((resolve, reject) => {
@@ -34,6 +58,8 @@ const initApp = () => {
 
           app.use(bodyParser.json());
           app.use("/auth", authRoutes);
+          app.use("/posts", postsRoutes); 
+          app.use("/comments", commentsRoutes); 
 
           resolve(app);
         })
