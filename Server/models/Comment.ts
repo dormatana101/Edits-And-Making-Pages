@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
-
-const commentSchema = new mongoose.Schema({
+export interface IComment {
+  postId: mongoose.Schema.Types.ObjectId;
+  content: string;
+  author: string;
+  createdAt?: Date;
+}
+const commentSchema = new mongoose.Schema<IComment>({
   postId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Post",
@@ -19,6 +24,6 @@ const commentSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
-const commentModel = mongoose.model("Comment", commentSchema);
+const commentModel = mongoose.model<IComment>("Comment", commentSchema);
 
 export default commentModel;
