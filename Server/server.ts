@@ -11,14 +11,13 @@ import swaggerJsDoc from "swagger-jsdoc";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
-  })
-);
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+  next();
+});
 app.use(bodyParser.json());
 
 const swaggerOptions = {
