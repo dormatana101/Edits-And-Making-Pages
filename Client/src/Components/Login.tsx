@@ -1,5 +1,5 @@
 import "../css/Login.css";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import EaseLogo from "../images/EaseLogo.png";
 import { useNavigate, Link } from "react-router-dom"; 
 import { IoLockClosedOutline } from "react-icons/io5";

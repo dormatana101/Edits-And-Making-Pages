@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { fetchPosts } from "../Services/postsService"; 
-import "../css/Posts.css"; // Добавляем стили для постов
+import "../css/CreatePost.css"; // Добавляем стили для постов
+import mongoose from "mongoose";
 
-const Posts: React.FC = () => {
+const CreatePost: React.FC = () => {
   interface Post {
     _id: string;
     title: string;
     content: string;
-    authorId: string;
-    timestamp: string;
+    senderId: String;
+    createdAt?: Date;
+    comments?: mongoose.Schema.Types.ObjectId[];
   }
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [newPostContent, setNewPostContent] = useState<string>("");
   const [newPostTitle, setNewPostTitle] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [confirmationMessage, setConfirmationMessage] = useState("");
 
   // Получение постов с сервера
   useEffect(() => {
@@ -60,8 +63,10 @@ const Posts: React.FC = () => {
       if (response.status === 201) {
         setNewPostContent("");
         setNewPostTitle("");
-        setPosts([data.post, ...posts]); // Добавляем новый пост в начало списка
-        setError(null); // Очистить ошибку
+        setPosts([data.post, ...posts]); 
+        setConfirmationMessage("Post created successfully!");
+        setTimeout(() => setConfirmationMessage(""), 3000);
+        setError(null); 
       } else {
         setError(data.message || "Error creating post");
       }
@@ -71,8 +76,13 @@ const Posts: React.FC = () => {
   };
 
   return (
+    <div className="container">
     <div className="posts-container">
       <h2>All Posts</h2>
+      {confirmationMessage && (
+        <div className="confirmation-message">{confirmationMessage}</div>
+      )}
+      {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleCreatePost} className="create-post-form">
         <input
           type="text"
@@ -93,23 +103,11 @@ const Posts: React.FC = () => {
         </button>
       </form>
 
-      {/* Ошибка, если что-то не так */}
-      {error && <p className="error-message">{error}</p>}
 
-      <div className="posts-list">
-        {posts.length === 0 ? (
-          <p>No posts available.</p>
-        ) : (
-          posts.map((post: Post) => (
-            <div key={post._id} className="post-item">
-              <h3>{post.title}</h3>
-              <p>{post.content}</p>
-            </div>
-          ))
-        )}
-      </div>
+      
+    </div>
     </div>
   );
 };
 
-export default Posts;
+export default CreatePost;
