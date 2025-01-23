@@ -3,8 +3,9 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IPost extends Document {
   title: string;
   content: string;
-  senderId: String;
+  author: String;
   createdAt?: Date;
+  image?: string;
   comments?: mongoose.Schema.Types.ObjectId[];
 }
 
@@ -17,13 +18,17 @@ const postSchema = new mongoose.Schema<IPost>({
     type: String,
     required: true,
   },
-  senderId: {
+  author: {
     type: String,
     required: true,
   },
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  image: {
+    type: String,
+    default: "",
   },
   comments: [
     {

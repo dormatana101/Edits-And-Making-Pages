@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { fetchPosts } from "../Services/postsService"; 
+import React, { useState } from "react";
 import "../css/CreatePost.css"; // Добавляем стили для постов
 import mongoose from "mongoose";
 
@@ -8,8 +7,9 @@ const CreatePost: React.FC = () => {
     _id: string;
     title: string;
     content: string;
-    senderId: String;
+    author: string;
     createdAt?: Date;
+    image?: string;
     comments?: mongoose.Schema.Types.ObjectId[];
   }
 
@@ -19,21 +19,16 @@ const CreatePost: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [confirmationMessage, setConfirmationMessage] = useState("");
 
-  // Получение постов с сервера
-  useEffect(() => {
-    const getPosts = async () => {
-      const result = await fetchPosts();
-      setPosts(result.data);
-    };
-    getPosts();
-  }, []);
-
   // Обработчик для изменений в контенте и заголовке
-  const handleNewPostChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleNewPostChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setNewPostContent(event.target.value);
   };
 
-  const handleNewPostTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewPostTitleChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setNewPostTitle(event.target.value);
   };
 
@@ -55,7 +50,7 @@ const CreatePost: React.FC = () => {
         body: JSON.stringify({
           title: newPostTitle,
           content: newPostContent,
-          senderId: localStorage.getItem("username"),  // если есть в localStorage
+          author: localStorage.getItem("username"),
         }),
       });
 
@@ -63,10 +58,10 @@ const CreatePost: React.FC = () => {
       if (response.status === 201) {
         setNewPostContent("");
         setNewPostTitle("");
-        setPosts([data.post, ...posts]); 
+        setPosts([data.post, ...posts]);
         setConfirmationMessage("Post created successfully!");
         setTimeout(() => setConfirmationMessage(""), 3000);
-        setError(null); 
+        setError(null);
       } else {
         setError(data.message || "Error creating post");
       }
@@ -77,35 +72,32 @@ const CreatePost: React.FC = () => {
 
   return (
     <div className="container">
-    <div className="posts-container">
-      <h2>All Posts</h2>
-      {confirmationMessage && (
-        <div className="confirmation-message">{confirmationMessage}</div>
-      )}
-      {error && <div className="error-message">{error}</div>}
-      <form onSubmit={handleCreatePost} className="create-post-form">
-        <input
-          type="text"
-          placeholder="Post title"
-          value={newPostTitle}
-          onChange={handleNewPostTitleChange}
-          className="post-title"
-        />
-        <textarea
-          placeholder="Write your post..."
-          value={newPostContent}
-          onChange={handleNewPostChange}
-          rows={5}
-          className="post-content"
-        />
-        <button type="submit" className="create-post-button">
-          Create Post
-        </button>
-      </form>
-
-
-      
-    </div>
+      <div className="posts-container">
+        <h2>All Posts</h2>
+        {confirmationMessage && (
+          <div className="confirmation-message">{confirmationMessage}</div>
+        )}
+        {error && <div className="error-message">{error}</div>}
+        <form onSubmit={handleCreatePost} className="create-post-form">
+          <input
+            type="text"
+            placeholder="Post title"
+            value={newPostTitle}
+            onChange={handleNewPostTitleChange}
+            className="post-title"
+          />
+          <textarea
+            placeholder="Write your post..."
+            value={newPostContent}
+            onChange={handleNewPostChange}
+            rows={5}
+            className="post-content"
+          />
+          <button type="submit" className="create-post-button">
+            Create Post
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

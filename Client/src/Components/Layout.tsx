@@ -32,7 +32,7 @@ const Layout: React.FC = () => {
             </Link>
           </li>
           <li>
-            <Link to="/posts" className="sidebar-link">
+            <Link to="/all-posts" className="sidebar-link">
               <FaClipboard className="icon" /> Posts
             </Link>
           </li>

@@ -5,6 +5,7 @@ import Dashboard from "./Dashboard";
 import CreatePost from "./CreatePost"; 
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./Layout"; 
+import AllPosts from "./AllPosts";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="all-posts" element={<AllPosts />} />
           <Route path="create-post" element={<CreatePost />} />
         </Route>
       </Routes>
