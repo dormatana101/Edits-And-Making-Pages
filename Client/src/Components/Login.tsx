@@ -14,12 +14,7 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    document.body.classList.add("login-page");
-    return () => {
-      document.body.classList.remove("login-page");
-    };
-  }, []);
+  
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();

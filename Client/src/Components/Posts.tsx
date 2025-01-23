@@ -43,7 +43,7 @@ const Posts: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/posts", {
+      const response = await fetch("http://localhost:3000/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,12 +52,12 @@ const Posts: React.FC = () => {
         body: JSON.stringify({
           title: newPostTitle,
           content: newPostContent,
-          senderId: localStorage.getItem("userId"),  // если есть в localStorage
+          senderId: localStorage.getItem("username"),  // если есть в localStorage
         }),
       });
 
       const data = await response.json();
-      if (data.success) {
+      if (response.status === 201) {
         setNewPostContent("");
         setNewPostTitle("");
         setPosts([data.post, ...posts]); // Добавляем новый пост в начало списка
@@ -73,7 +73,6 @@ const Posts: React.FC = () => {
   return (
     <div className="posts-container">
       <h2>All Posts</h2>
-      {/* Форма для создания поста */}
       <form onSubmit={handleCreatePost} className="create-post-form">
         <input
           type="text"

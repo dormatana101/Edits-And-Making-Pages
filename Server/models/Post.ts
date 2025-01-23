@@ -1,12 +1,13 @@
-import mongoose from "mongoose";
-import Comment from "./Comment";
-export interface IPost {
+import mongoose, { Schema, Document } from "mongoose";
+
+export interface IPost extends Document {
   title: string;
   content: string;
-  senderId: string;
+  senderId: String;
   createdAt?: Date;
-  comments?:mongoose.Schema.Types.ObjectId[];
+  comments?: mongoose.Schema.Types.ObjectId[];
 }
+
 const postSchema = new mongoose.Schema<IPost>({
   title: {
     type: String,
@@ -24,12 +25,14 @@ const postSchema = new mongoose.Schema<IPost>({
     type: Date,
     default: Date.now,
   },
-  comments: 
+  comments: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Comment",
     },
+  ],
 });
+
 const postModel = mongoose.model<IPost>("Post", postSchema);
 
 export default postModel;
