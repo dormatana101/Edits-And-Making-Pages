@@ -7,7 +7,6 @@ const Register = () => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    confirmEmail: '',
     password: '',
     confirmPassword: '',
   });
@@ -36,12 +35,6 @@ const Register = () => {
       newErrors.email = 'Please enter your email address.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'The email address format is invalid.';
-    }
-
-    if (!formData.confirmEmail) {
-      newErrors.confirmEmail = 'Please confirm your email address.';
-    } else if (formData.email !== formData.confirmEmail) {
-      newErrors.confirmEmail = 'The email addresses do not match.';
     }
 
     if (!formData.password) {
@@ -81,7 +74,6 @@ const Register = () => {
           setFormData({
             username: '',
             email: '',
-            confirmEmail: '',
             password: '',
             confirmPassword: '',
           });
@@ -131,17 +123,6 @@ const Register = () => {
               onChange={handleChange}
             />
             {errors.email && <p className="error">{errors.email}</p>}
-          </div>
-
-          <div>
-            <label>Confirm Email</label>
-            <input
-              type="email"
-              name="confirmEmail"
-              value={formData.confirmEmail}
-              onChange={handleChange}
-            />
-            {errors.confirmEmail && <p className="error">{errors.confirmEmail}</p>}
           </div>
 
           <div>

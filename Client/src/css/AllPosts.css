@@ -1,51 +1,101 @@
+
 .all-posts {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .all-posts h2 {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .post {
-    background-color: #fff;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .post h3 {
-    margin-top: 0;
-    font-size: 1.5rem;
-    color: #333;
-  }
-  
-  .post p {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 10px;
-  }
-  
-  .post .post-image {
-    width: 100%;
-    height: auto;
-    margin-top: 10px;
-    border-radius: 10px;
-  }
-  
-  .post .post-timestamp {
-    font-size: 0.9rem;
-    color: #888;
-  }
-  
-  small {
-    font-size: 0.9rem;
-    color: #444;
-    display: block;
-    margin-top: 5px;
-  }
-  
+  margin-top: 80px; 
+  padding: 20px;
+  background-color: #f7f7f7; 
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  flex-grow: 1; 
+  overflow-y: auto; 
+  max-height: calc(100vh - 60px); 
+}
+
+.post {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.post h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.post p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.post-image {
+  width: 100%;
+  height: auto;
+  margin-top: 15px;
+  border-radius: 8px;
+}
+
+.post-timestamp {
+  font-size: 0.9rem;
+  color: #999;
+  margin-top: 10px;
+}
+
+.comments-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 15px;
+}
+
+.comments-count {
+  font-size: 0.9rem;
+  color: #007AFF;
+  cursor: pointer;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+.comments-count:hover {
+  text-decoration: underline;
+}
+
+.comment-icon {
+  font-size: 1.2rem;
+  color: #007AFF;
+  cursor: pointer;
+}
+
+.comment-icon:hover {
+  color: #005BB5;
+}
+
+.no-image {
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; 
+  overflow-y: auto;
+}
+
+.all-posts {
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для поста на карточке */
+.post-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
