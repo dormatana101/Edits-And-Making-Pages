@@ -16,6 +16,8 @@ function App() {
         <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="all-posts" element={<AllPosts />} />
+
+          {/* Add a new route for creating a post */}
           <Route path="create-post" element={<CreatePost />} />
         </Route>
       </Routes>
