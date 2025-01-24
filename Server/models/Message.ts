@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
 
 export interface IMessage {
-  from: mongoose.Schema.Types.ObjectId;
-  to: mongoose.Schema.Types.ObjectId;
+  from: string;  
+  to: string;    
   message: string;
   timestamp: Date;
 }
 
 const messageSchema = new mongoose.Schema<IMessage>({
-  from: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  to: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  from: { type: String, required: true },  
+  to: { type: String, required: true },   
   message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
 });

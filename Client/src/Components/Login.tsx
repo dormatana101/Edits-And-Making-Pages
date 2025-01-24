@@ -1,12 +1,12 @@
 import "../css/Login.css";
 import React, { useState } from "react";
 import EaseLogo from "../images/EaseLogo.png";
-import { useNavigate, Link } from "react-router-dom"; 
+import { useNavigate, Link } from "react-router-dom";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { RxAvatar } from "react-icons/rx";
 import { FcGoogle } from "react-icons/fc";
 import { login } from "../Services/authService";
-import { validateEmail, validatePassword } from "../utiles/Login_validation"; 
+import { validateEmail, validatePassword } from "../utiles/Login_validation";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -14,41 +14,39 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  
-
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!validateEmail(email)) {
-        setErrorMessage('Invalid Email Address');
-        setTimeout(() => setErrorMessage(''), 3000);
-        return;
+      setErrorMessage("Invalid Email Address");
+      setTimeout(() => setErrorMessage(""), 3000);
+      return;
     }
 
     if (!validatePassword(password)) {
-        setErrorMessage('Password must be at least 6 characters long');
-        setTimeout(() => setErrorMessage(''), 3000);
-        return;
+      setErrorMessage("Password must be at least 6 characters long");
+      setTimeout(() => setErrorMessage(""), 3000);
+      return;
     }
 
-    setErrorMessage('');
+    setErrorMessage("");
 
     const result = await login(email, password);
 
     if (result.success) {
-        localStorage.setItem('accessToken', result.accessToken);
-        localStorage.setItem('username', result.data.username);
+      localStorage.setItem("accessToken", result.accessToken);
+      localStorage.setItem("username", result.data.username);
 
-        navigate('/dashboard');
+      navigate("/all-posts");
     } else {
-        setErrorMessage(result.message);
-        setTimeout(() => setErrorMessage(''), 2000);
+      setErrorMessage(result.message);
+      setTimeout(() => setErrorMessage(""), 2000);
     }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
-      handleLogin(event); 
+      handleLogin(event);
     }
   };
 
@@ -66,7 +64,7 @@ function Login() {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={handleKeyDown} 
+                onKeyDown={handleKeyDown}
               />
             </div>
             <div className="input-container">
@@ -76,10 +74,12 @@ function Login() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={handleKeyDown} 
+                onKeyDown={handleKeyDown}
               />
             </div>
-            <button className="login-button" onClick={handleLogin}>Login Now</button>
+            <button className="login-button" onClick={handleLogin}>
+              Login Now
+            </button>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
             <div className="footer">
               <p>
