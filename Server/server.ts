@@ -9,6 +9,9 @@ import commentsRoutes from './routes/comments';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsDoc from "swagger-jsdoc";
 import socketIo from "socket.io"; 
+import chatRoutes from "./routes/chat_route";
+
+
 
 const app = express();
 
@@ -33,11 +36,14 @@ const swaggerOptions = {
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use("/auth", authRoutes);
 app.use("/posts", postsRoutes);
 app.use("/comments", commentsRoutes);
+app.use("/api", chatRoutes);
+
 
 const server = http.createServer(app);
 const io = new socketIo.Server(server, {

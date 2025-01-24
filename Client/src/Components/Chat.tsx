@@ -1,4 +1,4 @@
-const DashboardPage = () => {
+const Chat = () => {
   return (
     <div>
       <h2>Your Dashboard</h2>
@@ -7,4 +7,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default Chat;
