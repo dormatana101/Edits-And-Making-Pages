@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema<IUser>({
   refreshToken: {
     type: [String],
     default: [],
-    },  //liked with post id
+    }, 
     likedPosts: [
       {
         type: mongoose.Schema.Types.ObjectId,

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { FaTachometerAlt, FaUser, FaClipboard , FaPlus  } from "react-icons/fa"; // Import icons
+import { FaUser, FaClipboard, FaPlus, FaComments } from "react-icons/fa"; // Import new chat icon
 import "../css/Layout.css";
 
 const Layout: React.FC = () => {
@@ -22,8 +22,8 @@ const Layout: React.FC = () => {
       <aside className="sidebar">
         <ul>
           <li>
-            <Link to="/dashboard" className="sidebar-link">
-              <FaTachometerAlt className="icon" /> Dashboard
+            <Link to="/chat" className="sidebar-link">
+              <FaComments className="icon" /> Chat 
             </Link>
           </li>
           <li>
