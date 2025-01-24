@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import CommentModel from "../models/Comment";
+import PostModel from "../models/Post";
 
 //get all comments
 
@@ -22,22 +23,24 @@ const createComment = async (req: Request, res: Response) => {
     const { postId, content, author } = req.body;
 
     if (!postId || !content || !author) {
-      return res
-      .status(400)
-      .json({ message: "All fields are required" });
+      return res.status(400).json({ message: "All fields are required" });
     }
 
     const comment = new CommentModel({ postId, content, author });
     await comment.save();
-    res
-    .status(201)
-    .json(comment);
+
+    await PostModel.findByIdAndUpdate(
+      postId,
+      { $push: { comments: comment._id } }, 
+      { new: true }
+    );
+
+    res.status(201).json(comment);
   } catch (err: any) {
-    res
-      .status(500)
-      .json({ message: "Error creating comment", error: err.message });
+    res.status(500).json({ message: "Error creating comment", error: err.message });
   }
 };
+
 
 // get comments by post id
 const getCommentsByPostId = async (req: Request, res: Response) => {

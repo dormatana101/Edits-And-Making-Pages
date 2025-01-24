@@ -6,6 +6,7 @@ import CreatePost from "./CreatePost";
 import PrivateRoute from "./PrivateRoute";
 import Layout from "./Layout"; 
 import AllPosts from "./AllPosts";
+import PostDetails from "./PostDetails"; 
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="all-posts" element={<AllPosts />} />
           <Route path="create-post" element={<CreatePost />} />
+          <Route path="post/:postId" element={<PostDetails />} /> 
         </Route>
       </Routes>
     </Router>
