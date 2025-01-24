@@ -54,7 +54,7 @@ function Login() {
 
   return (
     <div className="login-page">
-      <div className="container">
+      <div className="container-login">
         <div className="left">
           <div className="form-container">
             <h1>LOGIN</h1>

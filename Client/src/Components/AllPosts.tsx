@@ -20,7 +20,7 @@ const AllPosts = () => {
   }, []);
 
   return (
-    <div className="container">
+    <div className="container-allPosts">
       <div className="all-posts">
         <h2>All Posts</h2>
         {posts.length > 0 ? (

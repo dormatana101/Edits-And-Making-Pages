@@ -7,7 +7,7 @@
   height: 100vh; 
 }
 
-.container {
+.container-login {
   display: flex;
   width: 100vh; /* Adjust the width as needed */
   height: 70%;
@@ -25,7 +25,6 @@
   background-color: #fff;
   padding: 40px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 }

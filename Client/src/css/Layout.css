@@ -116,9 +116,7 @@ body {
   flex: 1;
   padding: 20px;
   background-color: #f0f0f0;
-  overflow-y: auto; /* Чтобы контент прокручивался */
   margin-left: 20%; /* Чтобы основной контент не накладывался на боковую панель */
-  height: calc(100vh - 60px); /* Устанавливаем высоту для контента, чтобы он занимал всю оставшуюся высоту */
   box-sizing: border-box;
 }
 
