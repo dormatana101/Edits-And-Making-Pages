@@ -37,11 +37,9 @@ export const login = async (email: string, password: string) => {
 export const fetchProtectedData = async () => {
   const token = localStorage.getItem("accessToken"); // Убедитесь, что ключ совпадает с используемым в Login
   if (!token) {
-    console.error("No token found in localStorage");
     return { success: false, message: "No token found" };
   }
   try {
-    console.log("Fetching protected data with token:", token);
     const response = await axios.get(
       "http://localhost:3000/auth/protected-route",
       {
