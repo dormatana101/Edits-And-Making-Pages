@@ -1,21 +1,40 @@
 import axios from 'axios';
 
 // Function to fetch all posts
-export const fetchPosts = async () => {
+export interface PaginatedApiResponse<T> {
+  success: boolean;
+  data?: T[]; // Generic type for data
+  next?: { page: number; limit: number }; // Information for the next page
+  previous?: { page: number; limit: number }; // Information for the previous page
+  message?: string; // Error or status message
+}
+
+// Generic fetch function for paginated posts
+export const fetchPosts = async <T>(
+  page: number,
+  limit: number
+): Promise<PaginatedApiResponse<T>> => {
   try {
-    const response = await axios.get('http://localhost:3000/posts'); 
-    if (response.status === 200) {
-      return { success: true, data: response.data };
-    } else {
-      return { success: false, message: 'Failed to fetch posts' };
-    }
+    const response = await axios.get(`http://localhost:3000/posts?page=${page}&limit=${limit}`);
+    const data = response.data;
+
+    return {
+      success: true,
+      data: data?.results || [], 
+      next: data?.next,
+      previous: data?.previous,
+    };
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('Axios error:', error);
-      return { success: false, message: error.response?.data?.message || 'An error occurred' };
+      return {
+        success: false,
+        message: error.response?.data?.message || "An error occurred",
+      };
     } else {
-      console.error('Error:', error);
-      return { success: false, message: 'An unexpected error occurred' };
+      return {
+        success: false,
+        message: "An unexpected error occurred",
+      };
     }
   }
 };

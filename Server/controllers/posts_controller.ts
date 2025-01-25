@@ -20,16 +20,17 @@ const createPost = async (req: Request, res: Response) => {
 };
 
 // Get all posts
-const getAllPosts = async (req: Request, res: Response) => {
-  try {
-    const posts = await postModel.find();
-    res.status(200).json(posts);
-  } catch (err: any) {
-    res
-      .status(500)
-      .json({ message: "Error getting all posts", error: err.message });
-  }
-};
+// const getAllPosts = async (req: Request, res: Response) => {
+//   try {
+//     const posts = await postModel.find();
+    
+//     res.status(200).json(posts);
+//   } catch (err: any) {
+//     res
+//       .status(500)
+//       .json({ message: "Error getting all posts", error: err.message });
+//   }
+// };
 
 // Get a post by ID
 const getPostById = async (req: Request, res: Response) => {
@@ -116,7 +117,7 @@ const deletePost = async (req: Request, res: Response) => {
 };
 
 export default {
-  getAllPosts,
+ 
   createPost,
   getPostById,
   getPostsBySenderId,
