@@ -8,4 +8,5 @@ export interface Post {
   createdAt?: Date;
   comments?: mongoose.Schema.Types.ObjectId[];
   image?: string;
+  likesCount?: number;
 }

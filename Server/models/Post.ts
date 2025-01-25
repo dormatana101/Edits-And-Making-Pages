@@ -7,6 +7,7 @@ export interface IPost extends Document {
   createdAt?: Date;
   image?: string;
   comments?: mongoose.Schema.Types.ObjectId[];
+  likesCount?: number; 
 }
 
 const postSchema = new mongoose.Schema<IPost>({
@@ -36,6 +37,10 @@ const postSchema = new mongoose.Schema<IPost>({
       ref: "Comment",
     },
   ],
+  likesCount: {
+    type: Number,
+    default: 0, 
+  },
 });
 
 const postModel = mongoose.model<IPost>("Post", postSchema);

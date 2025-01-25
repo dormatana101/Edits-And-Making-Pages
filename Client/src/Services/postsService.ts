@@ -42,13 +42,18 @@ export const fetchPosts = async <T>(
 // Fetch post by ID
 export const fetchPostById = async (id: string) => {
   try {
-    const response = await axios.get(`http://localhost:3000/posts/${id}`);
-    return response.data;
+    const response = await axios.get(`http://localhost:3000/posts/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    return response.data; 
   } catch (error) {
-    console.error('Error fetching post:', error);
+    console.error("Error fetching post:", error);
     throw new Error("Post not found");
   }
 };
+
 
 // Fetch comments by Post ID
 export const fetchCommentsByPostId = async (postId: string) => {
@@ -106,5 +111,22 @@ export const createPost = async (title: string, content: string) => {
   } catch (error) {
     console.error("Error creating post:", error);
     return { success: false, message: "An error occurred" };
+  }
+};
+export const toggleLike = async (postId: string) => {
+  try {
+    const response = await axios.post(
+      `http://localhost:3000/posts/${postId}/like`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    return { success: false, message: "An error occurred while toggling like" };
   }
 };
