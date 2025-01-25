@@ -1,7 +1,9 @@
-import express from "express";
+import express  from "express";
 const router = express.Router();
 import Post from "../controllers/posts_controller";
 import { authMiddleware } from "../controllers/auth_controller";
+import { paginatedResults , PaginatedResults  } from '../Middlewares/Paging';
+import  PostModel  from '../models/Post';
 
 /**
  * @swagger
@@ -84,7 +86,11 @@ router.post("/", authMiddleware, (req, res) => {
  *       500:
  *         description: Server error
  */
-router.get("/", Post.getAllPosts);
+router.get('/',paginatedResults(PostModel),(req, res: express.Response) => {const results: PaginatedResults<typeof PostModel.schema> = res.locals.paginatedResults;
+    res.json(results); 
+  }
+);
+
 
 /**
  * @swagger
