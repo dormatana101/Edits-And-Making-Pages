@@ -212,4 +212,44 @@ router.delete("/:id", authMiddleware, (req, res) => {
   Post.deletePost(req, res);
 });
 
+/**
+ * @swagger
+ * /posts/{id}/like:
+ *   post:
+ *     summary: Like or dislike a post
+ *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The post ID
+ *       - in: header
+ *         name: Authorization
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Bearer token for authentication
+ *     responses:
+ *       200:
+ *         description: Successfully toggled like
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 likesCount:
+ *                   type: number
+ *       404:
+ *         description: Post or user not found
+ *       500:
+ *         description: Internal server error
+ */
+router.post("/:id/like", authMiddleware, Post.toggleLike);
+
 export default router;

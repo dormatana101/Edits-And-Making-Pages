@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import postModel from "../models/Post";
+import userModel from "../models/Users";
+
 // Create a new post
 const createPost = async (req: Request, res: Response) => {
   try {
@@ -115,6 +118,60 @@ const deletePost = async (req: Request, res: Response) => {
   }
 };
 
+const toggleLike = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const postId = req.params.id;
+
+    const userId = req.params.userId;
+
+    if (!userId) {
+      res.status(401).json({ message: "Unauthorized. User ID is missing in the request." });
+      return;
+    }
+
+    const post = await postModel.findById(postId);
+    if (!post) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    if (!user.likedPosts) {
+      user.likedPosts = [];
+    }
+
+    const hasLiked = user.likedPosts.some(
+      (likedPostId) => likedPostId.toString() === postId
+    );
+
+    if (hasLiked) {
+      user.likedPosts = user.likedPosts.filter(
+        (likedPostId) => likedPostId.toString() !== postId
+      );
+      post.likesCount = Math.max(0, (post.likesCount || 0) - 1); 
+    } else {
+      user.likedPosts.push(postId as unknown as mongoose.Schema.Types.ObjectId);
+      post.likesCount = (post.likesCount || 0) + 1;
+    }
+
+    await user.save();
+    await post.save();
+
+    res.status(200).json({
+      message: hasLiked ? "Like removed" : "Post liked",
+      likesCount: post.likesCount,
+    });
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export default {
   getAllPosts,
   createPost,
@@ -122,4 +179,5 @@ export default {
   getPostsBySenderId,
   updatePost,
   deletePost,
+  toggleLike,
 };

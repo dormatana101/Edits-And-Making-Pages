@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { fetchPostById, fetchCommentsByPostId, postComment } from "../Services/postsService"; 
+import { fetchPostById, fetchCommentsByPostId, postComment, toggleLike } from "../Services/postsService"; 
 import { Post } from "../types/post"; 
 import { Comment } from "../types/coment"; 
 import CommentForm from "../Components/CommentForm"; 
@@ -11,12 +11,16 @@ const PostDetails = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
+  const [likesCount, setLikesCount] = useState<number>(0);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
 
   useEffect(() => {
     const getPost = async () => {
       try {
         const postResult = await fetchPostById(postId!); 
         setPost(postResult);
+        setLikesCount(postResult.likesCount || 0); 
+        setIsLiked(postResult.isLiked || false);
         const commentsResult = await fetchCommentsByPostId(postId!); 
         setComments(commentsResult);
       } catch (err) {
@@ -25,6 +29,22 @@ const PostDetails = () => {
     };
     getPost();
   }, [postId]);
+  
+  
+
+  const handleLikeClick = async () => {
+    try {
+      const response = await toggleLike(postId!); 
+      if (response.success) {
+        setLikesCount(response.data.likesCount); 
+        setIsLiked(!isLiked);
+      } else {
+        console.error(response.message);
+      }
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
+  };
 
   const handleCommentSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -51,7 +71,13 @@ const PostDetails = () => {
         <p>{post.content}</p>
         <small>By: {post.author}</small>
         <p>{post.createdAt ? new Date(post.createdAt).toLocaleString() : "Unknown date"}</p>
-        
+
+        <div className="post-actions">
+          <button onClick={handleLikeClick}>
+            {isLiked ? "Unlike" : "Like"} ({likesCount})
+          </button>
+        </div>
+
         <div className="comments-section">
           <h3>Comments</h3>
           {comments.length > 0 ? (
