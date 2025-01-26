@@ -1,33 +1,38 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
 interface FormFieldProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
   isTextArea?: boolean;
+  textareaRef?: React.RefObject<HTMLTextAreaElement>;
+  className?: string;
 }
 
-const FormField: React.FC<FormFieldProps> = ({ label, value, onChange, isTextArea = false }) => {
-  return (
-    <div className="form-field">
-      <label>{label}</label>
-      {isTextArea ? (
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          rows={5}
-          className="post-content"
-        />
-      ) : (
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="post-title"
-        />
-      )}
-    </div>
-  );
-};
+const FormField = forwardRef<HTMLTextAreaElement, FormFieldProps>(
+  ({ label, value, onChange, isTextArea, textareaRef, className }, ref) => {
+    return (
+      <div className={`form-field ${isTextArea ? "textarea-field" : "input-field"} ${className || ""}`}>
+        <label>{label}</label>
+        {isTextArea ? (
+          <textarea
+            ref={textareaRef || ref}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className={`textarea ${className || ""}`}
+            rows={3} 
+          />
+        ) : (
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className={`input ${className || ""}`}
+          />
+        )}
+      </div>
+    );
+  }
+);
 
 export default FormField;

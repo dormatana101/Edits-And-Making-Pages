@@ -1,0 +1,69 @@
+/* CommentForm.css */
+
+/* Контейнер формы комментариев */
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  /* Поле ввода комментария */
+  .comment-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccd0d5;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: none; /* Убираем возможность ручного изменения размера */
+    box-sizing: border-box;
+    background-color: #ffffff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    min-height: 50px; /* Достаточный начальный размер */
+    overflow: hidden; /* Скрываем полосу прокрутки */
+  }
+  
+  /* Фокус на поле ввода комментария */
+  .comment-form textarea:focus {
+    outline: none;
+    border-color: #1877f2; /* Синий цвет при фокусе */
+    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+  }
+  
+  /* Кнопка отправки комментария */
+  .comment-form button {
+    padding: 8px 16px;
+    background-color: #1877f2; /* Основной синий цвет Facebook */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s;
+    align-self: flex-end;
+  }
+  
+  .comment-form button:hover {
+    background-color: #1558b0; /* Темнее синий при наведении */
+  }
+  
+  /* Автоматическое увеличение textarea */
+  .comment-form textarea.auto-resize {
+    overflow: hidden;
+  }
+  
+  /* Адаптивность для мобильных устройств */
+  @media (max-width: 768px) {
+    .comment-form textarea {
+      padding: 8px 10px;
+      font-size: 0.9rem;
+      min-height: 40px;
+    }
+  
+    .comment-form button {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+  }
+  

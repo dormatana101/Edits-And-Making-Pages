@@ -1,117 +1,129 @@
+/* AllPosts.css */
 
+/* Контейнер всех постов */
 .all-posts {
-  margin-top: 20px; 
   padding: 20px;
-  background-color: #f7f7f7; 
+  background-color: #f0f2f5; /* Светло-серый фон, похожий на Facebook */
   border-radius: 8px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  flex-grow: 1; 
-  overflow-y: auto; 
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
+  /* overflow-y: auto; */ /* Удалено */
+  /* height: calc(100vh - 80px); */ /* Удалено */
 }
 
-.post-allPosts {
-  background-color: #fff;
+/* Заголовок раздела */
+.all-posts h2 {
+  font-size: 1.8rem;
+  color: #050505;
+  margin-bottom: 20px;
+}
+
+/* Сообщение об ошибке */
+.all-posts .error {
+  color: #e74c3c;
+  margin-bottom: 20px;
+}
+
+/* Карточка поста */
+.all-posts .post {
+  background-color: #ffffff;
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.post h3 {
+/* Заголовок поста */
+.all-posts .post h3 {
   font-size: 1.5rem;
-  color: #333;
+  color: #050505;
   margin-bottom: 10px;
 }
-.like-icon {
-  cursor: pointer;
-  color: #ccc; 
-  transition: color 0.3s ease;
-  margin-right: 10px;
-}
 
-.like-icon.liked {
-  color: red;
-}
-
-.like-icon:hover {
-  color: #ff6b6b; 
-}
-.post p {
+/* Содержание поста */
+.all-posts .post p {
   font-size: 1rem;
-  color: #666;
-  line-height: 1.5;
+  color: #4b4f56;
+  line-height: 1.6;
   margin-bottom: 10px;
 }
 
-.post-image {
+/* Изображение в посте */
+.all-posts .post-image {
   width: 100%;
   height: auto;
   margin-top: 15px;
   border-radius: 8px;
 }
 
-.post-timestamp {
+/* Таймстамп поста */
+.all-posts .post-timestamp {
   font-size: 0.9rem;
-  color: #999;
+  color: #65676b;
   margin-top: 10px;
 }
 
-.comments-section {
+/* Действия над постом (лайк, комментарии) */
+.all-posts .post-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   margin-top: 15px;
 }
 
-.comments-count {
-  font-size: 0.9rem;
-  color: #007AFF;
+/* Лайк и счетчик лайков */
+.all-posts .post-actions .like-icon {
   cursor: pointer;
-  text-decoration: none;
+  color: #606770; /* Темно-серый цвет для иконки */
+  transition: color 0.3s ease;
   margin-right: 10px;
-}
-
-.comments-count:hover {
-  text-decoration: underline;
-}
-
-.comment-icon {
   font-size: 1.2rem;
-  color: #007AFF;
-  cursor: pointer;
 }
 
-.comment-icon:hover {
-  color: #005BB5;
+.all-posts .post-actions .like-icon.liked {
+  color: #1877f2; /* Синий цвет при лайке */
 }
 
-.no-image {
-  text-align: center;
+.all-posts .post-actions .like-icon:hover {
+  color: #1877f2; /* Синий цвет при наведении */
 }
 
-.container-allPosts {
+.all-posts .post-actions span {
+  font-size: 0.9rem;
+  color: #65676b;
+  margin-right: 20px;
+}
+
+/* Секция комментариев */
+.all-posts .comments-section {
   display: flex;
-  flex-direction: column;
-  flex-grow: 1; 
-  width: 100vw;
-  height: 100vh;
-  position: relative;
+  align-items: center;
+  color: #1877f2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
-.all-posts {
-  padding: 20px;
-  background-color: #f7f7f7;
-  border-radius: 8px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-
-  
+.all-posts .comments-section:hover {
+  color: #1158c7;
 }
 
-/* Стили для поста на карточке */
-.post-card {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.all-posts .comments-section .comment-icon {
+  font-size: 1.2rem;
+  margin-right: 5px;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .all-posts {
+    margin-top: 80px;
+    padding: 10px;
+  }
+
+  .all-posts .post {
+    padding: 15px;
+  }
+
+  .all-posts h2 {
+    font-size: 1.5rem;
+  }
 }

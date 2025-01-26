@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { createPost } from "../Services/postsService"; 
 import FormField from "../Components/FormField"; 
 import "../css/CreatePost.css";
@@ -8,6 +8,8 @@ const CreatePost: React.FC = () => {
   const [newPostTitle, setNewPostTitle] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [confirmationMessage, setConfirmationMessage] = useState<string>("");
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleCreatePost = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -34,30 +36,49 @@ const CreatePost: React.FC = () => {
     }
   };
 
+  const handleTextareaChange = (value: string) => {
+    setNewPostContent(value);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, []);
+
   return (
     <div className="container">
       <div className="posts-container">
-        <h2>Create Post</h2>
-        {confirmationMessage && (
-          <div className="confirmation-message">{confirmationMessage}</div>
-        )}
-        {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleCreatePost} className="create-post-form">
-          <FormField
-            label="Post title"
-            value={newPostTitle}
-            onChange={setNewPostTitle}
-          />
-          <FormField
-            label="Write your post..."
-            value={newPostContent}
-            onChange={setNewPostContent}
-            isTextArea
-          />
-          <button type="submit" className="create-post-button">
-            Create Post
-          </button>
-        </form>
+        <div className="create-post-form-container">
+          <h2>Create Post</h2>
+          {confirmationMessage && (
+            <div className="confirmation-message">{confirmationMessage}</div>
+          )}
+          {error && <div className="error-message">{error}</div>}
+          <form onSubmit={handleCreatePost} className="create-post-form">
+            <FormField
+              label="Post Title"
+              value={newPostTitle}
+              onChange={setNewPostTitle}
+            />
+            <FormField
+              label="Write your post..."
+              value={newPostContent}
+              onChange={handleTextareaChange}
+              isTextArea
+              textareaRef={textareaRef}
+              className="auto-resize" 
+            />
+            <button type="submit" className="create-post-button">
+              Create Post
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

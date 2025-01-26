@@ -6,7 +6,7 @@ export interface Post {
   title: string;
   content: string;
   author: string;
-  createdAt?: Date;
+  createdAt: Date;
   comments?: mongoose.Schema.Types.ObjectId[];
   image?: string;
   likesCount?: number;
