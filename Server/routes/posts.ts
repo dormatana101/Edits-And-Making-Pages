@@ -86,10 +86,9 @@ router.post("/", authMiddleware, (req, res) => {
  *       500:
  *         description: Server error
  */
-router.get('/',paginatedResults(PostModel),(req, res: express.Response) => {const results: PaginatedResults<typeof PostModel.schema> = res.locals.paginatedResults;
-    res.json(results); 
-  }
-);
+router.get('/', paginatedResults(PostModel), (req, res) => {
+  res.json(res.locals.paginatedResults); 
+});
 
 
 /**

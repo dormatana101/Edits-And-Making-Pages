@@ -9,18 +9,23 @@ export interface PaginatedApiResponse<T> {
   message?: string; // Error or status message
 }
 
-// Generic fetch function for paginated posts
 export const fetchPosts = async <T>(
   page: number,
-  limit: number
+  limit: number,
 ): Promise<PaginatedApiResponse<T>> => {
   try {
-    const response = await axios.get(`http://localhost:3000/posts?page=${page}&limit=${limit}`);
+    const response = await axios.get(`http://localhost:3000/posts`, {
+      params: {
+        page,
+        limit,
+      },
+    });
+
     const data = response.data;
 
     return {
       success: true,
-      data: data?.results || [], 
+      data: data?.results || [],
       next: data?.next,
       previous: data?.previous,
     };
