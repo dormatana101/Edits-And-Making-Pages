@@ -1,83 +1,118 @@
 .post-details {
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  background-color: #ffffff;
+  margin: 30px auto;
   overflow: hidden;
 }
 
-.post-details .post {
-  flex: 0 0 auto; 
+.post {
   background-color: #fff;
   padding: 20px;
   margin-bottom: 10px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 97%;
+  width: 98%;
 }
 
-.post-details .post h2 {
+.post h2 {
   font-size: 1.8rem;
-  color: #050505;
-  margin-bottom: 10px;
+  color: #333;
 }
 
-.post-details .post p {
+.post p {
   font-size: 1rem;
-  color: #4b4f56;
-  line-height: 1.6;
+  color: #666;
+  line-height: 1.5;
 }
 
-.post-details .post small {
+.post small {
   font-size: 0.9rem;
-  color: #65676b;
+  color: #999;
 }
 
-.post-details .comments-section-postDetails {
-  flex: 1 1 auto; 
+.comments-section-postDetails {
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
-  width: 100%;
+  height: 600px; /* Fixed height for the entire comment section */
 }
 
-.post-details .comments-section-postDetails h3 {
-  font-size: 1.5rem;
-  color: #050505;
-  margin-bottom: 15px;
-}
-
-.post-details .comments-list {
-  flex: 1 1 auto; 
-  overflow-y: auto; 
-  background-color: #f0f2f5;
+.comments-list {
+  flex: 1; /* Take up the available space within the container */
+  overflow-y: auto; /* Enable scrolling */
+  background-color: #f9f9f9;
   border-radius: 8px;
   padding: 10px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px; 
+  margin-bottom: 0; /* Remove margin to prevent resizing */
 }
 
-.post-details .comment {
+.comments-section-postDetails h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.comment {
   padding: 10px;
   margin-bottom: 10px;
-  background-color: #ffffff;
+  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   font-size: 1rem;
-  color: #4b4f56;
+  color: #333;
 }
 
-.post-details .comment strong {
+.comment strong {
   font-weight: bold;
-  color: #050505;
 }
 
-.post-details .comment-form-container {
-  flex: 0 0 auto; 
-  background-color: #ffffff;
+.comment-form-container {
+  position: absolute; /* Fix the form at the bottom of the container */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
   padding: 15px;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.comment-form textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  font-size: 1rem;
+  color: #333;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  resize: none;
+  margin-bottom: 10px;
+}
+
+.comment-form button {
+  background-color: #007AFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.comment-form button:hover {
+  background-color: #005bb5;
+}
+
+.comment-form button:focus {
+  outline: none;
+}
+
+.comment p {
+  margin: 0;
 }
