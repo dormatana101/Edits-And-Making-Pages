@@ -30,14 +30,7 @@ body {
      чтобы не ломать layout на остальных страницах */
 }
 
-/* Локальные стили для Login */
-body.login-page {
-  display: flex;
-  flex-direction: column; /* или row, как нужно */
-  justify-content: center; /* вертикальное центрирование */
-  align-items: center;     /* горизонтальное центрирование */
-  background-color: #242424; /* Если надо */
-}
+
 
 h1 {
   font-size: 3.2em;
