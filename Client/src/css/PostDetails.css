@@ -1,14 +1,14 @@
-
 .post-details {
   display: flex;
   flex-direction: column;
+  align-items: center; 
+  justify-content: center; 
   padding: 20px;
-  background-color: #dcd9d9;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   margin: 30px auto;
-  width: 100vw;
-  height: 100vh;
+
+  overflow: hidden; 
 }
 
 .post {
@@ -16,7 +16,7 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 60%;
+  width: 100%; 
 }
 
 .post h2 {
@@ -35,34 +35,35 @@
   color: #999;
 }
 
-.post .post-timestamp {
-  font-size: 0.9rem;
-  color: #999;
-  margin-top: 10px;
-}
-
-.comments-section {
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #e0e0e0;
+.comments-section-postDetails {
+  margin-top: 20px;
   display: flex;
-  flex-direction: column; 
-  gap: 15px; 
+  flex-direction: column;
+  position: relative;
+  height: 500px;
+  width: 100%; 
 }
 
-.comments-section h3 {
+.comments-list {
+  flex-grow: 1; 
+  overflow-y: auto; 
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 60px; 
+}
+
+.comments-section-postDetails h3 {
   font-size: 1.3rem;
   color: #333;
-}
-
-.comment {
-  padding: 10px 0;
-  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 10px;
 }
 
 .comment {
   padding: 10px;
-  background-color: #f9f9f9; 
+  margin-bottom: 10px;
+  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   font-size: 1rem;
@@ -73,8 +74,15 @@
   font-weight: bold;
 }
 
-.comment-form {
-  margin-top: 20px;
+.comment-form-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  padding: 15px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
 
 .comment-form textarea {
@@ -104,14 +112,10 @@
   background-color: #005bb5;
 }
 
-.comments-section p {
-  color: #666;
-  font-size: 1rem;
-}
-
 .comment-form button:focus {
   outline: none;
 }
+
 .comment p {
-  margin: 0; 
+  margin: 0;
 }

@@ -2,6 +2,9 @@ import express from "express";
 const router = express.Router();
 import comments from "../controllers/comments_controller";
 import { authMiddleware } from "../controllers/auth_controller";
+import { paginatedResults , PaginatedResults  } from '../Middlewares/Paging';
+import  CommentModel  from '../models/Comment';
+import commentModel from "../models/Comment";
 
 /**
  * @swagger
@@ -212,8 +215,21 @@ router.delete("/:id", authMiddleware, (req, res) => {
  *       500:
  *         description: Server error
  */
-router.get("/post/:postId", (req, res) => {
-  comments.getCommentsByPostId(req, res);
-});
+
+router.get(
+  "/post/:postId",
+  (req, res, next) => {
+    req.query.filter = JSON.stringify({ postId: req.params.postId });
+    next();
+  },
+  paginatedResults(commentModel), 
+  (req, res) => {
+    const paginatedComments = res.locals.paginatedResults; 
+    res.status(200).json({
+      success: true,
+      ...paginatedComments,
+    });
+  }
+);
 
 export default router;

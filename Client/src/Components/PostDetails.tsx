@@ -1,60 +1,91 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { fetchPostById, fetchCommentsByPostId, postComment, toggleLike } from "../Services/postsService"; 
-import { Post } from "../types/post"; 
-import { Comment } from "../types/coment"; 
-import CommentForm from "../Components/CommentForm"; 
+import { fetchPostById, postComment } from "../Services/postsService";
+import { fetchCommentsByPostId } from "../Services/commentsService"; // New service for paginated comments
+import { Post } from "../types/post";
+import { Comment } from "../types/comment";
+import CommentForm from "../Components/CommentForm";
 import "../css/PostDetails.css";
 
 const PostDetails = () => {
-  const { postId } = useParams(); 
+  const { postId } = useParams();
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
-  const [likesCount, setLikesCount] = useState<number>(0);
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+
+  const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     const getPost = async () => {
       try {
-        const postResult = await fetchPostById(postId!); 
+        const postResult = await fetchPostById(postId!);
         setPost(postResult);
-        setLikesCount(postResult.likesCount || 0); 
-        setIsLiked(postResult.isLiked || false);
-        const commentsResult = await fetchCommentsByPostId(postId!); 
-        setComments(commentsResult);
       } catch (err) {
         console.error("Error loading post", err);
       }
     };
+
     getPost();
   }, [postId]);
-  
-  
 
-  const handleLikeClick = async () => {
-    try {
-      const response = await toggleLike(postId!); 
-      if (response.success) {
-        setLikesCount(response.data.likesCount); 
-        setIsLiked(!isLiked);
-      } else {
-        console.error(response.message);
+  useEffect(() => {
+    const fetchComments = async () => {
+      if (!hasMore || loading) return; // Prevent fetching if already loading or no more comments
+      setLoading(true);
+  
+      try {
+        const result = await fetchCommentsByPostId(postId!, page, 5); // Fetch 5 comments per page
+  
+        setComments((prevComments) => {
+          const newComments = result.data || [];
+          const uniqueComments = newComments.filter(
+            (comment) => !prevComments.some((prev) => prev._id === comment._id) // Avoid duplicates
+          );
+          return [...prevComments, ...uniqueComments];
+        });
+  
+        setHasMore(Boolean(result.next)); // Check if there are more comments
+      } catch (err) {
+        console.error("Error loading comments", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error toggling like:", error);
+    };
+  
+    fetchComments();
+  }, [page, postId]); 
+  
+  const lastCommentRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (observer.current) observer.current.disconnect();
+  
+    observer.current = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && hasMore && !loading) {
+        setPage((prevPage) => prevPage + 1); // Increment page only once
+      }
+    });
+  
+    if (lastCommentRef.current) {
+      observer.current.observe(lastCommentRef.current);
     }
-  };
+  
+    return () => {
+      if (observer.current) observer.current.disconnect();
+    };
+  }, [hasMore, loading]);
 
   const handleCommentSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    if (!newComment) return; 
+    if (!newComment) return;
 
     try {
-      const comment = await postComment(postId!, newComment); 
-      setComments((prev) => [...prev, comment]);
-      setNewComment(""); 
+      const comment = await postComment(postId!, newComment);
+      setComments((prev) => [...prev,comment]);
+      setNewComment("");
     } catch (err) {
       console.error("Error posting comment", err);
     }
@@ -72,30 +103,32 @@ const PostDetails = () => {
         <small>By: {post.author}</small>
         <p>{post.createdAt ? new Date(post.createdAt).toLocaleString() : "Unknown date"}</p>
 
-        <div className="post-actions">
-          <button onClick={handleLikeClick}>
-            {isLiked ? "Unlike" : "Like"} ({likesCount})
-          </button>
+        <div className="comments-section-postDetails">
+        <h3>Comments</h3>
+        <div className="comments-list">
+          {comments.map((comment, index) => (
+            <div
+              key={comment._id.toString()}
+              ref={index === comments.length - 1 ? lastCommentRef : null}
+              className="comment"
+            >
+              <p>
+                <strong>{comment.author}</strong>: {comment.content}
+              </p>
+            </div>
+          ))}
         </div>
-
-        <div className="comments-section">
-          <h3>Comments</h3>
-          {comments.length > 0 ? (
-            comments.map((comment) => (
-              <div key={comment._id.toString()} className="comment">
-                <p><strong>{comment.author}</strong>: {comment.content}</p>
-              </div>
-            ))
-          ) : (
-            <p>No comments yet.</p>
-          )}
-
-          <CommentForm 
-            newComment={newComment} 
-            setNewComment={setNewComment} 
-            onSubmit={handleCommentSubmit} 
+        {loading && <p>Loading more comments...</p>}
+        {!hasMore && <p>No more comments available.</p>}
+        <div className="comment-form-container">
+          <CommentForm
+            newComment={newComment}
+            setNewComment={setNewComment}
+            onSubmit={handleCommentSubmit}
           />
         </div>
+      </div>
+
       </div>
     </div>
   );
