@@ -35,7 +35,7 @@ export const login = async (email: string, password: string) => {
 };
 
 export const fetchProtectedData = async () => {
-  const token = localStorage.getItem("accessToken"); // Убедитесь, что ключ совпадает с используемым в Login
+  const token = localStorage.getItem("accessToken"); 
   if (!token) {
     return { success: false, message: "No token found" };
   }

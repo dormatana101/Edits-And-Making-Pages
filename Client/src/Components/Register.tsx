@@ -78,7 +78,7 @@ const Register = () => {
             confirmPassword: '',
           });
           setErrors({});
-          setTimeout(() => navigate('/login'), 3000); // Переход через 3 секунды
+          setTimeout(() => navigate('/login'), 3000); 
         } else {
           const errorData = await response.json();
           if (errorData.message.includes('Email')) {

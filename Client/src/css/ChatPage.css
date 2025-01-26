@@ -1,14 +1,12 @@
-/* Оболочка всего чата */
 .fb-chat-container {
   display: flex;
-  flex-direction: row-reverse; /* для списка справа */
+  flex-direction: row-reverse; 
   width: 100%;
   min-height: calc(100vh - 60px - 40px);
   box-sizing: border-box;
   background-color: #f0f2f5;
 }
 
-/* Сайдбар со списком пользователей */
 .fb-chat-sidebar {
   flex: 0 0 300px;
   background-color: #fff;
@@ -18,7 +16,6 @@
   box-sizing: border-box;
 }
 
-/* Заголовок сайдбара */
 .fb-chat-sidebar h3 {
   margin-top: 0;
   margin-bottom: 1rem;
@@ -26,7 +23,6 @@
   color: #1d1d1f;
 }
 
-/* Список пользователей */
 .fb-chat-users-list {
   list-style: none;
   margin: 0;
@@ -45,7 +41,6 @@
   background-color: #e4e6eb;
 }
 
-/* Основная область чата */
 .fb-chat-main {
   flex: 1;
   display: flex;
@@ -53,7 +48,6 @@
   background-color: #f0f2f5;
 }
 
-/* Шапка над сообщениями (заголовок чата) */
 .fb-chat-header {
   background-color: #fff;
   border-bottom: 1px solid #ddd;
@@ -63,20 +57,18 @@
   box-sizing: border-box;
 }
 
-/* Область, где находятся сообщения */
 .fb-chat-messages {
   flex: 1;
-  display: flex;          /* добавим flex */
-  flex-direction: column; /* чтобы можно было использовать align-self и margin auto */
+  display: flex;          
+  flex-direction: column; 
   padding: 10px 16px;
   overflow-y: auto;
   background-color: #f0f2f5;
   box-sizing: border-box;
 }
 
-/* Каждое сообщение */
 .fb-chat-message {
-  display: inline-block;  /* или block. Но inline-block + margin-left: auto удобно */
+  display: inline-block; 
   max-width: 60%;
   margin-bottom: 10px;
   padding: 8px 12px;
@@ -84,27 +76,23 @@
   line-height: 1.4;
 }
 
-/* Имя отправителя */
 .fb-chat-message-sender {
   font-weight: 600;
   margin-right: 5px;
 }
 
-/* Сообщения, которые отправил текущий пользователь (справа) */
 .fb-chat-message.sent {
-  margin-left: auto;            /* сдвигаем вправо */
-  background-color: #d9fdd3;    /* светло-зелёный фон */
-  border-top-right-radius: 0;   /* по желанию, скругление */
+  margin-left: auto;         
+  background-color: #d9fdd3;  
+  border-top-right-radius: 0;   
 }
 
-/* Сообщения от других пользователей (слева) */
 .fb-chat-message.received {
-  margin-right: auto;           /* сдвигаем влево */
+  margin-right: auto;         
   background-color: #fff;
   border-top-left-radius: 0;
 }
 
-/* Область ввода нового сообщения */
 .fb-chat-input-area {
   background-color: #fff;
   border-top: 1px solid #ddd;
@@ -125,7 +113,7 @@
 
 .fb-chat-input-area button {
   padding: 8px 16px;
-  background-color: #1877f2; /* Facebook-like синий */
+  background-color: #1877f2; 
   color: #fff;
   border: none;
   border-radius: 16px;
@@ -138,7 +126,6 @@
   background-color: #166fe5;
 }
 
-/* Заглушка, если не выбран пользователь */
 .fb-chat-placeholder {
   flex: 1;
   display: flex;

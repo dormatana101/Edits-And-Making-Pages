@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { FaUser, FaClipboard, FaPlus, FaComments } from "react-icons/fa"; // Import new chat icon
+import { FaUser, FaClipboard, FaPlus, FaComments } from "react-icons/fa";
 import "../css/Layout.css";
 
 const Layout: React.FC = () => {
@@ -9,6 +9,8 @@ const Layout: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("username");
+    localStorage.removeItem("userId");
+
     navigate("/login");
   };
 
