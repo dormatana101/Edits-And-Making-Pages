@@ -32,13 +32,12 @@ function Login() {
     setErrorMessage("");
 
     const result = await login(email, password);
-
     if (result.success) {
       localStorage.setItem("accessToken", result.accessToken);
       localStorage.setItem("username", result.data.username);
       localStorage.setItem("userId", result.data._id);
 
-      navigate("/all-posts");
+      navigate("/all-posts",{state: {likedPosts: result.data.likedPosts , userId: result.data._id}});
     } else {
       setErrorMessage(result.message);
       setTimeout(() => setErrorMessage(""), 2000);

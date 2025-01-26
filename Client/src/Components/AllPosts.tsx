@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { fetchPosts } from "../Services/postsService";
 import { Post } from "../types/post";
 import PostCard from "./PostCard";
+import { useLocation } from "react-router-dom";
 
 const AllPosts = () => {
+  const location = useLocation();
   const [posts, setPosts] = useState<Post[]>([]); 
   const [loading, setLoading] = useState<boolean>(false); 
   const [error, setError] = useState<string | null>(null); 
   const [page, setPage] = useState<number>(1); 
   const [hasMore, setHasMore] = useState<boolean>(true); 
-
+  const likedPosts = location.state?.likedPosts || [];
   useEffect(() => {
     const getPosts = async () => {
       try {
@@ -60,7 +62,7 @@ const AllPosts = () => {
         <h2>All Posts</h2>
         {error && <p className="error">{error}</p>}
         {posts.map((post) => (
-          <PostCard key={post._id} post={post} />
+          <PostCard key={post._id} post={post} likedPosts={likedPosts} />
         ))}
         {loading && <p>Loading...</p>}
         {!hasMore && !loading && <p>No more posts available.</p>}

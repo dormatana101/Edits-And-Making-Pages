@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+const userId = localStorage.getItem("userId");
 // Function to fetch all posts
 export interface PaginatedApiResponse<T> {
   success: boolean;
@@ -18,6 +18,7 @@ export const fetchPosts = async <T>(
       params: {
         page,
         limit,
+        userId,
       },
     });
 

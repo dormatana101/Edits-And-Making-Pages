@@ -9,7 +9,7 @@
   overflow-y: auto; 
 }
 
-.post {
+.post-allPosts {
   background-color: #fff;
   border-radius: 10px;
   padding: 20px;
@@ -22,7 +22,20 @@
   color: #333;
   margin-bottom: 10px;
 }
+.like-icon {
+  cursor: pointer;
+  color: #ccc; 
+  transition: color 0.3s ease;
+  margin-right: 10px;
+}
 
+.like-icon.liked {
+  color: red;
+}
+
+.like-icon:hover {
+  color: #ff6b6b; 
+}
 .post p {
   font-size: 1rem;
   color: #666;
