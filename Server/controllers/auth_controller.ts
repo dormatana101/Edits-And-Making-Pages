@@ -110,6 +110,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
         _id: user._id,
         username: user.username, 
         isAuthenticated: true,
+        likedPosts: user.likedPosts,
       });
     } catch (err) {
       console.error('Error during login:', err);

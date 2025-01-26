@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 export interface Post {
+  isLiked: boolean;
   _id: string;
   title: string;
   content: string;

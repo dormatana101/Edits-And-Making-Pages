@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaRegComment } from "react-icons/fa";
+import { FaRegComment, FaHeart } from "react-icons/fa";
 import { Post } from "../types/post";
 import { toggleLike } from "../Services/postsService";
 import { formatDate } from "../utiles/formatDate";
@@ -8,23 +8,26 @@ import "../css/AllPosts.css";
 
 interface PostCardProps {
   post: Post;
+  likedPosts: string[]; // Array of liked post IDs
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const [likesCount, setLikesCount] = useState<number>(post.likesCount || 0);
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [isLiked, setIsLiked] = useState<boolean>(post.isLiked || false); 
+
+  useEffect(() => {
+    setIsLiked(post.isLiked || false); 
+  }, [post.isLiked]);
 
   const handleLikeClick = async () => {
     try {
       const response = await toggleLike(post._id);
       if (response.success) {
-        setLikesCount(response.data.likesCount);
-        setIsLiked(!isLiked);
-      } else {
-        console.error(response.message);
+        setLikesCount(response.data.likesCount); 
+        setIsLiked(!isLiked); 
       }
     } catch (error) {
-      console.error("Error toggling like:", error);
+      console.error("An error occurred while toggling like:", error);
     }
   };
 
@@ -37,17 +40,16 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       <p className="post-timestamp">{formatDate(post.createdAt)}</p>
 
       <div className="post-actions">
-        <button onClick={handleLikeClick}>
-          {isLiked ? "Unlike" : "Like"} ({likesCount})
-        </button>
+        <FaHeart
+          className={`like-icon ${isLiked ? "liked" : ""}`} 
+          onClick={handleLikeClick}
+        />
+        <span>{likesCount} {likesCount === 1 ? "like" : "likes"}</span>
+        <Link to={`/post/${post._id}`} className="comments-section">
+          <FaRegComment /> {post.comments ? post.comments.length : 0}{" "}
+          {post.comments && post.comments.length === 1 ? "comment" : "comments"}
+        </Link>
       </div>
-
-      <Link to={`/post/${post._id}`} className="comments-section">
-        <span className="comments-count">
-          {post.comments?.length ?? 0} comments
-        </span>
-        <FaRegComment className="comment-icon" />
-      </Link>
     </div>
   );
 };
