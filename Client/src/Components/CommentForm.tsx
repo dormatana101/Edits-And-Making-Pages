@@ -1,6 +1,5 @@
-// CommentForm.tsx
 import React, { useRef, useEffect } from "react";
-import "../css/CommentForm.css"; // Импортируем стили
+import "../css/CommentForm.css"; 
 
 interface CommentFormProps {
   newComment: string;
@@ -11,7 +10,6 @@ interface CommentFormProps {
 const CommentForm: React.FC<CommentFormProps> = ({ newComment, setNewComment, onSubmit }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Функция для автоматического увеличения высоты textarea
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewComment(e.target.value);
     if (textareaRef.current) {
@@ -20,7 +18,6 @@ const CommentForm: React.FC<CommentFormProps> = ({ newComment, setNewComment, on
     }
   };
 
-  // Устанавливаем начальную высоту при монтировании компонента
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";

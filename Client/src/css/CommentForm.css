@@ -1,13 +1,10 @@
-/* CommentForm.css */
 
-/* Контейнер формы комментариев */
 .comment-form {
     display: flex;
     flex-direction: column;
     width: 100%;
   }
   
-  /* Поле ввода комментария */
   .comment-form textarea {
     width: 100%;
     padding: 10px 12px;
@@ -16,25 +13,23 @@
     border: 1px solid #ccd0d5;
     font-size: 1rem;
     font-family: inherit;
-    resize: none; /* Убираем возможность ручного изменения размера */
+    resize: none; 
     box-sizing: border-box;
     background-color: #ffffff;
     transition: border-color 0.3s, box-shadow 0.3s;
-    min-height: 50px; /* Достаточный начальный размер */
-    overflow: hidden; /* Скрываем полосу прокрутки */
+    min-height: 50px; 
+    overflow: hidden;
   }
   
-  /* Фокус на поле ввода комментария */
   .comment-form textarea:focus {
     outline: none;
-    border-color: #1877f2; /* Синий цвет при фокусе */
+    border-color: #1877f2; 
     box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
   }
   
-  /* Кнопка отправки комментария */
   .comment-form button {
     padding: 8px 16px;
-    background-color: #1877f2; /* Основной синий цвет Facebook */
+    background-color: #1877f2; 
     color: white;
     border: none;
     border-radius: 8px;
@@ -45,15 +40,13 @@
   }
   
   .comment-form button:hover {
-    background-color: #1558b0; /* Темнее синий при наведении */
+    background-color: #1558b0;
   }
   
-  /* Автоматическое увеличение textarea */
   .comment-form textarea.auto-resize {
     overflow: hidden;
   }
   
-  /* Адаптивность для мобильных устройств */
   @media (max-width: 768px) {
     .comment-form textarea {
       padding: 8px 10px;

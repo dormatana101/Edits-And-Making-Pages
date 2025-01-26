@@ -1,20 +1,16 @@
-/* PostDetails.css */
-
-/* Контейнер деталей поста */
 .post-details {
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto; /* Позволяет контейнеру занимать доступное пространство */
+  flex: 1 1 auto;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   background-color: #ffffff;
-  overflow: hidden; /* Убираем внутреннюю прокрутку */
+  overflow: hidden;
 }
 
-/* Пост внутри деталей */
 .post-details .post {
-  flex: 0 0 auto; /* Пост не растягивается */
+  flex: 0 0 auto; 
   background-color: #fff;
   padding: 20px;
   margin-bottom: 10px;
@@ -23,54 +19,47 @@
   width: 97%;
 }
 
-/* Заголовок поста */
 .post-details .post h2 {
   font-size: 1.8rem;
   color: #050505;
   margin-bottom: 10px;
 }
 
-/* Содержание поста */
 .post-details .post p {
   font-size: 1rem;
   color: #4b4f56;
   line-height: 1.6;
 }
 
-/* Автор и дата */
 .post-details .post small {
   font-size: 0.9rem;
   color: #65676b;
 }
 
-/* Секция комментариев */
 .post-details .comments-section-postDetails {
-  flex: 1 1 auto; /* Занимает оставшееся пространство */
+  flex: 1 1 auto; 
   display: flex;
   flex-direction: column;
   margin-top: 20px;
   width: 100%;
 }
 
-/* Заголовок секции комментариев */
 .post-details .comments-section-postDetails h3 {
   font-size: 1.5rem;
   color: #050505;
   margin-bottom: 15px;
 }
 
-/* Список комментариев */
 .post-details .comments-list {
-  flex: 1 1 auto; /* Занимает оставшееся пространство */
-  overflow-y: auto; /* Включаем прокрутку по вертикали */
+  flex: 1 1 auto; 
+  overflow-y: auto; 
   background-color: #f0f2f5;
   border-radius: 8px;
   padding: 10px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px; /* Отступ до формы комментариев */
+  margin-bottom: 10px; 
 }
 
-/* Индивидуальный комментарий */
 .post-details .comment {
   padding: 10px;
   margin-bottom: 10px;
@@ -86,25 +75,9 @@
   color: #050505;
 }
 
-/* Контейнер формы комментариев */
 .post-details .comment-form-container {
-  flex: 0 0 auto; /* Форма не растягивается */
+  flex: 0 0 auto; 
   background-color: #ffffff;
   padding: 15px;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Адаптивность для мобильных устройств */
-@media (max-width: 768px) {
-  .post-details {
-    padding: 15px;
-  }
-
-  .post-details .post h2 {
-    font-size: 1.5rem;
-  }
-
-  .post-details .comments-section-postDetails h3 {
-    font-size: 1.3rem;
-  }
 }

@@ -1,30 +1,23 @@
-/* AllPosts.css */
 
-/* Контейнер всех постов */
 .all-posts {
   padding: 20px;
-  background-color: #f0f2f5; /* Светло-серый фон, похожий на Facebook */
+  background-color: #f0f2f5; 
   border-radius: 8px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   flex-grow: 1;
-  /* overflow-y: auto; */ /* Удалено */
-  /* height: calc(100vh - 80px); */ /* Удалено */
 }
 
-/* Заголовок раздела */
 .all-posts h2 {
   font-size: 1.8rem;
   color: #050505;
   margin-bottom: 20px;
 }
 
-/* Сообщение об ошибке */
 .all-posts .error {
   color: #e74c3c;
   margin-bottom: 20px;
 }
 
-/* Карточка поста */
 .all-posts .post {
   background-color: #ffffff;
   border-radius: 10px;
@@ -33,14 +26,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Заголовок поста */
 .all-posts .post h3 {
   font-size: 1.5rem;
   color: #050505;
   margin-bottom: 10px;
 }
 
-/* Содержание поста */
 .all-posts .post p {
   font-size: 1rem;
   color: #4b4f56;
@@ -48,7 +39,6 @@
   margin-bottom: 10px;
 }
 
-/* Изображение в посте */
 .all-posts .post-image {
   width: 100%;
   height: auto;
@@ -56,35 +46,32 @@
   border-radius: 8px;
 }
 
-/* Таймстамп поста */
 .all-posts .post-timestamp {
   font-size: 0.9rem;
   color: #65676b;
   margin-top: 10px;
 }
 
-/* Действия над постом (лайк, комментарии) */
 .all-posts .post-actions {
   display: flex;
   align-items: center;
   margin-top: 15px;
 }
 
-/* Лайк и счетчик лайков */
 .all-posts .post-actions .like-icon {
   cursor: pointer;
-  color: #606770; /* Темно-серый цвет для иконки */
+  color: #606770; 
   transition: color 0.3s ease;
   margin-right: 10px;
   font-size: 1.2rem;
 }
 
 .all-posts .post-actions .like-icon.liked {
-  color: #1877f2; /* Синий цвет при лайке */
+  color: #1877f2; 
 }
 
 .all-posts .post-actions .like-icon:hover {
-  color: #1877f2; /* Синий цвет при наведении */
+  color: #1877f2; 
 }
 
 .all-posts .post-actions span {
@@ -93,7 +80,6 @@
   margin-right: 20px;
 }
 
-/* Секция комментариев */
 .all-posts .comments-section {
   display: flex;
   align-items: center;
@@ -112,18 +98,3 @@
   margin-right: 5px;
 }
 
-/* Адаптивность для мобильных устройств */
-@media (max-width: 768px) {
-  .all-posts {
-    margin-top: 80px;
-    padding: 10px;
-  }
-
-  .all-posts .post {
-    padding: 15px;
-  }
-
-  .all-posts h2 {
-    font-size: 1.5rem;
-  }
-}

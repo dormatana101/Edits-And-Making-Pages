@@ -1,8 +1,7 @@
-// PostDetails.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { fetchPostById, postComment } from "../Services/postsService";
-import { fetchCommentsByPostId } from "../Services/commentsService"; // Новая служба для пагинации комментариев
+import { fetchCommentsByPostId } from "../Services/commentsService";
 import { Post } from "../types/post";
 import { Comment } from "../types/comment";
 import CommentForm from "../Components/CommentForm";
@@ -35,11 +34,11 @@ const PostDetails = () => {
 
   useEffect(() => {
     const fetchComments = async () => {
-      if (!hasMore || loading) return; // Предотвращаем повторные запросы
+      if (!hasMore || loading) return; 
       setLoading(true);
 
       try {
-        const result = await fetchCommentsByPostId(postId!, page, 10); // Загружаем 10 комментариев на страницу
+        const result = await fetchCommentsByPostId(postId!, page, 10); 
 
         setComments((prevComments) => {
           const newComments = result.data || [];
@@ -49,7 +48,7 @@ const PostDetails = () => {
           return [...prevComments, ...uniqueComments];
         });
 
-        setHasMore(Boolean(result.next)); // Проверяем, есть ли еще комментарии
+        setHasMore(Boolean(result.next)); 
       } catch (err) {
         console.error("Error loading comments", err);
       } finally {
@@ -84,7 +83,7 @@ const PostDetails = () => {
 
     try {
       const comment = await postComment(postId!, newComment);
-      setComments((prev) => [comment, ...prev]); // Добавляем новый комментарий в начало списка
+      setComments((prev) => [comment, ...prev]); 
       setNewComment("");
     } catch (err) {
       console.error("Error posting comment", err);
