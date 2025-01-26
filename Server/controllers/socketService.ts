@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { Message } from "../models/Message";
 
 const connectedUsers: Record<string, string> = {};
 
@@ -11,20 +12,32 @@ export const setupSocket = (io: Server) => {
       connectedUsers[userId] = socket.id;
     }
 
-    socket.on("sendMessage", (fromUserId: string, toUserId: string, message: string) => {
-      console.log("sendMessage from", fromUserId, "to", toUserId, "message:", message);
+    socket.on("sendMessage", async (fromUserId: string, toUserId: string, msgContent: string) => {
+      console.log("sendMessage from", fromUserId, "to", toUserId, "message:", msgContent);
       console.log("connectedUsers:", connectedUsers);
 
-      const receiverSocketId = connectedUsers[toUserId];
-      console.log("receiverSocketId:", receiverSocketId);
-
-      if (receiverSocketId) {
-        io.to(receiverSocketId).emit("receiveMessage", {
+      try {
+        const newMessage = new Message({
           from: fromUserId,
           to: toUserId,
-          content: message,
+          message: msgContent,
           timestamp: new Date(),
         });
+        await newMessage.save();
+
+        const receiverSocketId = connectedUsers[toUserId];
+        console.log("receiverSocketId:", receiverSocketId);
+
+        if (receiverSocketId) {
+          io.to(receiverSocketId).emit("receiveMessage", {
+            from: fromUserId,
+            to: toUserId,
+            content: msgContent,
+            timestamp: new Date(),
+          });
+        }
+      } catch (error) {
+        console.error("Error saving message:", error);
       }
     });
 

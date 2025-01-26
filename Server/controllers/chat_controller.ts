@@ -17,20 +17,28 @@ export const startChat = async (req: Request, res: Response, next: NextFunction)
 
 export const getMessages = async (req: Request, res: Response) => {
   const { userId, otherUserId } = req.params;
-
   try {
     const messages = await Message.find({
       $or: [
         { from: userId, to: otherUserId },
         { from: otherUserId, to: userId }
       ]
-    }).sort({ timestamp: 1 }); 
+    }).sort({ timestamp: 1 });
 
-    res.json(messages);
+
+    const transformed = messages.map(doc => ({
+      from: doc.from,
+      to: doc.to,
+      content: doc.message,
+      timestamp: doc.timestamp,
+    }));
+
+    res.json(transformed);
   } catch (error) {
     res.status(500).send("Server error");
   }
 };
+
 
 
 
