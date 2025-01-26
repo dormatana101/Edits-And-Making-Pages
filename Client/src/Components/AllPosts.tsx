@@ -52,7 +52,7 @@ const AllPosts = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll); // ניקוי אירוע
+    return () => window.removeEventListener("scroll", handleScroll); 
   }, [loading, hasMore]);
 
   return (
