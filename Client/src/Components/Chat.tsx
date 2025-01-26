@@ -1,125 +1,132 @@
-import React, { useState, useEffect } from "react";
-import { FaUser } from "react-icons/fa";
-import {sendMessage, listenForMessages, startChat,} from "../Services/SocketService";
+import React, { useEffect, useState } from "react";
+import { sendMessage, listenForMessages, startChat } from "../Services/SocketService";
 import { Message } from "../types/message";
 import { User } from "../types/user";
 import "../css/ChatPage.css";
 
 const Chat: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const currentUserId = "currentUserId";  // FIXXX!!!!!!!!!!!!!!
-  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [userMap, setUserMap] = useState<Record<string, string>>({});
+  const currentUserId = localStorage.getItem("userId") || "";
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState<string>("");
+  const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await fetch("http://localhost:3000/api/users");
-      const data: User[] = await response.json();
-      setUsers(data);
+      try {
+        const response = await fetch("http://localhost:3000/api/users");
+        const data: User[] = await response.json();
+
+        const filtered = data.filter((u) => u._id !== currentUserId);
+        setUsers(filtered);
+
+        const dict: Record<string, string> = {};
+        for (const u of data) {
+          dict[u._id] = u.username;
+        }
+        setUserMap(dict);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      }
     };
 
     fetchUsers();
 
-    listenForMessages(
-      (message: { from: string; to: string; content: string }) => {
-        const formattedMessage: Message = {
-          from: message.from,
-          to: message.to,
-          content: message.content,
-          timestamp: new Date(),
-        };
-        setMessages((prevMessages) => [...prevMessages, formattedMessage]);
-      }
-    );
+    listenForMessages((message) => {
+      setMessages((prev) => [...prev, message]);
+    });
+  }, [currentUserId]);
 
-    return () => {};
-  }, []);
-
-  const startChatHandler = (userId: string) => {
-    if (selectedUser === userId) return;
-    setSelectedUser(userId);
-    startChat("currentUserId", userId);
+  const fetchChatHistory = async (otherUserId: string) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/chat/${currentUserId}/${otherUserId}`);
+      const data = await response.json();
+      setMessages(data);
+    } catch (error) {
+      console.error("Error fetching chat history:", error);
+    }
   };
 
+  const startChatHandler = async (user: User) => {
+    if (selectedUser?._id === user._id) return;
+    setSelectedUser(user);
+
+    startChat(currentUserId, user._id);
+
+    await fetchChatHistory(user._id);
+  };
 
   const sendMessageHandler = () => {
-    if (!newMessage.trim() || !currentUserId) return;  
-    sendMessage(currentUserId, selectedUser!, newMessage);
-  
-    setMessages((prevMessages) => [
-      ...prevMessages,
+    if (!newMessage.trim() || !currentUserId || !selectedUser) return;
+
+    sendMessage(currentUserId, selectedUser._id, newMessage);
+
+    setMessages((prev) => [
+      ...prev,
       {
-        from: currentUserId, 
-        to: selectedUser!,
+        from: currentUserId,
+        to: selectedUser._id,
         content: newMessage,
         timestamp: new Date(),
       },
     ]);
-      setNewMessage("");
+    setNewMessage("");
   };
-  
 
   return (
-    <div
-      className="chat-page"
-      style={{ display: "flex", height: "100vh", flexDirection: "row-reverse" }}
-    >
-      <div className="chat-area" style={{ flex: 1, padding: "20px" }}>
-        {!selectedUser && <div>Select a user to start a chat</div>}
-        {selectedUser && (
-          <div>
-            <h3>Chat with {selectedUser}</h3>
-            <div
-              className="chat-window"
-              style={{
-                maxHeight: "60vh",
-                overflowY: "auto",
-                marginBottom: "10px",
-              }}
-            >
-              {messages.map((message: Message, index: number) => (
-                <div key={index} style={{ marginBottom: "10px" }}>
-                  <strong>{message.from}: </strong>
-                  {message.content}
-                </div>
-              ))}
-            </div>
-            <div>
-              <input
-                type="text"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                style={{ width: "80%", padding: "5px" }}
-              />
-              <button onClick={sendMessageHandler} style={{ padding: "5px" }}>
-                Send
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-      <div
-        className="chat-sidebar"
-        style={{
-          width: "20%",
-          backgroundColor: "#fff",
-          padding: "10px",
-          borderLeft: "1px solid #ddd",
-        }}
-      >
+    <div className="fb-chat-container">
+      <div className="fb-chat-sidebar">
         <h3>Users</h3>
-        <ul>
-          {users.map((user: User) => (
-            <li
-              key={user._id}
-              onClick={() => startChatHandler(user._id)}
-              style={{ cursor: "pointer", padding: "5px" }}
-            >
-              <FaUser /> {user.username}
+        <ul className="fb-chat-users-list">
+          {users.map((user) => (
+            <li key={user._id} onClick={() => startChatHandler(user)}>
+              {user.username}
             </li>
           ))}
         </ul>
+      </div>
+
+      <div className="fb-chat-main">
+        {selectedUser ? (
+          <>
+            <div className="fb-chat-header">
+              Chat with {selectedUser.username}
+            </div>
+
+            <div className="fb-chat-messages">
+              {messages.map((msg, index) => {
+                const isMyMessage = msg.from === currentUserId;
+                const fromName = userMap[msg.from] || msg.from;
+
+                return (
+                  <div
+                    key={index}
+                    className={`fb-chat-message ${isMyMessage ? "sent" : "received"}`}
+                  >
+                    <span className="fb-chat-message-sender">{fromName}:</span>
+                    {msg.content}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="fb-chat-input-area">
+              <input
+                type="text"
+                placeholder="Write a message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+              />
+              <button onClick={sendMessageHandler}>Send</button>
+            </div>
+          </>
+        ) : (
+          <div className="fb-chat-placeholder">
+            <h2>Welcome to the Chat</h2>
+            <p>Select a user on the right to start chatting!</p>
+          </div>
+        )}
       </div>
     </div>
   );

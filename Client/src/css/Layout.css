@@ -4,18 +4,13 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: #262627;
   color: #333333;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden; /* Запрещает прокрутку страницы */
 }
 
 /* Контейнер для всего контента */
 .dashboard-container {
   display: flex;
-  flex-direction: row; 
-  height: 100%;
-  overflow: hidden; /* Запрещает прокрутку внутри контейнера */
+  flex-direction: column; /* или row — см. ниже */
+  height: 100%; 
 }
 
 /* Верхний бар */
@@ -27,12 +22,12 @@ body {
   color: white;
   padding: 0px 20px;
   width: 100%;
-  box-sizing: border-box; /* Чтобы учесть padding */
-  position: fixed;
+  box-sizing: border-box;
+  position: fixed; /* фиксируем сверху */
   top: 0;
   left: 0;
   z-index: 2;
-  height: 60px; /* Устанавливаем фиксированную высоту для верхнего бара */
+  height: 60px;
 }
 
 /* Название в верхнем баре */
@@ -57,22 +52,17 @@ body {
   background-color: #d81818a1;
 }
 
-/* Боковая панель */
 .sidebar {
   position: fixed;
-  top: 60px; /* Отступ от верхнего бара */
+  top: 60px; /* под верхний бар */
   left: 0;
   width: 20%;
-  height: calc(100vh - 60px); /* Высота боковой панели с учетом верхнего бара */
+  height: calc(100vh - 60px);
   background-color: #FFFFFF;
   border-right: 1px solid #E0E0E0;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   box-sizing: border-box;
-  z-index: 1;
-  overflow-y: auto; /* Чтобы боковая панель прокручивалась, если нужно */
+  overflow-y: auto; 
 }
 
 /* Список элементов меню */
@@ -111,16 +101,15 @@ body {
   margin-right: 10px;
 }
 
-/* Основной контент */
 .main-content {
-  flex: 1;
+  margin-top: 60px;   
+  margin-left: 20%;   
   padding: 20px;
   background-color: #f0f0f0;
-  margin-left: 20%; /* Чтобы основной контент не накладывался на боковую панель */
   box-sizing: border-box;
+  min-height: calc(100vh - 60px);
 }
 
-/* Стили для активностей (если нужны) */
 .activities {
   margin-top: 20px;
 }

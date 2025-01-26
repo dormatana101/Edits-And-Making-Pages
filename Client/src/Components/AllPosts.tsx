@@ -33,7 +33,7 @@ const AllPosts = () => {
         } else {
           setError(result.message || "An error occurred while fetching posts.");
         }
-      } catch (e) {
+      } catch {
         setError("Failed to load posts. Please try again.");
       } finally {
         setLoading(false);

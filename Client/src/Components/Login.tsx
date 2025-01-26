@@ -36,6 +36,7 @@ function Login() {
     if (result.success) {
       localStorage.setItem("accessToken", result.accessToken);
       localStorage.setItem("username", result.data.username);
+      localStorage.setItem("userId", result.data._id);
 
       navigate("/all-posts");
     } else {
