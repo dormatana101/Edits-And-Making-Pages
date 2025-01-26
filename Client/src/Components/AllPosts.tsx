@@ -3,6 +3,7 @@ import { fetchPosts } from "../Services/postsService";
 import { Post } from "../types/post";
 import PostCard from "./PostCard";
 import { useLocation } from "react-router-dom";
+import "../css/AllPosts.css";
 
 const AllPosts = () => {
   const location = useLocation();
@@ -12,6 +13,7 @@ const AllPosts = () => {
   const [page, setPage] = useState<number>(1); 
   const [hasMore, setHasMore] = useState<boolean>(true); 
   const likedPosts = location.state?.likedPosts || [];
+
   useEffect(() => {
     const getPosts = async () => {
       try {

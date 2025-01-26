@@ -4,11 +4,11 @@ import { FaRegComment, FaHeart } from "react-icons/fa";
 import { Post } from "../types/post";
 import { toggleLike } from "../Services/postsService";
 import { formatDate } from "../utiles/formatDate";
-import "../css/AllPosts.css";
+import "../css/AllPosts.css"; 
 
 interface PostCardProps {
   post: Post;
-  likedPosts: string[]; // Array of liked post IDs
+  likedPosts: string[];
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
@@ -46,7 +46,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         />
         <span>{likesCount} {likesCount === 1 ? "like" : "likes"}</span>
         <Link to={`/post/${post._id}`} className="comments-section">
-          <FaRegComment /> {post.comments ? post.comments.length : 0}{" "}
+          <FaRegComment className="comment-icon" /> {post.comments ? post.comments.length : 0}{" "}
           {post.comments && post.comments.length === 1 ? "comment" : "comments"}
         </Link>
       </div>

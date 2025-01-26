@@ -1,7 +1,8 @@
+// PostDetails.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { fetchPostById, postComment } from "../Services/postsService";
-import { fetchCommentsByPostId } from "../Services/commentsService"; // New service for paginated comments
+import { fetchCommentsByPostId } from "../Services/commentsService"; // Новая служба для пагинации комментариев
 import { Post } from "../types/post";
 import { Comment } from "../types/comment";
 import CommentForm from "../Components/CommentForm";
@@ -17,6 +18,7 @@ const PostDetails = () => {
   const [hasMore, setHasMore] = useState<boolean>(true);
 
   const observer = useRef<IntersectionObserver | null>(null);
+  const lastCommentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const getPost = async () => {
@@ -33,46 +35,44 @@ const PostDetails = () => {
 
   useEffect(() => {
     const fetchComments = async () => {
-      if (!hasMore || loading) return; // Prevent fetching if already loading or no more comments
+      if (!hasMore || loading) return; // Предотвращаем повторные запросы
       setLoading(true);
-  
+
       try {
-        const result = await fetchCommentsByPostId(postId!, page, 5); // Fetch 5 comments per page
-  
+        const result = await fetchCommentsByPostId(postId!, page, 10); // Загружаем 10 комментариев на страницу
+
         setComments((prevComments) => {
           const newComments = result.data || [];
           const uniqueComments = newComments.filter(
-            (comment) => !prevComments.some((prev) => prev._id === comment._id) // Avoid duplicates
+            (comment) => !prevComments.some((prev) => prev._id === comment._id)
           );
           return [...prevComments, ...uniqueComments];
         });
-  
-        setHasMore(Boolean(result.next)); // Check if there are more comments
+
+        setHasMore(Boolean(result.next)); // Проверяем, есть ли еще комментарии
       } catch (err) {
         console.error("Error loading comments", err);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchComments();
-  }, [page, postId]); 
-  
-  const lastCommentRef = useRef<HTMLDivElement | null>(null);
+  }, [page, postId, hasMore, loading]);
 
   useEffect(() => {
     if (observer.current) observer.current.disconnect();
-  
+
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && hasMore && !loading) {
-        setPage((prevPage) => prevPage + 1); // Increment page only once
+        setPage((prevPage) => prevPage + 1);
       }
     });
-  
+
     if (lastCommentRef.current) {
       observer.current.observe(lastCommentRef.current);
     }
-  
+
     return () => {
       if (observer.current) observer.current.disconnect();
     };
@@ -84,7 +84,7 @@ const PostDetails = () => {
 
     try {
       const comment = await postComment(postId!, newComment);
-      setComments((prev) => [...prev,comment]);
+      setComments((prev) => [comment, ...prev]); // Добавляем новый комментарий в начало списка
       setNewComment("");
     } catch (err) {
       console.error("Error posting comment", err);
@@ -100,10 +100,12 @@ const PostDetails = () => {
       <div className="post">
         <h2>{post.title}</h2>
         <p>{post.content}</p>
+        {post.image && <img src={post.image} alt="Post" className="post-image" />}
         <small>By: {post.author}</small>
-        <p>{post.createdAt ? new Date(post.createdAt).toLocaleString() : "Unknown date"}</p>
+        <p className="post-timestamp">{new Date(post.createdAt).toLocaleString()}</p>
+      </div>
 
-        <div className="comments-section-postDetails">
+      <div className="comments-section-postDetails">
         <h3>Comments</h3>
         <div className="comments-list">
           {comments.map((comment, index) => (
@@ -117,9 +119,9 @@ const PostDetails = () => {
               </p>
             </div>
           ))}
+          {loading && <p>Loading more comments...</p>}
+          {!hasMore && <p>No more comments available.</p>}
         </div>
-        {loading && <p>Loading more comments...</p>}
-        {!hasMore && <p>No more comments available.</p>}
         <div className="comment-form-container">
           <CommentForm
             newComment={newComment}
@@ -127,8 +129,6 @@ const PostDetails = () => {
             onSubmit={handleCommentSubmit}
           />
         </div>
-      </div>
-
       </div>
     </div>
   );
