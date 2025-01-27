@@ -267,7 +267,9 @@ const googleCallback = async (req: Request, res: Response) => {
           maxAge: 7 * 24 * 60 * 60 * 1000 
       });
 
-      res.redirect(`http://localhost:5173/oauth/callback?token=${tokens.accessToken}`);
+      res.redirect(`http://localhost:5173/oauth/callback?token=${tokens.accessToken}&userId=${user._id}&username=${encodeURIComponent(user.username)}`);
+
+
   } catch (err) {
       console.error('Error googleCallback:', err);
       res.status(500).json({ message: 'Error' });
