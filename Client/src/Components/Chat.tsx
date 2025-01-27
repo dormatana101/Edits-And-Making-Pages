@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { sendMessage, listenForMessages, startChat } from "../Services/SocketService";
+import React, { useEffect, useState} from "react";
+import { createSocket, sendMessage, listenForMessages, startChat, disconnectSocket } from "../Services/SocketService";
 import { Message } from "../types/message";
 import { User } from "../types/user";
 import "../css/ChatPage.css";
+import { Socket } from "socket.io-client";
 
 const Chat: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -11,6 +12,7 @@ const Chat: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -33,9 +35,17 @@ const Chat: React.FC = () => {
 
     fetchUsers();
 
-    listenForMessages((message) => {
+    const newSocket = createSocket(currentUserId);
+    setSocket(newSocket);
+
+    const cleanup = listenForMessages(newSocket, (message) => {
       setMessages((prev) => [...prev, message]);
     });
+
+    return () => {
+      cleanup();
+      disconnectSocket(newSocket);
+    };
   }, [currentUserId]);
 
   const fetchChatHistory = async (otherUserId: string) => {
@@ -52,15 +62,17 @@ const Chat: React.FC = () => {
     if (selectedUser?._id === user._id) return;
     setSelectedUser(user);
 
-    startChat(currentUserId, user._id);
+    if (socket) {
+      startChat(socket, currentUserId, user._id);
+    }
 
     await fetchChatHistory(user._id);
   };
 
   const sendMessageHandler = () => {
-    if (!newMessage.trim() || !currentUserId || !selectedUser) return;
+    if (!newMessage.trim() || !currentUserId || !selectedUser || !socket) return;
 
-    sendMessage(currentUserId, selectedUser._id, newMessage);
+    sendMessage(socket, currentUserId, selectedUser._id, newMessage);
 
     setMessages((prev) => [
       ...prev,
