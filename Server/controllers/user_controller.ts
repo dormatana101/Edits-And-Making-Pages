@@ -16,7 +16,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 export const getUserProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     // שליפת המשתמש לפי userId מתוך req.userId
-    const userId = req.userId;
+    const userId =  req.query.userId;
     if (!userId) {
       res.status(400).json({ message: "User ID not provided." });
       return; // עצירה אם אין userId
@@ -29,7 +29,7 @@ export const getUserProfile = async (req: Request, res: Response): Promise<void>
     }
 
     // שליפת הפוסטים של המשתמש
-    const posts = await postModel.find({ user: user._id }); // הפוסטים מקושרים למשתמש לפי userId
+    const posts = await postModel.find({ author: user.username }); // הפוסטים מקושרים למשתמש לפי userId
 
     // החזרת המידע של המשתמש והפוסטים
     res.status(200).json({

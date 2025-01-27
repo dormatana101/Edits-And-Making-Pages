@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   password: {
     type: String,
-    required: true,
+    required: false,
   },
   // roy
   profilePicture: { type: String, default: '' },

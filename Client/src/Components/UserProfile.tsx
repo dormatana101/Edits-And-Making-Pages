@@ -5,9 +5,11 @@ import axios from 'axios';
 const UserProfile = () => {
   const [userData, setUserData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-
+  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<any[]>([]);
   useEffect(() => {
     const fetchUserData = async () => {
+      console.log('fetchUserData');
       const token = localStorage.getItem('accessToken');
       if (!token) {
         setError('לא נמצאו טוקנים');
@@ -16,9 +18,11 @@ const UserProfile = () => {
 
       try {
         const response = await axios.get('http://localhost:3000/api/users/profile', {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
+          params: { userId: localStorage.getItem('userId') },
         });
         setUserData(response.data);
+        setPosts(response.data.posts);
       } catch (error) {
         setError('שגיאה בהבאת פרטי המשתמש');
       }
