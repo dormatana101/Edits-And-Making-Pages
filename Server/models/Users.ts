@@ -1,9 +1,12 @@
+
 import mongoose from "mongoose";
 export interface IUser {
   username: string;
   email: string;
-  password?: string;
+  password: string;
   _id?: string;
+  profilePicture: string; 
+  posts: mongoose.Types.ObjectId[];
   refreshToken?: string[];
   likedPosts?: mongoose.Schema.Types.ObjectId[]; 
   googleId?: string;
@@ -22,8 +25,12 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   password: {
     type: String,
-    required: false,
+    required: true,
   },
+  // roy
+  profilePicture: { type: String, default: '' },
+  posts: [{ type: mongoose.Types.ObjectId, ref: 'Post' }] ,
+  //  
   refreshToken: {
     type: [String],
     default: [],
@@ -34,7 +41,7 @@ const userSchema = new mongoose.Schema<IUser>({
         ref: "Post",
       },
     ],
-    googleId: { 
+	googleId: { 
       type: String,
       unique: true,
       sparse: true,
