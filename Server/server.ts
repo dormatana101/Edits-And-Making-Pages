@@ -15,15 +15,24 @@ import userRoutes from "./routes/user_route";
 import passport from 'passport'; 
 import path from 'path'; 
 import './config/passport'; 
+import cors from "cors";
 
 const app = express();
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*");
-  res.header("Access-Control-Allow-Methods", "*");
-  next();
-});
+
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "*");
+//   res.header("Access-Control-Allow-Methods", "*");
+//   next();
+// });
+
+app.use(cors({
+  origin: "http://localhost:5173", // כתובת הפרונטאנד
+  methods: ["GET", "POST", "PUT", "DELETE"], // סוגי הבקשות המותרים
+  credentials: true, // מאפשר שימוש ב-Cookies
+}));
+
 app.use(bodyParser.json());
 
 const swaggerOptions = {
