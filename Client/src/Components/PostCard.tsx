@@ -13,13 +13,17 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const [likesCount, setLikesCount] = useState<number>(post.likesCount || 0);
-  const [isLiked, setIsLiked] = useState<boolean>(post.isLiked || false); 
+  const [isLiked, setIsLiked] = useState<boolean>(post.isLiked || false);
+  const [loading, setLoading] = useState<boolean>(false); 
+ 
 
   useEffect(() => {
     setIsLiked(post.isLiked || false); 
   }, [post.isLiked]);
 
   const handleLikeClick = async () => {
+    if (loading) return; 
+    setLoading(true); 
     try {
       const response = await toggleLike(post._id);
       if (response.success) {
@@ -28,6 +32,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       }
     } catch (error) {
       console.error("An error occurred while toggling like:", error);
+    } finally {
+      setLoading(false);
     }
   };
 

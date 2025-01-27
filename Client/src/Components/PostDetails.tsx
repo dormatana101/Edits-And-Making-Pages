@@ -6,6 +6,7 @@ import { Post } from "../types/post";
 import { Comment } from "../types/comment";
 import CommentForm from "../Components/CommentForm";
 import "../css/PostDetails.css";
+import { set } from "mongoose";
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -82,15 +83,18 @@ const PostDetails = () => {
   }, [hasMore, loading]);
 
   const handleCommentSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!newComment) return;
-
+    event.preventDefault(); 
+    if (loading || !newComment.trim()) return;
+  
+    setLoading(true); 
     try {
-      const comment = await postComment(postId!, newComment);
+      const comment = await postComment(postId!, newComment.trim()); 
       setComments((prev) => [comment, ...prev]);
-      setNewComment("");
+      setNewComment(""); 
     } catch (err) {
       console.error("Error posting comment", err);
+    } finally {
+      setLoading(false); 
     }
   };
 

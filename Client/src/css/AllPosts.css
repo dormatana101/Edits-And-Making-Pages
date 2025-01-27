@@ -17,6 +17,15 @@
   color: #e74c3c;
   margin-bottom: 20px;
 }
+.post p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
+  word-wrap: break-word; 
+  word-break: break-word;
+  overflow-wrap: break-word; 
+  margin-bottom: 10px;
+}
 
 .all-posts .post {
   background-color: #ffffff;
@@ -30,6 +39,9 @@
   font-size: 1.5rem;
   color: #050505;
   margin-bottom: 10px;
+  word-wrap: break-word; /* Ensures long titles wrap */
+  word-break: break-word; /* Breaks long words */
+  overflow-wrap: break-word; /* For better browser support */
 }
 
 .all-posts .post p {
