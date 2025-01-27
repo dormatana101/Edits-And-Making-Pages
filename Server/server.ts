@@ -12,6 +12,9 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 import chatRoutes from "./routes/chat_route";
 import userRoutes from "./routes/user_route";
+import passport from 'passport'; 
+import path from 'path'; 
+import './config/passport'; 
 
 const app = express();
 

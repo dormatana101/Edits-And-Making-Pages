@@ -2,10 +2,11 @@ import mongoose from "mongoose";
 export interface IUser {
   username: string;
   email: string;
-  password: string;
+  password?: string;
   _id?: string;
   refreshToken?: string[];
   likedPosts?: mongoose.Schema.Types.ObjectId[]; 
+  googleId?: string;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -21,7 +22,7 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   password: {
     type: String,
-    required: true,
+    required: false,
   },
   refreshToken: {
     type: [String],
@@ -33,6 +34,11 @@ const userSchema = new mongoose.Schema<IUser>({
         ref: "Post",
       },
     ],
+    googleId: { 
+      type: String,
+      unique: true,
+      sparse: true,
+    },
 });
 
 const userModel = mongoose.model<IUser>("Users", userSchema);

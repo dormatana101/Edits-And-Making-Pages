@@ -7,6 +7,10 @@ import PrivateRoute from "./PrivateRoute";
 import Layout from "./Layout"; 
 import AllPosts from "./AllPosts";
 import PostDetails from "./PostDetails"; 
+import OAuthCallback from "./OAuthCallback"; 
+
+
+
 
 function App() {
   return (
@@ -14,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/oauth/callback" element={<OAuthCallback />} /> 
         <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
           <Route path="/chat" element={<Chat />} />
           <Route path="all-posts" element={<AllPosts />} />

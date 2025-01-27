@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router();
 import authController from "../controllers/auth_controller";
 import { authMiddleware } from "../controllers/auth_controller";
+import passport from "passport";
 
 //router.post("/logout", authController.logout);
 
@@ -119,5 +120,35 @@ router.get("/protected-route", authMiddleware, (req, res) => {
  *         description: Server error
  */
 router.post("/refresh", authController.refresh);
+
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     summary: Initiate Google OAuth login
+ *     tags: [Auth]
+ *     responses:
+ *       302:
+ *         description: Redirects to Google OAuth consent screen
+ */
+router.get("/google", passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+/**
+ * @swagger
+ * /auth/google/callback:
+ *   get:
+ *     summary: Google OAuth callback URL
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated via Google
+ *       400:
+ *         description: Bad request or authentication failed
+ */
+router.get("/google/callback", 
+  passport.authenticate('google', { session: false, failureRedirect: '/auth/login' }),
+  authController.googleCallback 
+);
+
 
 export default router;
