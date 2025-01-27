@@ -26,7 +26,6 @@ const ChatGPTPage: React.FC = () => {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    // Add user's message to the chat
     setMessages((prev) => [...prev, { sender: "user", content: input }]);
     const userMessage = input;
     setInput("");
@@ -38,12 +37,11 @@ const ChatGPTPage: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // Add Authorization header if required
-          // "Authorization": `Bearer ${token}`,
+
         },
         body: JSON.stringify({
           message: userMessage,
-          store: false, // Set to true if you want to store chat history
+          store: false, 
         }),
       });
 
@@ -65,7 +63,6 @@ const ChatGPTPage: React.FC = () => {
       const data = await response.json();
       const gptMessage = data.message;
 
-      // Add GPT's response to the chat
       setMessages((prev) => [...prev, { sender: "gpt", content: gptMessage }]);
     } catch (error: unknown) {
       console.error("Error communicating with ChatGPT:", error);
