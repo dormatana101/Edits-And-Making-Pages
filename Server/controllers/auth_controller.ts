@@ -3,6 +3,8 @@ import userModel, { IUser } from '../models/Users';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Document } from 'mongoose';
+import passport from 'passport';
+
 type tTokens = {
     accessToken: string,
     refreshToken: string
@@ -86,7 +88,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
         return;
       }
 
-      const validPassword = await bcrypt.compare(password, user.password);
+      const validPassword = user.password ? await bcrypt.compare(password, user.password) : false;
       if (!validPassword) {
         res.status(400).json({ message: 'Wrong email or password' });
         return;
@@ -235,10 +237,52 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     });
 };
 
+// auth_controller.ts
+
+const googleCallback = async (req: Request, res: Response) => {
+  try {
+      const user = req.user as IUser & Document;
+
+      if (!user._id) {
+          res.status(500).json({ message: 'User ID is undefined' });
+          return;
+      }
+
+      const tokens = generateToken(user._id);
+      if (!tokens) {
+          res.status(500).json({ message: 'No token' });
+          return;
+      }
+
+      if (!user.refreshToken) {
+          user.refreshToken = [];
+      }
+      user.refreshToken.push(tokens.refreshToken);
+      await user.save();
+
+      res.cookie('refreshToken', tokens.refreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production', 
+          sameSite: 'strict',
+          maxAge: 7 * 24 * 60 * 60 * 1000 
+      });
+
+      res.redirect(`http://localhost:5173/oauth/callback?token=${tokens.accessToken}&userId=${user._id}&username=${encodeURIComponent(user.username)}`);
+
+
+  } catch (err) {
+      console.error('Error googleCallback:', err);
+      res.status(500).json({ message: 'Error' });
+  }
+};
+
+
+
 export default {
     register,
     login,
     refresh,
-    authMiddleware
+    authMiddleware,
+    googleCallback
    // logout
 };

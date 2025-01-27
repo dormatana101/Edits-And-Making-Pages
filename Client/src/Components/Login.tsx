@@ -50,6 +50,10 @@ function Login() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:3000/auth/google"; 
+  };
+
   return (
     <div className="login-page">
       <div className="container-login">
@@ -86,7 +90,7 @@ function Login() {
                 Don't have an account? <Link to="/register">Register here</Link>
               </p>
               <p>or Sign in with</p>
-              <button className="google-login">
+              <button className="google-login" onClick={handleGoogleLogin}>
                 <FcGoogle className="google-icon" />
                 Google
               </button>
