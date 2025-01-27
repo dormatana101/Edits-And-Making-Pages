@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { FaUser, FaClipboard, FaPlus, FaComments } from "react-icons/fa";
+import { FaUser, FaClipboard, FaPlus, FaComments, FaRobot } from "react-icons/fa";
 import "../css/Layout.css";
 
 const Layout: React.FC = () => {
@@ -41,6 +41,11 @@ const Layout: React.FC = () => {
           <li>
             <Link to="/create-post" className="sidebar-link">
               <FaPlus className="icon" /> Create Posts
+            </Link>
+          </li>
+          <li>
+            <Link to="/chatgpt" className="sidebar-link"> 
+              <FaRobot className="icon" /> ChatGPT
             </Link>
           </li>
         </ul>

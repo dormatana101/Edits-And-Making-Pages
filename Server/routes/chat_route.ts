@@ -3,7 +3,7 @@ import { startChat, getMessages } from "../controllers/chat_controller";
 
 const router = Router();
 
-router.post("/chat/start", startChat);
-router.get("/chat/:userId/:otherUserId", getMessages);
+router.post("/start", startChat);
+router.get("/:userId/:otherUserId", getMessages);
 
 export default router;
