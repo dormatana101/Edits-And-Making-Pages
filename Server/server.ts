@@ -12,8 +12,7 @@ import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 import chatRoutes from "./routes/chat_route";
 import userRoutes from "./routes/user_route";
-import passport from 'passport'; 
-import path from 'path'; 
+import chatgptRoutes from "./routes/chatgpt_route"; 
 import './config/passport'; 
 
 const app = express();
@@ -44,8 +43,10 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/auth", authRoutes);
 app.use("/posts", postsRoutes);
 app.use("/comments", commentsRoutes);
-app.use("/api", chatRoutes);
+app.use("/api/chat", chatRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api", chatgptRoutes); 
+
 
 const server = http.createServer(app);
 const io = new socketIo.Server(server, {

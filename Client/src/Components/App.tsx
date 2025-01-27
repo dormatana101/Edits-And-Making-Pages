@@ -8,6 +8,7 @@ import Layout from "./Layout";
 import AllPosts from "./AllPosts";
 import PostDetails from "./PostDetails"; 
 import OAuthCallback from "./OAuthCallback"; 
+import ChatGPTPage from "./ChatGPTPage";
 
 
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="all-posts" element={<AllPosts />} />
           <Route path="create-post" element={<CreatePost />} />
           <Route path="post/:postId" element={<PostDetails />} /> 
+          <Route path="chatgpt" element={<ChatGPTPage />} /> 
         </Route>
       </Routes>
     </Router>
