@@ -1,14 +1,17 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import "../css/CommentForm.css"; 
+import { generateSuggestedComment } from "../Services/commentsService"; // Импортируем функцию API
 
 interface CommentFormProps {
   newComment: string;
   setNewComment: React.Dispatch<React.SetStateAction<string>>;
   onSubmit: (event: React.FormEvent) => void;
+  postId: string; // Передаём postId как пропс
 }
 
-const CommentForm: React.FC<CommentFormProps> = ({ newComment, setNewComment, onSubmit }) => {
+const CommentForm: React.FC<CommentFormProps> = ({ newComment, setNewComment, onSubmit, postId }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false); // Состояние для индикатора генерации
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewComment(e.target.value);
@@ -25,6 +28,19 @@ const CommentForm: React.FC<CommentFormProps> = ({ newComment, setNewComment, on
     }
   }, []);
 
+  const handleGenerateComment = async () => {
+    try {
+      setIsGenerating(true);
+      const suggestedComment = await generateSuggestedComment(postId);
+      setNewComment(suggestedComment);
+    } catch (error: unknown) {
+      console.error("Error generating suggested comment:", error);
+      alert("Failed to generate comment. Please try again later.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <form onSubmit={onSubmit} className="comment-form">
       <textarea
@@ -35,7 +51,23 @@ const CommentForm: React.FC<CommentFormProps> = ({ newComment, setNewComment, on
         required
         className="auto-resize"
       ></textarea>
-      <button type="submit">Post Comment</button>
+      <div className="comment-form-buttons">
+        <button
+          type="button"
+          className="generate-comment-button"
+          onClick={handleGenerateComment}
+          disabled={isGenerating}
+        >
+          {isGenerating ? "Generating..." : "Generate Comment"}
+        </button>
+        <button
+          type="submit"
+          className="post-comment-button"
+          disabled={isGenerating}
+        >
+          Post Comment
+        </button>
+      </div>
     </form>
   );
 };

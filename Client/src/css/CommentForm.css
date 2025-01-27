@@ -1,62 +1,79 @@
-
 .comment-form {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.comment-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccd0d5;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: none; 
+  box-sizing: border-box;
+  background-color: #ffffff;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  min-height: 50px; 
+  overflow: hidden;
+}
+
+.comment-form textarea:focus {
+  outline: none;
+  border-color: #1877f2; 
+  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+}
+
+.comment-form .comment-form-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.comment-form .generate-comment-button {
+  padding: 8px 16px;
+  background-color: #1877f2; 
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+  align-self: flex-end;
+  width: 25%;
   
-  .comment-form textarea {
-    width: 100%;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccd0d5;
-    font-size: 1rem;
-    font-family: inherit;
-    resize: none; 
-    box-sizing: border-box;
-    background-color: #ffffff;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    min-height: 50px; 
-    overflow: hidden;
-  }
-  
-  .comment-form textarea:focus {
-    outline: none;
-    border-color: #1877f2; 
-    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
-  }
-  
-  .comment-form button {
-    padding: 8px 16px;
-    background-color: #1877f2; 
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s;
-    align-self: flex-end;
-  }
-  
-  .comment-form button:hover {
-    background-color: #1558b0;
-  }
-  
-  .comment-form textarea.auto-resize {
-    overflow: hidden;
-  }
-  
-  @media (max-width: 768px) {
-    .comment-form textarea {
-      padding: 8px 10px;
-      font-size: 0.9rem;
-      min-height: 40px;
-    }
-  
-    .comment-form button {
-      padding: 6px 12px;
-      font-size: 0.8rem;
-    }
-  }
-  
+}
+
+.comment-form .generate-comment-button:hover {
+  background-color: #1558b0;
+}
+
+.comment-form .generate-comment-button:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+.comment-form .post-comment-button {
+  padding: 8px 16px;
+  background-color: #28a745; 
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.comment-form .post-comment-button:hover {
+  background-color: #218838;
+}
+
+.comment-form .post-comment-button:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+
+.comment-form textarea.auto-resize {
+  overflow: hidden;
+}

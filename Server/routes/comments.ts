@@ -2,8 +2,7 @@ import express from "express";
 const router = express.Router();
 import comments from "../controllers/comments_controller";
 import { authMiddleware } from "../controllers/auth_controller";
-import { paginatedResults , PaginatedResults  } from '../Middlewares/Paging';
-import  CommentModel  from '../models/Comment';
+import { paginatedResults  } from '../Middlewares/Paging';
 import commentModel from "../models/Comment";
 
 /**
@@ -231,5 +230,9 @@ router.get(
     });
   }
 );
+
+router.post("/generate", authMiddleware, (req, res) => {
+  comments.generateSuggestedComment(req, res);
+});
 
 export default router;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { fetchPostById, postComment } from "../Services/postsService";
-import { fetchCommentsByPostId } from "../Services/commentsService"; // New service for paginated comments
+import { fetchCommentsByPostId } from "../Services/commentsService"; 
 import { Post } from "../types/post";
 import { Comment } from "../types/comment";
 import CommentForm from "../Components/CommentForm";
@@ -19,7 +19,6 @@ const PostDetails = () => {
 
   const observer = useRef<IntersectionObserver | null>(null);
 
-  // Fetch post details
   useEffect(() => {
     const getPost = async () => {
       try {
@@ -33,24 +32,23 @@ const PostDetails = () => {
     getPost();
   }, [postId]);
 
-  // Fetch paginated comments
   useEffect(() => {
     const fetchComments = async () => {
-      if (!hasMore || loading) return; // Prevent fetching if already loading or no more comments
+      if (!hasMore || loading) return; 
       setLoading(true);
   
       try {
-        const result = await fetchCommentsByPostId(postId!, page, 5); // Fetch 5 comments per page
+        const result = await fetchCommentsByPostId(postId!, page, 10); 
   
         setComments((prevComments) => {
           const newComments = result.data || [];
           const uniqueComments = newComments.filter(
-            (comment) => !prevComments.some((prev) => prev._id === comment._id) // Avoid duplicates
+            (comment) => !prevComments.some((prev) => prev._id === comment._id) 
           );
           return [...prevComments, ...uniqueComments];
         });
   
-        setHasMore(Boolean(result.next)); // Check if there are more comments
+        setHasMore(Boolean(result.next));
       } catch (err) {
         console.error("Error loading comments", err);
       } finally {
@@ -69,7 +67,7 @@ const PostDetails = () => {
 
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && hasMore && !loading) {
-        setPage((prevPage) => prevPage + 1); // Load the next page
+        setPage((prevPage) => prevPage + 1); 
       }
     });
 
@@ -125,7 +123,12 @@ const PostDetails = () => {
               </div>
             ))}
           </div>
-          <CommentForm newComment={newComment} setNewComment={setNewComment} onSubmit={handleCommentSubmit} />
+          <CommentForm 
+            newComment={newComment} 
+            setNewComment={setNewComment} 
+            onSubmit={handleCommentSubmit} 
+            postId={postId!} 
+          />
         </div>
       </div>
     </div>

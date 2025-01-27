@@ -3,10 +3,10 @@ import { Comment } from "../types/comment";
 
 export interface PaginatedApiResponse<T> {
     success: boolean;
-    data?: T[]; // Generic type for data
-    next?: { page: number; limit: number }; // Information for the next page
-    previous?: { page: number; limit: number }; // Information for the previous page
-    message?: string; // Error or status message
+    data?: T[]; 
+    next?: { page: number; limit: number }; 
+    previous?: { page: number; limit: number }; 
+    message?: string; 
   }
   
   export const fetchCommentsByPostId = async (
@@ -20,7 +20,7 @@ export interface PaginatedApiResponse<T> {
       );
       return {
         ...response.data,
-        data: response.data?.results || [], // Ensure data is always an array
+        data: response.data?.results || [], 
       };
     } catch (error) {
       console.error("Error fetching comments:", error);
@@ -28,3 +28,28 @@ export interface PaginatedApiResponse<T> {
     }
   };
   
+  export const generateSuggestedComment = async (
+    postId: string
+  ): Promise<string> => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/comments/generate",
+        { postId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
+          },
+        }
+      );
+  
+      return response.data.suggestedComment;
+    } catch (error: unknown) {
+      console.error("Error generating suggested comment:", error);
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || "Failed to generate comment.");
+      } else {
+        throw new Error("Failed to generate comment.");
+      }
+    }
+  };

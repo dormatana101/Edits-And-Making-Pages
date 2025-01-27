@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import CommentModel from "../models/Comment";
 import PostModel from "../models/Post";
+import fetch from "node-fetch";
 
 //get all comments
 
@@ -144,6 +145,58 @@ const deleteComment = async (req: Request, res: Response) => {
   }
 };
 
+// get comment by generating suggested comment by OpenAI
+const generateSuggestedComment = async (req: Request, res: Response) => {
+  try {
+    const { postId } = req.body;
+
+    if (!postId) {
+      return res.status(400).json({ message: "postId is a required parameter" });
+    }
+
+    const post = await PostModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const { title, content } = post;
+
+    const prompt = `Title: "${title}"\nContent: "${content}"\n\nWrite a recommended comment for this post.`;
+
+    const openAIResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo", 
+        messages: [
+          { role: "system", content: "You are a helpful assistant." },
+          { role: "user", content: prompt },
+        ],
+        max_tokens: 100, 
+        temperature: 0.7, 
+      }),
+    });
+
+    if (!openAIResponse.ok) {
+      const errorData = await openAIResponse.json();
+      console.error("OpenAI API Error:", errorData);
+      return res.status(openAIResponse.status).json({ message: "Error generating comment", error: errorData });
+    }
+
+    const data = await openAIResponse.json() as { choices: { message: { content: string } }[] };
+    const suggestedComment = data.choices[0].message.content.trim();
+
+    res.status(200).json({ suggestedComment });
+  } catch (error: any) {
+    console.error("Error generating comment:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 export default {
   getAll,
   createComment,
@@ -151,4 +204,5 @@ export default {
   getCommentById,
   updateComment,
   deleteComment,
+  generateSuggestedComment, 
 };
