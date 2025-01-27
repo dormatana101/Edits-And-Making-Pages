@@ -1,14 +1,14 @@
-import { io, Socket } from "socket.io-client";
+import socketIo, { Socket } from "socket.io-client";
 
-export const createSocket = (userId: string): Socket => {
-  return io("http://localhost:3000", {
+export const createSocket = (userId: string): typeof Socket => {
+  return socketIo("http://localhost:3000", {
     query: { userId },
     transports: ["websocket"],
   });
 };
 
 export const sendMessage = (
-  socket: Socket,
+  socket: typeof Socket,
   fromUserId: string,
   toUserId: string,
   message: string
@@ -17,7 +17,7 @@ export const sendMessage = (
 };
 
 export const listenForMessages = (
-  socket: Socket,
+  socket: typeof Socket,
   callback: (message: {
     from: string;
     to: string;
@@ -33,13 +33,13 @@ export const listenForMessages = (
 };
 
 export const startChat = (
-  socket: Socket,
+  socket: typeof Socket,
   fromUserId: string,
   toUserId: string
 ) => {
   socket.emit("startChat", fromUserId, toUserId);
 };
 
-export const disconnectSocket = (socket: Socket) => {
+export const disconnectSocket = (socket: typeof Socket) => {
   socket.disconnect();
 };
