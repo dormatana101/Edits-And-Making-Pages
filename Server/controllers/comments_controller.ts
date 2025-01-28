@@ -159,9 +159,10 @@ const generateSuggestedComment = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    const { title, content } = post;
+    
+    const { title, content, author } = post;
 
-    const prompt = `Title: "${title}"\nContent: "${content}"\n\nWrite a recommended comment for this post.`;
+    const prompt = `Title: "${title}"\nContent: "${content}"\n Auther: "${author}"\n\nWrite a recommended comment for this post.`;
 
     const openAIResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",

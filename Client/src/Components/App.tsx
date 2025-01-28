@@ -9,6 +9,7 @@ import AllPosts from "./AllPosts";
 import PostDetails from "./PostDetails"; 
 import OAuthCallback from "./OAuthCallback"; 
 import ChatGPTPage from "./ChatGPTPage";
+import UserProfile from "./UserProfile";
 
 
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/oauth/callback" element={<OAuthCallback />} /> 
         <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
+        <Route path="/profile" element={<UserProfile />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="all-posts" element={<AllPosts />} />
           <Route path="create-post" element={<CreatePost />} />
