@@ -27,7 +27,6 @@ const UserProfile = () => {
       setUserData(response.data);
       setFormData({
         username: response.data.user.username,
-        email: response.data.user.email,
         profilePicture: response.data.user.profilePicture,
       });
     } catch (error) {
@@ -62,32 +61,26 @@ const UserProfile = () => {
       setError('No token found');
       return;
     }
-
+  
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('username', formData.username);
-      formDataToSend.append('email', formData.email);
-
-      if (selectedFile) {
-        formDataToSend.append('profilePicture', selectedFile);
-      }
-
-      const response = await axios.put(
+      await axios.put(
         'http://localhost:3000/api/users/profile',
-        formDataToSend,
+        { username: formData.username },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data', // חשוב להגדיר סוג זה!
-          },
+          headers: { Authorization: `Bearer ${token}` },
           params: { userId: localStorage.getItem('userId') },
         }
       );
-
-      await fetchUserData(); // קריאה מחודשת לנתונים
-      setEditable(false);
-    } catch (error) {
-      setError('Error updating user data');
+  
+      await fetchUserData();
+      setEditable(false); 
+  
+    } catch (error: any) {
+      if (error.response && error.response.status === 409) {
+        setError('Username is already taken.');
+      } else {
+        setError('Error updating user data');
+      }
     }
   };
 
