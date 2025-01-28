@@ -1,7 +1,9 @@
 import socketIo, { Socket } from "socket.io-client";
+import SERVER_URL from "../config"; 
+
 
 export const createSocket = (userId: string): typeof Socket => {
-  return socketIo("http://localhost:3000", {
+  return socketIo(`${SERVER_URL}`, {
     query: { userId },
     transports: ["websocket"],
   });

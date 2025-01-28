@@ -3,6 +3,9 @@ import userModel from "../models/Users";
 import postModel from "../models/Post";
 import multer from "multer";
 
+const SERVER_CONNECT = process.env.SERVER_CONNECT;
+
+
 // הגדרת שמירת קבצים ב-Multer (אם יש תמונה להעלות)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -80,7 +83,7 @@ export const updateUserProfile = async (req: Request, res: Response): Promise<vo
     user.username = username;
 
     if (profilePicture) {
-      user.profilePicture = `http://localhost:3000${profilePicture}`; // עדכון תמונה עם URL המלא
+      user.profilePicture = `${SERVER_CONNECT}${profilePicture}`; // עדכון תמונה עם URL המלא
     }
 
     await user.save();

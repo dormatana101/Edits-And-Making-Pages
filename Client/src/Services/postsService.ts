@@ -1,12 +1,14 @@
 import axios from 'axios';
+import SERVER_URL from "../config"; 
+
 const userId = localStorage.getItem("userId");
-// Function to fetch all posts
+
 export interface PaginatedApiResponse<T> {
   success: boolean;
-  data?: T[]; // Generic type for data
-  next?: { page: number; limit: number }; // Information for the next page
-  previous?: { page: number; limit: number }; // Information for the previous page
-  message?: string; // Error or status message
+  data?: T[]; 
+  next?: { page: number; limit: number }; 
+  previous?: { page: number; limit: number }; 
+  message?: string; 
 }
 
 export const fetchPosts = async <T>(
@@ -14,7 +16,7 @@ export const fetchPosts = async <T>(
   limit: number,
 ): Promise<PaginatedApiResponse<T>> => {
   try {
-    const response = await axios.get(`http://localhost:3000/posts`, {
+    const response = await axios.get(`${SERVER_URL}/posts`, {
       params: {
         page,
         limit,
@@ -48,7 +50,7 @@ export const fetchPosts = async <T>(
 // Fetch post by ID
 export const fetchPostById = async (id: string) => {
   try {
-    const response = await axios.get(`http://localhost:3000/posts/${id}`, {
+    const response = await axios.get(`${SERVER_URL}/posts/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -64,7 +66,7 @@ export const fetchPostById = async (id: string) => {
 // Fetch comments by Post ID
 export const fetchCommentsByPostId = async (postId: string) => {
   try {
-    const response = await axios.get(`http://localhost:3000/comments/post/${postId}`);
+    const response = await axios.get(`${SERVER_URL}/comments/post/${postId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching comments:', error);
@@ -76,7 +78,7 @@ export const fetchCommentsByPostId = async (postId: string) => {
 export const postComment = async (postId: string, content: string) => {
   try {
     const response = await axios.post(
-      "http://localhost:3000/comments",
+     `${SERVER_URL}/comments`,
       {
         postId,
         content,
@@ -108,7 +110,7 @@ export const createPost = async (title: string, content: string, image: File | n
     }
 
     const response = await axios.post(
-      "http://localhost:3000/posts",
+      `${SERVER_URL}/posts`,
       formData,
       {
         headers: {
@@ -133,7 +135,7 @@ export const createPost = async (title: string, content: string, image: File | n
 export const toggleLike = async (postId: string) => {
   try {
     const response = await axios.post(
-      `http://localhost:3000/posts/${postId}/like`,
+      `${SERVER_URL}/posts/${postId}/like`,
       {},
       {
         headers: {

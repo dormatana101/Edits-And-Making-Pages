@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../css/UserProfile.css';
+import SERVER_URL from "../config"; 
+
 
 const UserProfile = () => {
   const [userData, setUserData] = useState<any>(null); // User data
@@ -20,7 +22,7 @@ const UserProfile = () => {
     }
 
     try {
-      const response = await axios.get('http://localhost:3000/api/users/profile', {
+      const response = await axios.get(`${SERVER_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { userId: localStorage.getItem('userId') },
       });
@@ -75,7 +77,7 @@ const UserProfile = () => {
 
     try {
       const response = await axios.put(
-        'http://localhost:3000/api/users/profile',
+        `${SERVER_URL}/api/users/profile`,
         formDataToSend,
         {
           headers: {
@@ -154,7 +156,7 @@ const UserProfile = () => {
                   <li key={post._id} className="post-item">
                     <h3 className="post-title">{post.title}</h3>
                     <p className="post-content">{post.content}</p>
-                    {post.image && (<img src={`http://localhost:3000${post.image}`} alt="Post image" className="post-image" />)}
+                    {post.image && (<img src={`${SERVER_URL}${post.image}`} alt="Post image" className="post-image" />)}
                   </li>
                 ))}
               </ul>

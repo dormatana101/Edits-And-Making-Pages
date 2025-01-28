@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../Css/Register.css';
+import SERVER_URL from "../config"; 
+
 
 const Register = () => {
   const navigate = useNavigate();
@@ -59,7 +61,7 @@ const Register = () => {
     if (validateForm()) {
       setIsLoading(true);
       try {
-        const response = await fetch('http://localhost:3000/auth/register', {
+        const response = await fetch(`${SERVER_URL}/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

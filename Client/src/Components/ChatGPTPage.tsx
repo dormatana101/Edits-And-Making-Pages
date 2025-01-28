@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../css/ChatGPTPage.css";
+import SERVER_URL from "../config"; 
+
 
 interface ChatMessage {
   sender: "user" | "gpt";
@@ -33,7 +35,7 @@ const ChatGPTPage: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:3000/api/chatgpt", {
+      const response = await fetch(`${SERVER_URL}/api/chatgpt`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

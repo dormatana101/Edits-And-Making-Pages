@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { createPost } from "../Services/postsService"; 
 import { AiFillPicture } from "react-icons/ai";
 import { FaTimes } from "react-icons/fa";
-
 import FormField from "../Components/FormField"; 
 import "../css/CreatePost.css";
 

@@ -17,6 +17,7 @@ import './config/passport';
 import path from 'path';
 
 const app = express();
+const CLIENT_CONNECT = process.env.CLIENT_CONNECT;
 
 
 
@@ -56,7 +57,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const server = http.createServer(app);
 const io = new socketIo.Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: `${CLIENT_CONNECT}`,
     methods: ["GET", "POST"],
   },
 });

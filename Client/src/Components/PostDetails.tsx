@@ -6,6 +6,8 @@ import { Post } from "../types/post";
 import { Comment } from "../types/comment";
 import CommentForm from "../Components/CommentForm";
 import "../css/PostDetails.css";
+import SERVER_URL from "../config"; 
+
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -104,7 +106,7 @@ const PostDetails = () => {
       <div className="post">
         <h2>{post.title}</h2>
         <p>{post.content}</p>
-        {post.image && (<img src={`http://localhost:3000${post.image}`} alt="Post image" className="post-image" />)}
+        {post.image && (<img src={`${SERVER_URL}${post.image}`} alt="Post image" className="post-image" />)}
         <small>By: {post.author}</small>
         <p>{post.createdAt ? new Date(post.createdAt).toLocaleString() : "Unknown date"}</p>
 

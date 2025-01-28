@@ -5,6 +5,9 @@ import jwt from 'jsonwebtoken';
 import { Document } from 'mongoose';
 import passport from 'passport';
 
+const CLIENT_CONNECT = process.env.CLIENT_CONNECT;
+
+
 type tTokens = {
     accessToken: string,
     refreshToken: string
@@ -267,7 +270,7 @@ const googleCallback = async (req: Request, res: Response) => {
           maxAge: 7 * 24 * 60 * 60 * 1000 
       });
 
-      res.redirect(`http://localhost:5173/oauth/callback?token=${tokens.accessToken}&userId=${user._id}&username=${encodeURIComponent(user.username)}`);
+      res.redirect(`${CLIENT_CONNECT}/oauth/callback?token=${tokens.accessToken}&userId=${user._id}&username=${encodeURIComponent(user.username)}`);
 
 
   } catch (err) {

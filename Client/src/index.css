@@ -26,8 +26,6 @@ body {
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
-  /* Убираем display: flex и place-items, 
-     чтобы не ломать layout на остальных страницах */
 }
 
 

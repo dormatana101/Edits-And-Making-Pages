@@ -5,6 +5,8 @@ import { Post } from "../types/post";
 import { toggleLike } from "../Services/postsService";
 import { formatDate } from "../utiles/formatDate";
 import "../css/AllPosts.css"; 
+import SERVER_URL from "../config"; 
+
 
 interface PostCardProps {
   post: Post;
@@ -41,7 +43,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     <div className="post">
       <h3>{post.title}</h3>
       <p>{post.content}</p>
-      {post.image && (<img src={`http://localhost:3000${post.image}`} alt="Post image" className="post-image" />)}
+      {post.image && (<img src={`${SERVER_URL}${post.image}`} alt="Post image" className="post-image" />)}
       <small>By: {post.author}</small>
       <p className="post-timestamp">{formatDate(post.createdAt)}</p>
 
