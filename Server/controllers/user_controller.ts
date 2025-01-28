@@ -37,17 +37,17 @@ export const getUserProfile = async (req: Request, res: Response): Promise<void>
 
 export const updateUserProfile = async (req: Request, res: Response): Promise<void> => {
   const userId = req.query.userId; 
-  const { username, email } = req.body;
+  const { username } = req.body;
 
   try {
-    if (!username || !email) {
-      res.status(400).json({ message: 'Username and email are required.' });
+    if (!username) {
+      res.status(400).json({ message: 'Username are required.' });
       return;
     }
 
     const updatedUser = await userModel.findByIdAndUpdate(
       userId,
-      { username, email },
+      { username },
       { new: true, runValidators: true } 
     );
 
