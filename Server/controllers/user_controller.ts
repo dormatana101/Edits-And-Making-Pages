@@ -36,27 +36,42 @@ export const getUserProfile = async (req: Request, res: Response): Promise<void>
 };
 
 export const updateUserProfile = async (req: Request, res: Response): Promise<void> => {
-  const userId = req.query.userId; 
+  const userId = req.query.userId as string;
   const { username } = req.body;
 
   try {
     if (!username) {
-      res.status(400).json({ message: 'Username are required.' });
+      res.status(400).json({ message: 'Username is required.' });
       return;
     }
 
-    const updatedUser = await userModel.findByIdAndUpdate(
-      userId,
-      { username },
-      { new: true, runValidators: true } 
-    );
+    const existingUser = await userModel.findOne({ username, _id: { $ne: userId } });
+    if (existingUser) {
+      res.status(409).json({ message: 'Username is already taken.' });
+      return;
+    }
 
-    if (!updatedUser) {
+    const user = await userModel.findById(userId);
+    if (!user) {
       res.status(404).json({ message: 'User not found.' });
       return;
     }
 
-    res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+    const oldUsername = user.username;
+
+    user.username = username;
+    await user.save();
+
+    const updateResult = await postModel.updateMany(
+      { author: oldUsername },
+      { $set: { author: username } }
+    );
+
+    res.status(200).json({ 
+      message: 'User updated successfully', 
+      user,
+      updatedPostsCount: updateResult.modifiedCount
+    });
   } catch (error) {
     console.error('Error updating user:', error);
     res.status(500).json({ message: 'Server error.' });

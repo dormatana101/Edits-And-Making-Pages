@@ -8,6 +8,7 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true); // מצב טעינה
   const [editable, setEditable] = useState(false); // מצב עריכה
   const [formData, setFormData] = useState<any>({}); // הנתונים לעריכה
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // קובץ התמונה שנבחר
 
   // שליפת פרטי המשתמש
   const fetchUserData = async () => {
@@ -46,6 +47,13 @@ const UserProfile = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  // טיפול בהעלאת קובץ
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
   // שמירת השינויים
   const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -56,29 +64,39 @@ const UserProfile = () => {
     }
 
     try {
-      await axios.put(
+      const formDataToSend = new FormData();
+      formDataToSend.append('username', formData.username);
+      formDataToSend.append('email', formData.email);
+
+      if (selectedFile) {
+        formDataToSend.append('profilePicture', selectedFile);
+      }
+
+      const response = await axios.put(
         'http://localhost:3000/api/users/profile',
-        formData,
+        formDataToSend,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data', // חשוב להגדיר סוג זה!
+          },
           params: { userId: localStorage.getItem('userId') },
         }
       );
 
-      await fetchUserData();
-      setEditable(false); 
-
+      await fetchUserData(); // קריאה מחודשת לנתונים
+      setEditable(false);
     } catch (error) {
       setError('Error updating user data');
     }
   };
 
   if (loading) {
-    return <p>Loading...</p>; // תצוגת טעינה
+    return <p>Loading...</p>;
   }
 
   if (error) {
-    return <div>{error}</div>; // תצוגת שגיאה
+    return <div>{error}</div>;
   }
 
   return (
@@ -86,8 +104,8 @@ const UserProfile = () => {
       {userData ? (
         <div className="user-profile-card">
           <div className="user-info">
-            <img 
-              src={userData.user.profilePicture || '/default-profile-picture.png'} 
+            <img
+              src={userData.user.profilePicture || '/default-profile-picture.png'}
               className="profile-picture"
             />
             <div className="user-details">
@@ -101,11 +119,10 @@ const UserProfile = () => {
                     placeholder="Enter your username"
                   />
                   <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="Enter your email"
+                    type="file"
+                    name="profilePicture"
+                    onChange={handleFileChange}
+                    accept="image/*"
                   />
                   <button onClick={handleSaveChanges}>Save Changes</button>
                   <button onClick={() => setEditable(false)}>Cancel</button>
