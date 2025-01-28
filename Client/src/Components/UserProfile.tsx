@@ -154,6 +154,7 @@ const UserProfile = () => {
                   <li key={post._id} className="post-item">
                     <h3 className="post-title">{post.title}</h3>
                     <p className="post-content">{post.content}</p>
+                    {post.image && (<img src={`http://localhost:3000${post.image}`} alt="Post image" className="post-image" />)}
                   </li>
                 ))}
               </ul>

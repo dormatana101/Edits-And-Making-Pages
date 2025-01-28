@@ -130,6 +130,14 @@ input[type="file"] {
   font-size: 1.1rem;
   color: #666;
 }
+.post-image {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin-top: 10px;
+  border-radius: 8px;
+  object-fit: cover;
+}
 
 /* Error messages */
 .error-message {
