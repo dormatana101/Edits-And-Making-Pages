@@ -3,46 +3,52 @@ import axios from 'axios';
 import '../css/UserProfile.css';
 
 const UserProfile = () => {
-  const [userData, setUserData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [editable, setEditable] = useState(false);
-  const [formData, setFormData] = useState<any>({}); // שמירת נתונים לעריכה
+  const [userData, setUserData] = useState<any>(null); // הנתונים של המשתמש
+  const [error, setError] = useState<string | null>(null); // שגיאות
+  const [loading, setLoading] = useState(true); // מצב טעינה
+  const [editable, setEditable] = useState(false); // מצב עריכה
+  const [formData, setFormData] = useState<any>({}); // הנתונים לעריכה
+
+  // שליפת פרטי המשתמש
+  const fetchUserData = async () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      setError('No token found');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get('http://localhost:3000/api/users/profile', {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { userId: localStorage.getItem('userId') },
+      });
+      setUserData(response.data);
+      setFormData({
+        username: response.data.user.username,
+        email: response.data.user.email,
+        profilePicture: response.data.user.profilePicture,
+      });
+    } catch (error) {
+      setError('Error fetching data');
+    } finally {
+      setLoading(false); // סיום מצב הטעינה
+    }
+  };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      console.log('fetchUserData');
-      const token = localStorage.getItem('accessToken');
-      if (!token) {
-        setError('No token found');
-        return;
-      }
-
-      try {
-        const response = await axios.get('http://localhost:3000/api/users/profile', {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { userId: localStorage.getItem('userId') },
-        });
-        setUserData(response.data);
-        setFormData({
-          username: response.data.user.username,
-          email: response.data.user.email,
-          profilePicture: response.data.user.profilePicture,
-        });
-      } catch (error) {
-        setError('Error fetching data');
-      }
-    };
-
     fetchUserData();
   }, []);
 
+  // טיפול בשינוי שדות הטופס
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value }); 
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleSaveChanges = async () => {
+  // שמירת השינויים
+  const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     const token = localStorage.getItem('accessToken');
     if (!token) {
       setError('No token found');
@@ -50,7 +56,7 @@ const UserProfile = () => {
     }
 
     try {
-      const response = await axios.put(
+      await axios.put(
         'http://localhost:3000/api/users/profile',
         formData,
         {
@@ -58,15 +64,21 @@ const UserProfile = () => {
           params: { userId: localStorage.getItem('userId') },
         }
       );
-      setUserData(response.data.user);
-      setEditable(false);
+
+      await fetchUserData();
+      setEditable(false); 
+
     } catch (error) {
       setError('Error updating user data');
     }
   };
 
+  if (loading) {
+    return <p>Loading...</p>; // תצוגת טעינה
+  }
+
   if (error) {
-    return <div>{error}</div>;
+    return <div>{error}</div>; // תצוגת שגיאה
   }
 
   return (
@@ -86,12 +98,14 @@ const UserProfile = () => {
                     name="username"
                     value={formData.username}
                     onChange={handleInputChange}
+                    placeholder="Enter your username"
                   />
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
+                    placeholder="Enter your email"
                   />
                   <button onClick={handleSaveChanges}>Save Changes</button>
                   <button onClick={() => setEditable(false)}>Cancel</button>
@@ -107,7 +121,7 @@ const UserProfile = () => {
           </div>
           <div className="user-posts">
             <h2>My Posts</h2>
-            {userData.posts.length > 0 ? (
+            {userData.posts && userData.posts.length > 0 ? (
               <ul className="posts-list">
                 {userData.posts.map((post: any) => (
                   <li key={post._id} className="post-item">
@@ -117,12 +131,12 @@ const UserProfile = () => {
                 ))}
               </ul>
             ) : (
-              <p>Havent uploaded any posts yet</p>
+              <p>Haven't uploaded any posts yet.</p>
             )}
           </div>
         </div>
       ) : (
-        <p>Loading...</p>
+        <p>No user data available.</p>
       )}
     </div>
   );
