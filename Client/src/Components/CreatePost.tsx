@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createPost } from "../Services/postsService"; 
 import { AiFillPicture } from "react-icons/ai";
+import { FaTimes } from "react-icons/fa";
 
 import FormField from "../Components/FormField"; 
 import "../css/CreatePost.css";
@@ -58,7 +59,10 @@ const CreatePost: React.FC = () => {
       setImagePreview(URL.createObjectURL(file));
     }
   };
-
+  const handleRemoveImage = () => {
+    setImage(null);
+    setImagePreview(null);
+  };
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -104,7 +108,14 @@ const CreatePost: React.FC = () => {
                 id="fileInput"
               />
                
-              {imagePreview && <img src={imagePreview} alt="Selected" className="image-preview" />}
+               {imagePreview && (
+                <div className="image-preview-container">
+                  <img src={imagePreview} alt="Selected" className="image-preview" />
+                  <button type="button" className="remove-image-button" onClick={handleRemoveImage}>
+                    <FaTimes />
+                  </button>
+                </div>
+              )}
 
             </div>
             <button type="submit" className="create-post-button">
