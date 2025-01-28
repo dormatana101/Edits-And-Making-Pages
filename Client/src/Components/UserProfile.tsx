@@ -70,7 +70,7 @@ const UserProfile = () => {
     }
 
     try {
-      await axios.put(
+      const response = await axios.put(
         'http://localhost:3000/api/users/profile',
         formDataToSend, // שליחה עם FormData
         {
@@ -81,6 +81,9 @@ const UserProfile = () => {
           params: { userId: localStorage.getItem('userId') },
         }
       );
+      if (response.data && response.data.user && response.data.user.username) {
+        localStorage.setItem('username', response.data.user.username);
+      }
 
       await fetchUserData();
       setEditable(false); // סיום עריכה
