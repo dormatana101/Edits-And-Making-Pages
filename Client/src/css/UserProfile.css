@@ -26,12 +26,11 @@
 }
 
 .profile-picture {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #1877f2;
-  margin-right: 20px;
+  width: 100px; /* גודל התמונה */
+  height: 100px;
+  border-radius: 50%; /* הופך את התמונה לעיגול */
+  object-fit: cover; /* שומר על יחס התמונה בתוך העיגול */
+  border: 2px solid rgb(13, 13, 13); /* גבול כחול מסביב לתמונה */
 }
 
 .user-details {

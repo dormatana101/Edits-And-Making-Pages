@@ -61,20 +61,29 @@ const UserProfile = () => {
       setError('No token found');
       return;
     }
-  
+
+    // יצירת FormData לשליחה עם הקובץ
+    const formDataToSend = new FormData();
+    formDataToSend.append('username', formData.username);
+    if (selectedFile) {
+      formDataToSend.append('profilePicture', selectedFile);
+    }
+
     try {
       await axios.put(
         'http://localhost:3000/api/users/profile',
-        { username: formData.username },
+        formDataToSend, // שליחה עם FormData
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data', // חשוב להוסיף את ה־header הזה
+          },
           params: { userId: localStorage.getItem('userId') },
         }
       );
-  
+
       await fetchUserData();
-      setEditable(false); 
-  
+      setEditable(false); // סיום עריכה
     } catch (error: any) {
       if (error.response && error.response.status === 409) {
         setError('Username is already taken.');
@@ -82,7 +91,7 @@ const UserProfile = () => {
         setError('Error updating user data');
       }
     }
-  };
+};
 
   if (loading) {
     return <p>Loading...</p>;
@@ -97,9 +106,9 @@ const UserProfile = () => {
       {userData ? (
         <div className="user-profile-card">
           <div className="user-info">
-            <img
-              src={userData.user.profilePicture || '/default-profile-picture.png'}
-              className="profile-picture"
+          <img
+            src={selectedFile ? URL.createObjectURL(selectedFile) : userData.user.profilePicture || '/default-profile-picture.png'}
+            className="profile-picture"
             />
             <div className="user-details">
               {editable ? (
