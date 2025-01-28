@@ -3,14 +3,14 @@ import axios from 'axios';
 import '../css/UserProfile.css';
 
 const UserProfile = () => {
-  const [userData, setUserData] = useState<any>(null); // הנתונים של המשתמש
-  const [error, setError] = useState<string | null>(null); // שגיאות
-  const [loading, setLoading] = useState(true); // מצב טעינה
-  const [editable, setEditable] = useState(false); // מצב עריכה
-  const [formData, setFormData] = useState<any>({}); // הנתונים לעריכה
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // קובץ התמונה שנבחר
+  const [userData, setUserData] = useState<any>(null); // User data
+  const [error, setError] = useState<string | null>(null); // Errors
+  const [loading, setLoading] = useState(true); // Loading state
+  const [editable, setEditable] = useState(false); // Edit mode
+  const [formData, setFormData] = useState<any>({}); // Form data for edit
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // Selected file for upload
 
-  // שליפת פרטי המשתמש
+  // Fetch user data
   const fetchUserData = async () => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
@@ -29,10 +29,15 @@ const UserProfile = () => {
         username: response.data.user.username,
         profilePicture: response.data.user.profilePicture,
       });
+
+      // Save profile picture in localStorage
+      if (response.data.user.profilePicture) {
+        localStorage.setItem('profilePicture', response.data.user.profilePicture);
+      }
     } catch (error) {
       setError('Error fetching data');
     } finally {
-      setLoading(false); // סיום מצב הטעינה
+      setLoading(false);
     }
   };
 
@@ -40,20 +45,20 @@ const UserProfile = () => {
     fetchUserData();
   }, []);
 
-  // טיפול בשינוי שדות הטופס
+  // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // טיפול בהעלאת קובץ
+  // Handle file change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
     }
   };
 
-  // שמירת השינויים
+  // Save changes
   const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const token = localStorage.getItem('accessToken');
@@ -62,7 +67,6 @@ const UserProfile = () => {
       return;
     }
 
-    // יצירת FormData לשליחה עם הקובץ
     const formDataToSend = new FormData();
     formDataToSend.append('username', formData.username);
     if (selectedFile) {
@@ -72,21 +76,22 @@ const UserProfile = () => {
     try {
       const response = await axios.put(
         'http://localhost:3000/api/users/profile',
-        formDataToSend, // שליחה עם FormData
+        formDataToSend,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data', // חשוב להוסיף את ה־header הזה
+            'Content-Type': 'multipart/form-data',
           },
           params: { userId: localStorage.getItem('userId') },
         }
       );
-      if (response.data && response.data.user && response.data.user.username) {
-        localStorage.setItem('username', response.data.user.username);
+
+      if (response.data && response.data.user.profilePicture) {
+        localStorage.setItem('profilePicture', response.data.user.profilePicture);
       }
 
       await fetchUserData();
-      setEditable(false); // סיום עריכה
+      setEditable(false); // End editing
     } catch (error: any) {
       if (error.response && error.response.status === 409) {
         setError('Username is already taken.');
@@ -94,7 +99,7 @@ const UserProfile = () => {
         setError('Error updating user data');
       }
     }
-};
+  };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -109,9 +114,9 @@ const UserProfile = () => {
       {userData ? (
         <div className="user-profile-card">
           <div className="user-info">
-          <img
-            src={selectedFile ? URL.createObjectURL(selectedFile) : userData.user.profilePicture || '/default-profile-picture.png'}
-            className="profile-picture"
+            <img
+              src={selectedFile ? URL.createObjectURL(selectedFile) : localStorage.getItem('profilePicture') || userData.user.profilePicture || '/default-profile-picture.png'}
+              className="profile-picture"
             />
             <div className="user-details">
               {editable ? (

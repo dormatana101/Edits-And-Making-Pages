@@ -80,7 +80,7 @@ export const updateUserProfile = async (req: Request, res: Response): Promise<vo
     user.username = username;
 
     if (profilePicture) {
-      user.profilePicture = profilePicture; // עדכון תמונה אם הועלתה
+      user.profilePicture = `http://localhost:3000${profilePicture}`; // עדכון תמונה עם URL המלא
     }
 
     await user.save();
