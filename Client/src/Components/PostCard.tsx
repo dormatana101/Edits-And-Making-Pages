@@ -41,7 +41,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     <div className="post">
       <h3>{post.title}</h3>
       <p>{post.content}</p>
-      {post.image && <img src={post.image} alt="Post image" className="post-image" />}
+      {post.image && (<img src={`http://localhost:3000${post.image}`} alt="Post image" className="post-image" />)}
       <small>By: {post.author}</small>
       <p className="post-timestamp">{formatDate(post.createdAt)}</p>
 

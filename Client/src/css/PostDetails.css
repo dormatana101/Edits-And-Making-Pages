@@ -122,3 +122,11 @@
 .comment p {
   margin: 0;
 }
+
+.post-image-detail {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+}

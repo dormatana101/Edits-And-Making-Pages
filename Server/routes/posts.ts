@@ -1,9 +1,35 @@
 import express  from "express";
-const router = express.Router();
 import Post from "../controllers/posts_controller";
 import { authMiddleware } from "../controllers/auth_controller";
 import { paginatedResults , PaginatedResults  } from '../Middlewares/Paging';
 import  PostModel  from '../models/Post';
+import multer from 'multer';
+import path from 'path';
+
+
+
+const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const ext = path.extname(file.originalname);
+    cb(null, uniqueSuffix + ext);
+  }
+});
+
+const fileFilter = (req: Express.Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed!'));
+  }
+};
+
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 /**
  * @swagger
@@ -64,10 +90,9 @@ import  PostModel  from '../models/Post';
  *       500:
  *         description: Server error
  */
-router.post("/", authMiddleware, (req, res) => {
+router.post("/", authMiddleware, upload.single('image'), (req, res) => {
   Post.createPost(req, res);
 });
-
 /**
  * @swagger
  * /posts:

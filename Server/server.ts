@@ -14,6 +14,7 @@ import chatRoutes from "./routes/chat_route";
 import userRoutes from "./routes/user_route";
 import chatgptRoutes from "./routes/chatgpt_route"; 
 import './config/passport'; 
+import path from 'path';
 
 const app = express();
 
@@ -41,11 +42,14 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/auth", authRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/posts", postsRoutes);
 app.use("/comments", commentsRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api", chatgptRoutes); 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 
 const server = http.createServer(app);

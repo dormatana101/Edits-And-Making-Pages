@@ -97,18 +97,22 @@ export const postComment = async (postId: string, content: string) => {
 };
 
 // Create a new post
-export const createPost = async (title: string, content: string) => {
+export const createPost = async (title: string, content: string, image: File | null) => {
   try {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("author", localStorage.getItem("username") || "");
+    if (image) {
+      formData.append("image", image);
+    }
+
     const response = await axios.post(
       "http://localhost:3000/posts",
-      {
-        title,
-        content,
-        author: localStorage.getItem("username"),
-      },
+      formData,
       {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data", 
           "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
         },
       }
@@ -116,9 +120,16 @@ export const createPost = async (title: string, content: string) => {
     return { success: true, data: response.data };
   } catch (error) {
     console.error("Error creating post:", error);
-    return { success: false, message: "An error occurred" };
+    if (axios.isAxiosError(error)) {
+      return { success: false, message: error.response?.data?.message || "An error occurred" };
+    } else {
+      return { success: false, message: "An error occurred" };
+    }
   }
 };
+
+
+
 export const toggleLike = async (postId: string) => {
   try {
     const response = await axios.post(
