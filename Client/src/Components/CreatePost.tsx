@@ -4,7 +4,6 @@ import { AiFillPicture } from "react-icons/ai";
 
 import FormField from "../Components/FormField"; 
 import "../css/CreatePost.css";
-import { set } from "mongoose";
 
 const CreatePost: React.FC = () => {
   const [newPostContent, setNewPostContent] = useState<string>("");
@@ -12,7 +11,6 @@ const CreatePost: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [confirmationMessage, setConfirmationMessage] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
 
@@ -56,7 +54,6 @@ const CreatePost: React.FC = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setSelectedImage(file);
       setImage(file);
       setImagePreview(URL.createObjectURL(file));
     }
