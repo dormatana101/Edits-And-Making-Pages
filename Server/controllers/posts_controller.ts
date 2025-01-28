@@ -6,13 +6,19 @@ import userModel from "../models/Users";
 // Create a new post
 const createPost = async (req: Request, res: Response) => {
   try {
-    const { title, content, author, image } = req.body;
+    const { title, content, author } = req.body;
+    let imagePath = '';
+
+    // Проверка, была ли загружена картинка
+    if (req.file) {
+      imagePath = `/uploads/${req.file.filename}`; // Путь к изображению для хранения в базе данных
+    }
 
     if (!title || !content || !author) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const post = new postModel({ title, content, author, image });
+    const post = new postModel({ title, content, author, image: imagePath });
     await post.save();
     res.status(201).json(post);
   } catch (err: any) {
@@ -21,7 +27,6 @@ const createPost = async (req: Request, res: Response) => {
       .json({ message: "Error creating post", error: err.message });
   }
 };
-
 // Get all posts
 // const getAllPosts = async (req: Request, res: Response) => {
 //   try {

@@ -44,6 +44,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/auth", authRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/posts", postsRoutes);
 app.use("/comments", commentsRoutes);
 app.use("/api/chat", chatRoutes);

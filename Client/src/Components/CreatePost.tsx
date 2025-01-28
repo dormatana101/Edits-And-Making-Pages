@@ -8,6 +8,8 @@ const CreatePost: React.FC = () => {
   const [newPostTitle, setNewPostTitle] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [confirmationMessage, setConfirmationMessage] = useState<string>("");
+  const [image, setImage] = useState<File | null>(null);
+
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -20,11 +22,12 @@ const CreatePost: React.FC = () => {
     }
 
     try {
-      const response = await createPost(newPostTitle, newPostContent);
+      const response = await createPost(newPostTitle, newPostContent, image);
       
       if (response.success) {
         setNewPostContent("");
         setNewPostTitle("");
+        setImage(null);
         setConfirmationMessage("Post created successfully!");
         setTimeout(() => setConfirmationMessage(""), 3000);
         setError(null);
@@ -41,6 +44,12 @@ const CreatePost: React.FC = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
     }
   };
 
@@ -74,6 +83,15 @@ const CreatePost: React.FC = () => {
               textareaRef={textareaRef}
               className="auto-resize" 
             />
+             <div className="form-field">
+              <label>Post Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="input-file"
+              />
+            </div>
             <button type="submit" className="create-post-button">
               Create Post
             </button>

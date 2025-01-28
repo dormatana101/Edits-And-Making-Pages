@@ -53,11 +53,11 @@
 
 .all-posts .post-image {
   width: 100%;
+  max-width: 600px;
   height: auto;
-  margin-top: 15px;
+  margin-top: 10px;
   border-radius: 8px;
 }
-
 .all-posts .post-timestamp {
   font-size: 0.9rem;
   color: #65676b;
