@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { createPost } from "../Services/postsService"; 
+import { AiFillPicture } from "react-icons/ai";
+
 import FormField from "../Components/FormField"; 
 import "../css/CreatePost.css";
+import { set } from "mongoose";
 
 const CreatePost: React.FC = () => {
   const [newPostContent, setNewPostContent] = useState<string>("");
@@ -9,6 +12,8 @@ const CreatePost: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [confirmationMessage, setConfirmationMessage] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -27,6 +32,7 @@ const CreatePost: React.FC = () => {
       if (response.success) {
         setNewPostContent("");
         setNewPostTitle("");
+        setImagePreview(null);
         setImage(null);
         setConfirmationMessage("Post created successfully!");
         setTimeout(() => setConfirmationMessage(""), 3000);
@@ -48,8 +54,11 @@ const CreatePost: React.FC = () => {
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -70,6 +79,11 @@ const CreatePost: React.FC = () => {
           )}
           {error && <div className="error-message">{error}</div>}
           <form onSubmit={handleCreatePost} className="create-post-form">
+          <label>Post Image</label>
+
+          <div className="image-upload-icon" onClick={() => document.getElementById('fileInput')?.click()}>
+              <AiFillPicture size={30} />
+              </div>
             <FormField
               label="Post Title"
               value={newPostTitle}
@@ -84,13 +98,17 @@ const CreatePost: React.FC = () => {
               className="auto-resize" 
             />
              <div className="form-field">
-              <label>Post Image</label>
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
+                style={{ display: "none" }}
                 className="input-file"
+                id="fileInput"
               />
+               
+              {imagePreview && <img src={imagePreview} alt="Selected" className="image-preview" />}
+
             </div>
             <button type="submit" className="create-post-button">
               Create Post

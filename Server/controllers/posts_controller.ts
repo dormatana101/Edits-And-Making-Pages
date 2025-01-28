@@ -11,8 +11,13 @@ const createPost = async (req: Request, res: Response) => {
 
     // Проверка, была ли загружена картинка
     if (req.file) {
+      const fileType = req.file.mimetype;
+      if (fileType !== 'image/jpeg' && fileType !== 'image/png') {
+        return res.status(400).json({ message: "Only JPEG or PNG files are allowed" });
+      }
       imagePath = `/uploads/${req.file.filename}`; // Путь к изображению для хранения в базе данных
     }
+
 
     if (!title || !content || !author) {
       return res.status(400).json({ message: "All fields are required" });

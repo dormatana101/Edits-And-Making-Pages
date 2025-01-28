@@ -20,7 +20,13 @@
   margin-bottom: 10px;
   text-align: center;
 }
-
+.image-preview {
+  display: block;
+  margin: 10px auto;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
 .posts-container .create-post-form-container .error-message {
   color: #e74c3c; 
   margin-bottom: 10px;
