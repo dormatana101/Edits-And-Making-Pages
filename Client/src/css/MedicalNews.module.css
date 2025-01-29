@@ -26,7 +26,9 @@
     cursor: pointer;
     font-weight: 600;
   }
-  
+  .searchButton:hover {
+    background-color: #166fe5;
+  }
   .loading {
     font-size: 18px;
   }
@@ -45,8 +47,8 @@
   }
   
   .articleImage {
-    width: 100%;
-    height: auto;
+    width: 50%;
+    height: 50%;
   }
   
   .articleDescription {
