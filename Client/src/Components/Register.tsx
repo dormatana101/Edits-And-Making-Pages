@@ -109,23 +109,6 @@ const Register = () => {
         <h2 className={styles.headline}>Register</h2>
         <form onSubmit={handleSubmit} className={styles.registerForm}>
           <div className={styles.formGroup}>
-            <label htmlFor="profilePicture" className={styles.label}>
-              Profile Picture
-            </label>
-            <input
-              type="file"
-              id="profilePicture"
-              name="profilePicture"
-              accept="image/*"
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  setSelectedFile(e.target.files[0]);
-                }
-              }}
-              className={styles.input}
-            />
-          </div>
-          <div className={styles.formGroup}>
             <label htmlFor="username" className={styles.label}>
               Username
             </label>
@@ -201,6 +184,23 @@ const Register = () => {
             {errors.confirmPassword && (
               <p className={styles.error}>{errors.confirmPassword}</p>
             )}
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="profilePicture" className={styles.label}>
+              Profile Picture
+            </label>
+            <input
+              type="file"
+              id="profilePicture"
+              name="profilePicture"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setSelectedFile(e.target.files[0]);
+                }
+              }}
+              className={styles.input}
+            />
           </div>
 
           {errors.server && <p className={styles.error}>{errors.server}</p>}
