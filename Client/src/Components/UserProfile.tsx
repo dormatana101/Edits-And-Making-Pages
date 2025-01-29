@@ -32,7 +32,7 @@ const UserProfile = () => {
 
     try {
         // שליפת נתוני המשתמש
-        const response = await axios.get('http://localhost:3000/api/users/profile', {
+        const response = await axios.get(`${CONFIG.SERVER_URL}/api/users/profile`, {
           headers: { Authorization: `Bearer ${token}` },
           params: { userId: localStorage.getItem('userId'), page, limit: 5 },
         });
@@ -161,7 +161,7 @@ const UserProfile = () => {
 
     try {
       await axios.put(
-        `http://localhost:3000/posts/${postId}`,
+        `${CONFIG.SERVER_URL}/posts/${postId}`,
         { title: currentPostTitle, content: currentPostContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
