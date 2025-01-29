@@ -122,7 +122,7 @@ const UserProfile = () => {
 
     try {
       await axios.put(
-        `http://localhost:3000/api/posts/${postId}`,
+        `${CONFIG.SERVER_URL}/api/posts/${postId}`,
         { title: currentPostTitle, content: currentPostContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -148,7 +148,7 @@ const UserProfile = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:3000/api/posts/${postId}`, {
+      await axios.delete(`${CONFIG.SERVER_URL}/api/posts/${postId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
