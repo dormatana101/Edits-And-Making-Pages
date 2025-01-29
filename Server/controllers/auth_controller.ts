@@ -17,6 +17,12 @@ const register = async (req: Request, res: Response, next: NextFunction): Promis
     try {
       const { username, email, password } = req.body;
   
+
+      // if (!req.file) {
+      //   res.status(400).json({ message: 'Profile picture is required' });
+      //   return;
+      // }
+  
       if (!username || !email || !password) {
         res.status(400).json({ message: 'Username, email, and password are required' });
         return;
@@ -37,22 +43,36 @@ const register = async (req: Request, res: Response, next: NextFunction): Promis
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
   
-
+      let profilePictureUrl = "";
+      if (req.file) {
+        const SERVER_CONNECT = process.env.SERVER_CONNECT;
+        profilePictureUrl = `${SERVER_CONNECT}/uploads/${req.file.filename}`;
+      }
+  
       const user = await userModel.create({
         username,
         email,
         password: hashedPassword,
+        profilePicture: profilePictureUrl 
       });
   
       res.status(201).json({
         message: 'User registered successfully',
-        user: { username: user.username, email: user.email, _id: user._id },
+        user: {
+          username: user.username,
+          email: user.email,
+          _id: user._id,
+          profilePicture: user.profilePicture
+        },
       });
     } catch (error) {
       console.error('Error during registration:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+  
+
+
 const generateToken = (userId: string): tTokens | null => {
     if (!process.env.TOKEN_SECRET) {
         return null;

@@ -3,6 +3,10 @@ const router = express.Router();
 import authController from "../controllers/auth_controller";
 import { authMiddleware } from "../controllers/auth_controller";
 import passport from "passport";
+import multer from "multer";
+
+const upload = multer({ dest: 'uploads/' });
+
 
 //router.post("/logout", authController.logout);
 
@@ -44,7 +48,7 @@ import passport from "passport";
  *       500:
  *         description: Server error
  */
-router.post("/register", authController.register);
+router.post("/register", upload.single('profilePicture'), authController.register);
 
 /**
  * @swagger

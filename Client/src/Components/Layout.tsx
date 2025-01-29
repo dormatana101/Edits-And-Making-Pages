@@ -17,6 +17,7 @@ const Layout: React.FC = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("username");
     localStorage.removeItem("userId");
+    localStorage.removeItem("profilePicture");
 
     navigate("/login");
   };

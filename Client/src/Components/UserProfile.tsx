@@ -1,29 +1,35 @@
-// client/src/Components/UserProfile.tsx
-
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import styles from "../css/UserProfile.module.css"; // Импортируем CSS Module
+import styles from "../css/UserProfile.module.css";
 import CONFIG from "../config";
+import { IUserProfileResponse } from "../types/UserProfileResponse";
+import { IProfileForm } from "../types/UserProfileForm"; 
+import { Post } from "../types/post"; 
 
 const UserProfile: React.FC = () => {
-  const [userData, setUserData] = useState<any>(null); // נתוני המשתמש
-  const [error, setError] = useState<string | null>(null); // הודעות שגיאה
-  const [loading, setLoading] = useState(true); // מצב טעינה
-  const [editable, setEditable] = useState(false); // מצב עריכה לפרופיל
-  const [postEditMode, setPostEditMode] = useState<string | null>(null); // מצב עריכה לפוסט
-  const [formData, setFormData] = useState<any>({}); // נתוני טופס לפרופיל
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // קובץ שנבחר להעלאה
-  const [currentPostTitle, setCurrentPostTitle] = useState<string>(""); // כותרת פוסט לעריכה
-  const [currentPostContent, setCurrentPostContent] = useState<string>(""); // תוכן פוסט לעריכה
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<
-    string | null
-  >(null); // ID הפוסט שמיועד למחיקה
-  const [page, setPage] = useState(1);
-  const [posts, setPosts] = useState<any[]>([]); // שמירת הפוסטים המוצגים
-  const [loadingMore, setLoadingMore] = useState(false); // מניעת טעינה כפולה
-  const [hasMorePosts, setHasMorePosts] = useState(true); // אם יש עוד פוסטים לטעינה
+  const [userData, setUserData] = useState<IUserProfileResponse | null>(null);
 
-  // הפונקציה לשליפת נתוני המשתמש
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [editable, setEditable] = useState(false);
+  const [postEditMode, setPostEditMode] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<IProfileForm>({ username: "" });
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const [currentPostTitle, setCurrentPostTitle] = useState<string>("");
+  const [currentPostContent, setCurrentPostContent] = useState<string>("");
+
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<string | null>(null);
+
+  const [page, setPage] = useState<number>(1);
+  const [posts, setPosts] = useState<Post[]>([]); 
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [hasMorePosts, setHasMorePosts] = useState<boolean>(true);
+
+
+
   const fetchUserData = useCallback(async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
@@ -33,39 +39,29 @@ const UserProfile: React.FC = () => {
     }
 
     try {
-      // שליפת נתוני המשתמש
-      const response = await axios.get(
-        `${CONFIG.SERVER_URL}/api/users/profile`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { userId: localStorage.getItem("userId"), page, limit: 5 },
-        }
-      );
+      const response = await axios.get(`${CONFIG.SERVER_URL}/api/users/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { userId: localStorage.getItem("userId"), page, limit: 5 },
+      });
 
-      // עדכון נתוני המשתמש
       setUserData(response.data);
       setFormData({
         username: response.data.user.username,
         profilePicture: response.data.user.profilePicture,
       });
 
-      // שמירת תמונת פרופיל בלוקאלסטורג'
       if (response.data.user.profilePicture) {
-        localStorage.setItem(
-          "profilePicture",
-          response.data.user.profilePicture
-        );
+        localStorage.setItem("profilePicture", response.data.user.profilePicture);
       }
 
-      // עדכון הפוסטים
       setPosts((prevPosts) => {
         const newPosts = response.data.posts.filter(
-          (post: any) => !prevPosts.some((p: any) => p._id === post._id) // מסנן פוסטים שכבר קיימים
+          (post: Post) => !prevPosts.some((p: Post) => p._id === post._id)
         );
-        return [...prevPosts, ...newPosts]; // מוסיף את הפוסטים החדשים לפוסטים הקיימים
+        return [...prevPosts, ...newPosts];
+        
       });
 
-      // בדיקת אם יש עוד פוסטים להציג
       setHasMorePosts(response.data.hasMorePosts);
     } catch {
       setError("Error fetching data");
@@ -74,56 +70,60 @@ const UserProfile: React.FC = () => {
     }
   }, [page]);
 
-  // פונקציה לטעינת פוסטים נוספים בעת גלילה
-  const loadMorePosts = async () => {
-    if (loadingMore || !hasMorePosts) return; // אם כבר טוענים או שאין עוד פוסטים, אל תבצע את הפעולה
 
+  const loadMorePosts = useCallback(async () => {
+    if (loadingMore || !hasMorePosts) return;
     setLoadingMore(true);
-    setPage((prevPage) => prevPage + 1); // הגדלת הדף
-
-    try {
-      // טוען את הפוסטים בדף הבא
-      await fetchUserData();
-    } catch{
-      setError("Error fetching more posts");
-    } finally {
-      setLoadingMore(false);
-    }
-  };
+    setPage((prevPage) => prevPage + 1);
+    setLoadingMore(false);
+  }, [loadingMore, hasMorePosts]);
 
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
 
-  // טיפול בשינוי ערכים בטופס עריכה
+  useEffect(() => {
+    function handleWindowScroll() {
+      const scrollTop = window.scrollY;
+      const clientHeight = window.innerHeight;
+      const scrollHeight = document.documentElement.scrollHeight;
+
+      if (scrollHeight - (scrollTop + clientHeight) < 2 && !loadingMore && hasMorePosts) {
+        loadMorePosts();
+      }
+    }
+
+    window.addEventListener("scroll", handleWindowScroll);
+    return () => window.removeEventListener("scroll", handleWindowScroll);
+  }, [loadingMore, hasMorePosts, loadMorePosts]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev: IProfileForm) => ({ ...prev, [name]: value }));
   };
 
-  // טיפול בבחירת קובץ להעלאה
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
     }
   };
 
-  // שמירת שינויים בפרופיל
   const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
     const token = localStorage.getItem("accessToken");
     if (!token) {
       setError("No token found");
       return;
     }
 
-    const formDataToSend = new FormData();
-    formDataToSend.append("username", formData.username);
-    if (selectedFile) {
-      formDataToSend.append("profilePicture", selectedFile);
-    }
-
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("username", formData.username);
+      if (selectedFile) {
+        formDataToSend.append("profilePicture", selectedFile);
+      }
+
       const response = await axios.put(
         `${CONFIG.SERVER_URL}/api/users/profile`,
         formDataToSend,
@@ -136,17 +136,17 @@ const UserProfile: React.FC = () => {
         }
       );
 
-      if (response.data && response.data.user.profilePicture) {
-        localStorage.setItem(
-          "profilePicture",
-          response.data.user.profilePicture
-        );
+      if (response.data?.user?.profilePicture) {
+        localStorage.setItem("profilePicture", response.data.user.profilePicture);
       }
 
-      await fetchUserData();
+      setPage(1);            
+      setPosts([]);          
+      await fetchUserData(); 
+
       setEditable(false);
-    } catch (error: any) {
-      if (error.response && error.response.status === 409) {
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response && error.response.status === 409) {
         setError("Username is already taken.");
       } else {
         setError("Error updating user data");
@@ -154,18 +154,12 @@ const UserProfile: React.FC = () => {
     }
   };
 
-  // עריכת פוסט
-  const handlePostEdit = (
-    postId: string,
-    currentTitle: string,
-    currentContent: string
-  ) => {
+  const handlePostEdit = (postId: string, currentTitle: string, currentContent: string) => {
     setPostEditMode(postId);
     setCurrentPostTitle(currentTitle);
     setCurrentPostContent(currentContent);
   };
 
-  // שמירת שינויים בפוסט
   const handleSavePostChanges = async (postId: string) => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
@@ -180,21 +174,19 @@ const UserProfile: React.FC = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setUserData((prevData: any) => ({
-        ...prevData,
-        posts: prevData.posts.map((post: any) =>
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
           post._id === postId
             ? { ...post, title: currentPostTitle, content: currentPostContent }
             : post
-        ),
-      }));
+        )
+      );
       setPostEditMode(null);
-    } catch{
+    } catch {
       setError("Error saving post changes");
     }
   };
 
-  // מחיקת פוסט
   const handleDeletePost = async (postId: string) => {
     const token = localStorage.getItem("accessToken");
     if (!token) {
@@ -206,28 +198,10 @@ const UserProfile: React.FC = () => {
       await axios.delete(`${CONFIG.SERVER_URL}/posts/${postId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      setPosts((prevPosts) =>
-        prevPosts.filter((post) => post._id !== postId)
-      );
-
+      setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
       setShowDeleteConfirmation(null);
     } catch {
       setError("Error deleting post");
-    }
-  };
-
-  // טיפול בגלילה לטעינת פוסטים נוספים
-  const handleScroll = (event: React.UIEvent<HTMLDivElement, UIEvent>) => {
-    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-
-    // אם הגענו לתחתית הדף ויש פוסטים נוספים להציג
-    if (
-      scrollHeight - scrollTop === clientHeight &&
-      !loadingMore &&
-      hasMorePosts
-    ) {
-      loadMorePosts(); // קריאה לפונקציה להטעין פוסטים נוספים
     }
   };
 
@@ -253,17 +227,10 @@ const UserProfile: React.FC = () => {
   return (
     <div className={styles.userProfileContainer}>
       {userData ? (
-        <div className={styles.userProfileCard} onScroll={handleScroll}>
-          {/* פרטי המשתמש */}
+        <div className={styles.userProfileCard}>
           <div className={styles.userInfo}>
             <img
-              src={
-                selectedFile
-                  ? URL.createObjectURL(selectedFile)
-                  : localStorage.getItem("profilePicture") ||
-                    userData.user.profilePicture ||
-                    "/default-profile-picture.png"
-              }
+              src={userData.user.profilePicture}
               className={styles.profilePicture}
               alt="Profile"
             />
@@ -286,16 +253,10 @@ const UserProfile: React.FC = () => {
                   className={styles.inputField}
                 />
                 <div className={styles.buttonGroup}>
-                  <button
-                    onClick={handleSaveChanges}
-                    className={styles.saveButton}
-                  >
+                  <button onClick={handleSaveChanges} className={styles.saveButton}>
                     Save Changes
                   </button>
-                  <button
-                    onClick={() => setEditable(false)}
-                    className={styles.cancelButton}
-                  >
+                  <button onClick={() => setEditable(false)} className={styles.cancelButton}>
                     Cancel
                   </button>
                 </div>
@@ -304,17 +265,13 @@ const UserProfile: React.FC = () => {
               <div className={styles.viewDetails}>
                 <h1 className={styles.username}>{userData.user.username}</h1>
                 <p className={styles.userEmail}>Email: {userData.user.email}</p>
-                <button
-                  onClick={() => setEditable(true)}
-                  className={styles.editButton}
-                >
+                <button onClick={() => setEditable(true)} className={styles.editButton}>
                   Edit
                 </button>
               </div>
             )}
           </div>
 
-          {/* פוסטים של המשתמש */}
           <div className={styles.userPosts}>
             <h2 className={styles.postsHeader}>My Posts</h2>
             {posts && posts.length > 0 ? (
@@ -328,9 +285,7 @@ const UserProfile: React.FC = () => {
                           <input
                             type="text"
                             value={currentPostTitle}
-                            onChange={(e) =>
-                              setCurrentPostTitle(e.target.value)
-                            }
+                            onChange={(e) => setCurrentPostTitle(e.target.value)}
                             className={styles.postInput}
                           />
                         </div>
@@ -339,9 +294,7 @@ const UserProfile: React.FC = () => {
                           <input
                             type="text"
                             value={currentPostContent}
-                            onChange={(e) =>
-                              setCurrentPostContent(e.target.value)
-                            }
+                            onChange={(e) => setCurrentPostContent(e.target.value)}
                             className={styles.postInput}
                           />
                         </div>
@@ -375,9 +328,7 @@ const UserProfile: React.FC = () => {
                         <div className={styles.postActions}>
                           <button
                             className={styles.editButton}
-                            onClick={() =>
-                              handlePostEdit(post._id, post.title, post.content)
-                            }
+                            onClick={() => handlePostEdit(post._id, post.title, post.content)}
                           >
                             Edit
                           </button>
@@ -391,7 +342,6 @@ const UserProfile: React.FC = () => {
                       </div>
                     )}
 
-                    {/* וופפוי אישור מחיקה */}
                     {showDeleteConfirmation === post._id && (
                       <div className={styles.modalOverlay}>
                         <div className={styles.modal}>
@@ -417,10 +367,9 @@ const UserProfile: React.FC = () => {
                 ))}
               </ul>
             ) : (
-              <p className={styles.noPosts}>
-                You haven't uploaded any posts yet.
-              </p>
+              <p className={styles.noPosts}>You haven't uploaded any posts yet.</p>
             )}
+
             {loadingMore && (
               <div className={styles.loadingMore}>
                 <div className={styles.spinner}></div>

@@ -32,25 +32,38 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 // פעולה להחזרת פרופיל משתמש
 export const getUserProfile = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = req.query.userId;
-    if (!userId) {
-      res.status(400).json({ message: "User ID not provided." });
-      return; 
-    }
-    const user = await userModel.findById(userId).select("-password"); 
+    const userId = req.query.userId as string;
+    let page = Number(req.query.page) || 1;
+    let limit = Number(req.query.limit) || 5;
+
+    const user = await userModel.findById(userId).select("-password");
     if (!user) {
       res.status(404).json({ message: "User not found." });
-      return; 
+      return;
     }
-    const posts = await postModel.find({ author: user.username }); 
+
+    const filter = { author: user.username };
+    const skipCount = (page - 1) * limit;
+
+    const totalPosts = await postModel.countDocuments(filter);
+    const posts = await postModel
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skipCount)
+      .limit(limit);
+
+    const hasMorePosts = skipCount + posts.length < totalPosts;
+
     res.status(200).json({
-      user: user,
-      posts: posts,
+      user,
+      posts,
+      hasMorePosts,
     });
   } catch (err) {
     res.status(500).json({ message: "Server Error." });
   }
 };
+
 
 // פעולה לעדכון פרופיל משתמש, כולל העלאת תמונה (אם קיימת)
 export const updateUserProfile = async (req: Request, res: Response): Promise<void> => {
