@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { fetchMedicalNews } from "../Services/newsService";
 import styles from "../css/MedicalNews.module.css"; 
 
@@ -11,6 +11,7 @@ interface NewsArticle {
 }
 
 const MedicalNews: React.FC = () => {
+  const searchRef = useRef<HTMLInputElement>(null);
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [query, setQuery] = useState<string>(""); // Search term
   const [loading, setLoading] = useState<boolean>(false);
@@ -32,13 +33,13 @@ const MedicalNews: React.FC = () => {
       <div className={styles.searchContainer}>
         <input
           type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          ref={searchRef}
           className={styles.searchInput}
           placeholder="Search for news..."
+          id="search-articles"
         />
         <button
-          onClick={() => setQuery(query)}
+          onClick={() => setQuery(searchRef.current?.value || "")}
           className={styles.searchButton}
         >
           Search
