@@ -13,6 +13,11 @@ const UserProfile = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // קובץ שנבחר להעלאה
   const [currentPostTitle, setCurrentPostTitle] = useState<string>(''); // כותרת פוסט לעריכה
   const [currentPostContent, setCurrentPostContent] = useState<string>(''); // תוכן פוסט לעריכה
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<string | null>(null); // ID הפוסט שמיועד למחיקה
+  const [page, setPage] = useState(1);
+  const [posts, setPosts] = useState<any[]>([]); // שמירת הפוסטים המוצגים
+  const [loadingMore, setLoadingMore] = useState(false); // מניעת טעינה כפולה
+  const [hasMorePosts, setHasMorePosts] = useState(true); // אם יש עוד פוסטים לטעינה
 
   // פונקציה לשליפת נתוני המשתמש
   const fetchUserData = async () => {
@@ -24,28 +29,61 @@ const UserProfile = () => {
     }
 
     try {
-      const response = await axios.get('http://localhost:3000/api/users/profile', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { userId: localStorage.getItem('userId') },
-      });
-      setUserData(response.data);
-      setFormData({
-        username: response.data.user.username,
-        profilePicture: response.data.user.profilePicture,
-      });
-      if (response.data.user.profilePicture) {
-        localStorage.setItem('profilePicture', response.data.user.profilePicture);
+        // שליפת נתוני המשתמש
+        const response = await axios.get('http://localhost:3000/api/users/profile', {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { userId: localStorage.getItem('userId'), page, limit: 5 },
+        });
+    
+        // עדכון נתוני המשתמש
+        setUserData(response.data);
+        setFormData({
+          username: response.data.user.username,
+          profilePicture: response.data.user.profilePicture,
+        });
+    
+        // שמירת תמונת פרופיל בלוקאלסטורג'
+        if (response.data.user.profilePicture) {
+          localStorage.setItem('profilePicture', response.data.user.profilePicture);
+        }
+    
+        // עדכון הפוסטים
+        setPosts((prevPosts) => {
+            const newPosts = response.data.posts.filter(
+              (post: any) => !prevPosts.some((p: any) => p._id === post._id) // מסנן פוסטים שכבר קיימים
+            );
+            return [...prevPosts, ...newPosts]; // מוסיף את הפוסטים החדשים לפוסטים הקיימים
+          });
+    
+        // בדיקת אם יש עוד פוסטים להציג
+        setHasMorePosts(response.data.hasMorePosts);
+      } catch (error) {
+        setError('Error fetching data');
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      setError('Error fetching data');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserData();
-  }, []);
+    };
+    
+    // פונקציה לטעינת פוסטים נוספים בעת גלילה
+    const loadMorePosts = async () => {
+      if (loadingMore || !hasMorePosts) return; // אם כבר טוענים או שאין עוד פוסטים, אל תבצע את הפעולה
+    
+      setLoadingMore(true);
+      setPage((prevPage) => prevPage + 1); // הגדלת הדף
+    
+      try {
+        // טוען את הפוסטים בדף הבא
+        await fetchUserData();
+      } catch (error) {
+        setError('Error fetching more posts');
+      } finally {
+        setLoadingMore(false);
+      }
+    };
+    
+    useEffect(() => {
+      fetchUserData();
+    }, [page]);
 
   // טיפול בשינוי ערכים בטופס עריכה
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +97,7 @@ const UserProfile = () => {
       setSelectedFile(e.target.files[0]);
     }
   };
+  
 
   // שמירת שינויים בפרופיל
   const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -111,7 +150,7 @@ const UserProfile = () => {
   };
 
   // שמירת שינויים בפוסט
-  const handleSavePostChanges = async (postId: string) => {
+  const handleSavePostChanges = async (postId: string,) => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
       setError('No token found');
@@ -120,7 +159,7 @@ const UserProfile = () => {
 
     try {
       await axios.put(
-        `http://localhost:3000/api/posts/${postId}`,
+        `http://localhost:3000/posts/${postId}`,
         { title: currentPostTitle, content: currentPostContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -146,7 +185,7 @@ const UserProfile = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:3000/api/posts/${postId}`, {
+      await axios.delete(`http://localhost:3000/posts/${postId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -154,10 +193,20 @@ const UserProfile = () => {
         ...prevData,
         posts: prevData.posts.filter((post: any) => post._id !== postId),
       }));
+      setShowDeleteConfirmation(null);
     } catch (error) {
       setError('Error deleting post');
     }
   };
+  const handleScroll = (event: React.UIEvent<HTMLDivElement, UIEvent>) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+
+    // אם הגענו לתחתית הדף ויש פוסטים נוספים להציג
+    if (scrollHeight - scrollTop === clientHeight && !loadingMore && hasMorePosts) {
+      loadMorePosts(); // קריאה לפונקציה להטעין פוסטים נוספים
+    }
+  };
+  
 
   if (loading) {
     return <p>Loading...</p>;
@@ -192,24 +241,25 @@ const UserProfile = () => {
                   onChange={handleInputChange}
                   placeholder="Enter your username"
                 />
+                {error && <div className="error-message">{error}</div>}
                 <input
                   type="file"
                   name="profilePicture"
                   onChange={handleFileChange}
                   accept="image/*"
                 />
-                <button onClick={handleSaveChanges}>Save Changes</button>
-                <button onClick={() => setEditable(false)}>Cancel</button>
+                <button className="save-button" onClick={handleSaveChanges}>Save Changes</button>
+                <button className="cancel-button" onClick={() => setEditable(false)}>Cancel</button>
               </div>
             ) : (
               <div>
                 <h1 className="username">{userData.user.username}</h1>
                 <p className="user-email">Email: {userData.user.email}</p>
-                <button onClick={() => setEditable(true)}>Edit</button>
+                <button className="edit-button" onClick={() => setEditable(true)}>Edit</button>
               </div>
             )}
           </div>
-          <div className="user-posts">
+          <div className="user-posts"onScroll={handleScroll}>
             <h2>My Posts</h2>
             {userData.posts && userData.posts.length > 0 ? (
               <ul className="posts-list">
@@ -240,9 +290,16 @@ const UserProfile = () => {
                       <div>
                         <h3>{post.title}</h3>
                         <p>{post.content}</p>
-                        <button onClick={() => handlePostEdit(post._id, post.title, post.content)}>Edit</button>
-                        <button onClick={() => handleDeletePost(post._id)}>Delete</button>
+                        <button className="edit-button" onClick={() => handlePostEdit(post._id, post.title, post.content)}>Edit</button>
+                        <button className="delete-button" onClick={() => setShowDeleteConfirmation(post._id)}>Delete</button>
                       </div>
+                    )}
+                      {showDeleteConfirmation === post._id && (
+                        <div className="delete-confirmation">
+                          <p>Are you sure you want to delete this post?</p>
+                          <button className="confirm-delete delete-button" onClick={() => handleDeletePost(post._id)}>Delete</button>
+                          <button className="cancel-delete cancel-button" onClick={() => setShowDeleteConfirmation(null)}>Cancel</button>
+                        </div>
                     )}
                   </li>
                 ))}
