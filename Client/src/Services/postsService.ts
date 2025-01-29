@@ -1,5 +1,5 @@
 import axios from 'axios';
-import SERVER_URL from "../config"; 
+import CONFIG from "../config"; 
 
 const userId = localStorage.getItem("userId");
 
@@ -16,7 +16,7 @@ export const fetchPosts = async <T>(
   limit: number,
 ): Promise<PaginatedApiResponse<T>> => {
   try {
-    const response = await axios.get(`${SERVER_URL}/posts`, {
+    const response = await axios.get(`${CONFIG.SERVER_URL}/posts`, {
       params: {
         page,
         limit,
@@ -50,7 +50,7 @@ export const fetchPosts = async <T>(
 // Fetch post by ID
 export const fetchPostById = async (id: string) => {
   try {
-    const response = await axios.get(`${SERVER_URL}/posts/${id}`, {
+    const response = await axios.get(`${CONFIG.SERVER_URL}/posts/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -66,7 +66,7 @@ export const fetchPostById = async (id: string) => {
 // Fetch comments by Post ID
 export const fetchCommentsByPostId = async (postId: string) => {
   try {
-    const response = await axios.get(`${SERVER_URL}/comments/post/${postId}`);
+    const response = await axios.get(`${CONFIG.SERVER_URL}/comments/post/${postId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching comments:', error);
@@ -78,7 +78,7 @@ export const fetchCommentsByPostId = async (postId: string) => {
 export const postComment = async (postId: string, content: string) => {
   try {
     const response = await axios.post(
-     `${SERVER_URL}/comments`,
+     `${CONFIG.SERVER_URL}/comments`,
       {
         postId,
         content,
@@ -110,7 +110,7 @@ export const createPost = async (title: string, content: string, image: File | n
     }
 
     const response = await axios.post(
-      `${SERVER_URL}/posts`,
+      `${CONFIG.SERVER_URL}/posts`,
       formData,
       {
         headers: {
@@ -135,7 +135,7 @@ export const createPost = async (title: string, content: string, image: File | n
 export const toggleLike = async (postId: string) => {
   try {
     const response = await axios.post(
-      `${SERVER_URL}/posts/${postId}/like`,
+      `${CONFIG.SERVER_URL}/posts/${postId}/like`,
       {},
       {
         headers: {

@@ -4,7 +4,7 @@ import { Message } from "../types/message";
 import { User } from "../types/user";
 import styles from "../css/ChatPage.module.css"; 
 import { Socket } from "socket.io-client";
-import SERVER_URL from "../config"; 
+import CONFIG from "../config"; 
 
 const Chat: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -24,7 +24,7 @@ const Chat: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${SERVER_URL}/api/users`);
+        const response = await fetch(`${CONFIG.SERVER_URL}/api/users`);
         const data: User[] = await response.json();
 
         const filtered = data.filter((u) => u._id !== currentUserId);
@@ -61,7 +61,7 @@ const Chat: React.FC = () => {
 
   const fetchChatHistory = async (otherUserId: string) => {
     try {
-      const response = await fetch(`${SERVER_URL}/api/chat/${currentUserId}/${otherUserId}`);
+      const response = await fetch(`${CONFIG.SERVER_URL}/api/chat/${currentUserId}/${otherUserId}`);
       const data = await response.json();
       setMessages(data);
     } catch (error) {

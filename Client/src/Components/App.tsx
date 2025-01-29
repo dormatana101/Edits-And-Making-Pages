@@ -10,7 +10,7 @@ import PostDetails from "./PostDetails";
 import OAuthCallback from "./OAuthCallback"; 
 import ChatGPTPage from "./ChatGPTPage";
 import UserProfile from "./UserProfile";
-
+import Articles from "./MedicalNews";
 
 function App() {
   return (
@@ -26,6 +26,7 @@ function App() {
           <Route path="create-post" element={<CreatePost />} />
           <Route path="post/:postId" element={<PostDetails />} /> 
           <Route path="chatgpt" element={<ChatGPTPage />} /> 
+          <Route path="articles" element={< Articles/>} /> 
         </Route>
       </Routes>
     </Router>

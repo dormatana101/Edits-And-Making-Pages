@@ -1,9 +1,9 @@
 import socketIo, { Socket } from "socket.io-client";
-import SERVER_URL from "../config"; 
+import CONFIG from "../config"; 
 
 
 export const createSocket = (userId: string): typeof Socket => {
-  return socketIo(`${SERVER_URL}`, {
+  return socketIo(`${CONFIG.SERVER_URL}`, {
     query: { userId },
     transports: ["websocket"],
   });

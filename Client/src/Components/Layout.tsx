@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { FaUser, FaClipboard, FaPlus, FaComments, FaRobot } from "react-icons/fa";
+import {MdArticle} from "react-icons/md";
 import styles from "../css/Layout.module.css"; 
 
 const Layout: React.FC = () => {
@@ -46,6 +47,11 @@ const Layout: React.FC = () => {
           <li className={styles.sidebarItem}>
             <Link to="/chatgpt" className={styles.sidebarLink}> 
               <FaRobot className={styles.icon} /> ChatGPT
+            </Link>
+          </li>
+          <li className={styles.sidebarItem}>
+            <Link to="/articles" className={styles.sidebarLink}> 
+              <MdArticle className={styles.icon} /> Articles
             </Link>
           </li>
         </ul>

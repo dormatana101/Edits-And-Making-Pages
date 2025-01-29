@@ -11,7 +11,7 @@
   display: flex;
   width: 80%;
   max-width: 900px;
-  height: 70%;
+  height: 78%;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
@@ -110,8 +110,7 @@
 .errorMessage {
   color: #e74c3c;
   font-size: 0.875rem;
-  margin-top: -15px;
-  margin-bottom: 15px;
+  
 }
 
 .footer {

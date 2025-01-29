@@ -6,7 +6,7 @@ import { Post } from "../types/post";
 import { Comment } from "../types/comment";
 import CommentForm from "./CommentForm";
 import styles from "../css/PostDetails.module.css"; 
-import SERVER_URL from "../config"; 
+import CONFIG from "../config"; 
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -104,7 +104,7 @@ const PostDetails = () => {
       <div className={styles.postDetails}>
         <div className={styles.postHeader}>
           {/* Аватар автора (опционально) */}
-          {/* <img src={`${SERVER_URL}${post.authorAvatar}`} alt="Author Avatar" className={styles.authorAvatar} /> */}
+          {/* <img src={`${CONFIG.SERVER_URL}${post.authorAvatar}`} alt="Author Avatar" className={styles.authorAvatar} /> */}
           <div className={styles.postAuthorInfo}>
             <span className={styles.authorName}>{post.author}</span>
             <span className={styles.postDate}>{new Date(post.createdAt).toLocaleString()}</span>
@@ -114,7 +114,7 @@ const PostDetails = () => {
         <p className={styles.postContent}>{post.content}</p>
         {post.image && (
           <img
-            src={`${SERVER_URL}${post.image}`}
+            src={`${CONFIG.SERVER_URL}${post.image}`}
             alt="Post"
             className={styles.postImage}
             loading="lazy"
