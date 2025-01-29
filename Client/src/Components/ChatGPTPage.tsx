@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import "../css/ChatGPTPage.css";
-import SERVER_URL from "../config"; 
+// client/src/Components/ChatGPTPage.tsx
 
+import React, { useState, useEffect, useRef } from "react";
+import styles from "../css/ChatGPTPage.module.css"; // Импортируем CSS-модуль
+import SERVER_URL from "../config"; 
 
 interface ChatMessage {
   sender: "user" | "gpt";
@@ -39,7 +40,6 @@ const ChatGPTPage: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-
         },
         body: JSON.stringify({
           message: userMessage,
@@ -85,36 +85,37 @@ const ChatGPTPage: React.FC = () => {
   };
 
   return (
-    <div className="chatgpt-container">
-      <h2>Chat with ChatGPT</h2>
-      {error && <div className="error-message">{error}</div>}
-      <div className="chatgpt-messages">
+    <div className={styles.chatgptContainer}>
+      <h2 className={styles.header}>Chat with ChatGPT</h2>
+      {error && <div className={styles.errorMessage}>{error}</div>}
+      <div className={styles.messagesContainer}>
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={`chatgpt-message ${
-              msg.sender === "user" ? "user-message" : "gpt-message"
+            className={`${styles.message} ${
+              msg.sender === "user" ? styles.userMessage : styles.gptMessage
             }`}
           >
-            <div className="message-content">{msg.content}</div>
+            <div className={styles.messageContent}>{msg.content}</div>
           </div>
         ))}
         {loading && (
-          <div className="chatgpt-message gpt-message">
-            <div className="message-content">ChatGPT is responding...</div>
+          <div className={`${styles.message} ${styles.gptMessage}`}>
+            <div className={styles.messageContent}>ChatGPT is responding...</div>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
-      <div className="chatgpt-input-area">
+      <div className={styles.inputArea}>
         <input
           type="text"
           placeholder="Ask a question..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
+          className={styles.inputField}
         />
-        <button onClick={handleSend} disabled={loading}>
+        <button onClick={handleSend} disabled={loading} className={styles.sendButton}>
           {loading ? "Sending..." : "Send"}
         </button>
       </div>

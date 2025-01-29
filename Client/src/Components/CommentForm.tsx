@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import "../css/CommentForm.css"; 
+import styles from "../css/CommentForm.module.css"; // Импортируем CSS-модуль
 import { generateSuggestedComment } from "../Services/commentsService"; // Импортируем функцию API
 
 interface CommentFormProps {
@@ -42,19 +42,19 @@ const CommentForm: React.FC<CommentFormProps> = ({ newComment, setNewComment, on
   };
 
   return (
-    <form onSubmit={onSubmit} className="comment-form">
+    <form onSubmit={onSubmit} className={styles.commentForm}>
       <textarea
         ref={textareaRef}
         value={newComment}
         onChange={handleTextareaChange}
         placeholder="Add a comment..."
         required
-        className="auto-resize"
+        className={`${styles.autoResize} ${styles.textarea}`}
       ></textarea>
-      <div className="comment-form-buttons">
+      <div className={styles.commentFormButtons}>
         <button
           type="button"
-          className="generate-comment-button"
+          className={styles.generateCommentButton}
           onClick={handleGenerateComment}
           disabled={isGenerating}
         >
@@ -62,7 +62,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ newComment, setNewComment, on
         </button>
         <button
           type="submit"
-          className="post-comment-button"
+          className={styles.postCommentButton}
           disabled={isGenerating}
         >
           Post Comment

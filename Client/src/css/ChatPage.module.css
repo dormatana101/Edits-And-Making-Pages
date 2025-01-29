@@ -1,13 +1,15 @@
-.fb-chat-container {
+/* client/src/css/ChatPage.module.css */
+
+.chatContainer {
   display: flex;
   flex-direction: row-reverse; 
   width: 100%;
-  min-height: calc(100vh - 60px - 40px);
+  min-height: calc(100vh - 60px - 40px); /* Убедитесь, что высота учитывает шапку и возможные отступы */
   box-sizing: border-box;
   background-color: #f0f2f5;
 }
 
-.fb-chat-sidebar {
+.chatSidebar {
   flex: 0 0 300px;
   background-color: #fff;
   border-left: 1px solid #ddd;
@@ -16,20 +18,20 @@
   box-sizing: border-box;
 }
 
-.fb-chat-sidebar h3 {
+.chatSidebar h3 {
   margin-top: 0;
   margin-bottom: 1rem;
   font-size: 1.25rem;
   color: #1d1d1f;
 }
 
-.fb-chat-users-list {
+.usersList {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.fb-chat-users-list li {
+.userItem {
   cursor: pointer;
   padding: 8px 12px;
   border-radius: 8px;
@@ -37,19 +39,19 @@
   margin-bottom: 4px;
 }
 
-.fb-chat-users-list li:hover {
+.userItem:hover {
   background-color: #e4e6eb;
 }
 
-.fb-chat-main {
+.chatMain {
   flex: 1;
   display: flex;
   flex-direction: column;
   background-color: #f0f2f5;
-  height: 850px;
+  height: 850px; /* Рассмотрите возможность использования относительных единиц или 100% */
 }
 
-.fb-chat-header {
+.chatHeader {
   background-color: #fff;
   border-bottom: 1px solid #ddd;
   padding: 10px 16px;
@@ -58,7 +60,7 @@
   box-sizing: border-box;
 }
 
-.fb-chat-messages {
+.chatMessages {
   flex: 1;
   display: flex;          
   flex-direction: column; 
@@ -66,35 +68,61 @@
   overflow-y: auto;
   background-color: #f0f2f5;
   box-sizing: border-box;
+  scroll-behavior: smooth; /* Добавлено для плавной прокрутки */
 }
 
-.fb-chat-message {
+/* Стили скроллбара */
+.chatMessages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chatMessages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.chatMessages::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.chatMessages::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+.chatMessage {
   display: inline-block; 
   max-width: 60%;
   margin-bottom: 10px;
   padding: 8px 12px;
   border-radius: 8px;
   line-height: 1.4;
+  animation: fadeIn 0.3s ease-in-out; /* Анимация появления сообщений */
 }
 
-.fb-chat-message-sender {
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.messageSender {
   font-weight: 600;
   margin-right: 5px;
 }
 
-.fb-chat-message.sent {
+.sent {
   margin-left: auto;         
   background-color: #d9fdd3;  
   border-top-right-radius: 0;   
 }
 
-.fb-chat-message.received {
+.received {
   margin-right: auto;         
   background-color: #fff;
   border-top-left-radius: 0;
 }
 
-.fb-chat-input-area {
+.chatInputArea {
   background-color: #fff;
   border-top: 1px solid #ddd;
   padding: 8px 16px;
@@ -104,15 +132,21 @@
   box-sizing: border-box;
 }
 
-.fb-chat-input-area input[type="text"] {
+.messageInput {
   flex: 1;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 16px;
   outline: none;
+  transition: border-color 0.2s ease;
 }
 
-.fb-chat-input-area button {
+.messageInput:focus {
+  border-color: #1877f2;
+  box-shadow: 0 0 5px rgba(24, 119, 242, 0.3);
+}
+
+.sendButton {
   padding: 8px 16px;
   background-color: #1877f2; 
   color: #fff;
@@ -123,15 +157,39 @@
   transition: background-color 0.2s ease;
 }
 
-.fb-chat-input-area button:hover {
+.sendButton:hover {
   background-color: #166fe5;
 }
 
-.fb-chat-placeholder {
+.chatPlaceholder {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #555;
+}
+
+/* Дополнительные улучшения */
+
+@media (max-width: 768px) {
+  .chatContainer {
+    flex-direction: column;
+    min-height: calc(100vh - 60px - 40px);
+  }
+
+  .chatSidebar {
+    flex: none;
+    width: 100%;
+    border-left: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .chatMain {
+    height: auto;
+  }
+
+  .chatMessages {
+    height: 300px; /* Пример фиксированной высоты для мобильных устройств */
+  }
 }

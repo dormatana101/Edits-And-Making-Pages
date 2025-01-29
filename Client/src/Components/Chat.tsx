@@ -1,12 +1,12 @@
-import React, { useEffect, useState} from "react";
+// client/src/Components/Chat.tsx
+
+import React, { useEffect, useState, useRef } from "react";
 import { createSocket, sendMessage, listenForMessages, startChat, disconnectSocket } from "../Services/SocketService";
 import { Message } from "../types/message";
 import { User } from "../types/user";
-import "../css/ChatPage.css";
+import styles from "../css/ChatPage.module.css"; // Импортируем CSS-модуль
 import { Socket } from "socket.io-client";
 import SERVER_URL from "../config"; 
-
-
 
 const Chat: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -15,7 +15,15 @@ const Chat: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [socket, setSocket] = useState<typeof Socket | null>(null);
+  const [socket, setSocket] = useState<typeof Socket | null>(null); // Исправлено типирование
+
+  // Реф для отслеживания конца списка сообщений
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Функция прокрутки к последнему сообщению
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -50,6 +58,10 @@ const Chat: React.FC = () => {
       disconnectSocket(newSocket);
     };
   }, [currentUserId]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const fetchChatHistory = async (otherUserId: string) => {
     try {
@@ -90,26 +102,26 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <div className="fb-chat-container">
-      <div className="fb-chat-sidebar">
+    <div className={styles.chatContainer}>
+      <div className={styles.chatSidebar}>
         <h3>Users</h3>
-        <ul className="fb-chat-users-list">
+        <ul className={styles.usersList}>
           {users.map((user) => (
-            <li key={user._id} onClick={() => startChatHandler(user)}>
+            <li key={user._id} onClick={() => startChatHandler(user)} className={styles.userItem}>
               {user.username}
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="fb-chat-main">
+      <div className={styles.chatMain}>
         {selectedUser ? (
           <>
-            <div className="fb-chat-header">
+            <div className={styles.chatHeader}>
               Chat with {selectedUser.username}
             </div>
 
-            <div className="fb-chat-messages">
+            <div className={styles.chatMessages}>
               {messages.map((msg, index) => {
                 const isMyMessage = msg.from === currentUserId;
                 const fromName = userMap[msg.from] || msg.from;
@@ -117,27 +129,30 @@ const Chat: React.FC = () => {
                 return (
                   <div
                     key={index}
-                    className={`fb-chat-message ${isMyMessage ? "sent" : "received"}`}
+                    className={`${styles.chatMessage} ${isMyMessage ? styles.sent : styles.received}`}
                   >
-                    <span className="fb-chat-message-sender">{fromName}:</span>
+                    <span className={styles.messageSender}>{fromName}:</span>
                     {msg.content}
                   </div>
                 );
               })}
+              <div ref={messagesEndRef} />
             </div>
 
-            <div className="fb-chat-input-area">
+            <div className={styles.chatInputArea}>
               <input
                 type="text"
                 placeholder="Write a message..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' ? sendMessageHandler() : null} // Добавлена обработка Enter
+                className={styles.messageInput}
               />
-              <button onClick={sendMessageHandler}>Send</button>
+              <button onClick={sendMessageHandler} className={styles.sendButton}>Send</button>
             </div>
           </>
         ) : (
-          <div className="fb-chat-placeholder">
+          <div className={styles.chatPlaceholder}>
             <h2>Welcome to the Chat</h2>
             <p>Select a user on the right to start chatting!</p>
           </div>

@@ -3,15 +3,15 @@ import { fetchPosts } from "../Services/postsService";
 import { Post } from "../types/post";
 import PostCard from "./PostCard";
 import { useLocation } from "react-router-dom";
-import "../css/AllPosts.css";
+import styles from "../css/AllPosts.module.css";
 
 const AllPosts = () => {
   const location = useLocation();
-  const [posts, setPosts] = useState<Post[]>([]); 
-  const [loading, setLoading] = useState<boolean>(false); 
-  const [error, setError] = useState<string | null>(null); 
-  const [page, setPage] = useState<number>(1); 
-  const [hasMore, setHasMore] = useState<boolean>(true); 
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const likedPosts = location.state?.likedPosts || [];
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const AllPosts = () => {
     };
 
     getPosts();
-  }, [page]); 
+  }, [page]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,19 +56,23 @@ const AllPosts = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll); 
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [loading, hasMore]);
 
   return (
-      <div className="all-posts">
-        <h2>All Posts</h2>
-        {error && <p className="error">{error}</p>}
+    <div className={styles.allPostsContainer}>
+      <h2 className={styles.pageTitle}>Feed</h2>
+      {error && <p className={styles.error}>{error}</p>}
+      <div className={styles.postsList}>
         {posts.map((post) => (
           <PostCard key={post._id} post={post} likedPosts={likedPosts} />
         ))}
-        {loading && <p>Loading...</p>}
-        {!hasMore && !loading && <p>No more posts available.</p>}
       </div>
+      {loading && <p className={styles.loading}>Loading...</p>}
+      {!hasMore && !loading && (
+        <p className={styles.noMorePosts}>No more posts available.</p>
+      )}
+    </div>
   );
 };
 

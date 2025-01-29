@@ -1,4 +1,7 @@
+// client/src/Components/FormField.tsx
+
 import React, { forwardRef } from "react";
+import styles from "../css/FormField.module.css"; // Импортируем CSS-модуль
 
 interface FormFieldProps {
   label: string;
@@ -12,14 +15,14 @@ interface FormFieldProps {
 const FormField = forwardRef<HTMLTextAreaElement, FormFieldProps>(
   ({ label, value, onChange, isTextArea, textareaRef, className }, ref) => {
     return (
-      <div className={`form-field ${isTextArea ? "textarea-field" : "input-field"} ${className || ""}`}>
-        <label>{label}</label>
+      <div className={`${styles.formField} ${isTextArea ? styles.textareaField : styles.inputField} ${className || ""}`}>
+        <label className={styles.label}>{label}</label>
         {isTextArea ? (
           <textarea
             ref={textareaRef || ref}
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className={`textarea ${className || ""}`}
+            className={`${styles.textarea} ${className || ""}`}
             rows={3} 
           />
         ) : (
@@ -27,7 +30,7 @@ const FormField = forwardRef<HTMLTextAreaElement, FormFieldProps>(
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className={`input ${className || ""}`}
+            className={`${styles.input} ${className || ""}`}
           />
         )}
       </div>

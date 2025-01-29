@@ -4,10 +4,9 @@ import { fetchPostById, postComment } from "../Services/postsService";
 import { fetchCommentsByPostId } from "../Services/commentsService"; 
 import { Post } from "../types/post";
 import { Comment } from "../types/comment";
-import CommentForm from "../Components/CommentForm";
-import "../css/PostDetails.css";
+import CommentForm from "./CommentForm";
+import styles from "../css/PostDetails.module.css"; // Импортируем CSS-модуль
 import SERVER_URL from "../config"; 
-
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -62,7 +61,6 @@ const PostDetails = () => {
 
   const lastCommentRef = useRef<HTMLDivElement | null>(null);
 
-
   useEffect(() => {
     if (observer.current) observer.current.disconnect();
 
@@ -98,40 +96,57 @@ const PostDetails = () => {
   };
 
   if (!post) {
-    return <p>Loading post...</p>;
+    return <p className={styles.loading}>Loading post...</p>;
   }
 
   return (
-    <div className="post-details">
-      <div className="post">
-        <h2>{post.title}</h2>
-        <p>{post.content}</p>
-        {post.image && (<img src={`${SERVER_URL}${post.image}`} alt="Post image" className="post-image" />)}
-        <small>By: {post.author}</small>
-        <p>{post.createdAt ? new Date(post.createdAt).toLocaleString() : "Unknown date"}</p>
-
-        <div className="comments-section-postDetails">
-          <h3>Comments</h3>
-          <div className="comments-list">
-            {comments.map((comment, index) => (
-              <div
-                key={comment._id.toString()}
-                ref={index === comments.length - 1 ? lastCommentRef : null}
-                className="comment"
-              >
-                <p>
-                  <strong>{comment.author}</strong>: {comment.content}
-                </p>
-              </div>
-            ))}
+    <div className={styles.postDetailsContainer}>
+      <div className={styles.postDetails}>
+        <div className={styles.postHeader}>
+          {/* Аватар автора (опционально) */}
+          {/* <img src={`${SERVER_URL}${post.authorAvatar}`} alt="Author Avatar" className={styles.authorAvatar} /> */}
+          <div className={styles.postAuthorInfo}>
+            <span className={styles.authorName}>{post.author}</span>
+            <span className={styles.postDate}>{new Date(post.createdAt).toLocaleString()}</span>
           </div>
-          <CommentForm 
-            newComment={newComment} 
-            setNewComment={setNewComment} 
-            onSubmit={handleCommentSubmit} 
-            postId={postId!} 
-          />
         </div>
+        <h2 className={styles.postTitle}>{post.title}</h2>
+        <p className={styles.postContent}>{post.content}</p>
+        {post.image && (
+          <img
+            src={`${SERVER_URL}${post.image}`}
+            alt="Post"
+            className={styles.postImage}
+            loading="lazy"
+          />
+        )}
+      </div>
+
+      <div className={styles.commentsSection}>
+        <h3 className={styles.commentsHeader}>Comments</h3>
+        <div className={styles.commentsList}>
+          {comments.map((comment, index) => (
+            <div
+              key={comment._id.toString()}
+              ref={index === comments.length - 1 ? lastCommentRef : null}
+              className={styles.comment}
+            >
+              <p>
+                <strong>{comment.author}</strong>: {comment.content}
+              </p>
+            </div>
+          ))}
+          {loading && <p className={styles.loading}>Loading comments...</p>}
+          {!hasMore && !loading && (
+            <p className={styles.noMoreComments}>No more comments available.</p>
+          )}
+        </div>
+        <CommentForm 
+          newComment={newComment} 
+          setNewComment={setNewComment} 
+          onSubmit={handleCommentSubmit} 
+          postId={postId!} 
+        />
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
+// client/src/Components/Register.tsx
+
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import '../Css/Register.css';
+import styles from '../css/Register.module.css'; // Импортируем CSS-модуль
 import SERVER_URL from "../config"; 
-
 
 const Register = () => {
   const navigate = useNavigate();
@@ -101,64 +102,76 @@ const Register = () => {
   };
 
   return (
-    <div className="fullscreen-bg">
-      <div className="register-container">
-        <h2 className="Headline">Register</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Username</label>
+    <div className={styles.fullscreenBg}>
+      <div className={styles.registerContainer}>
+        <h2 className={styles.headline}>Register</h2>
+        <form onSubmit={handleSubmit} className={styles.registerForm}>
+          <div className={styles.formGroup}>
+            <label htmlFor="username" className={styles.label}>Username</label>
             <input
               type="text"
+              id="username"
               name="username"
               value={formData.username}
               onChange={handleChange}
+              className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
+              placeholder="Enter your username"
             />
-            {errors.username && <p className="error">{errors.username}</p>}
+            {errors.username && <p className={styles.error}>{errors.username}</p>}
           </div>
 
-          <div>
-            <label>Email</label>
+          <div className={styles.formGroup}>
+            <label htmlFor="email" className={styles.label}>Email</label>
             <input
               type="email"
+              id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
+              className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+              placeholder="Enter your email"
             />
-            {errors.email && <p className="error">{errors.email}</p>}
+            {errors.email && <p className={styles.error}>{errors.email}</p>}
           </div>
 
-          <div>
-            <label>Password</label>
+          <div className={styles.formGroup}>
+            <label htmlFor="password" className={styles.label}>Password</label>
             <input
               type="password"
+              id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
+              className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
+              placeholder="Create a password"
             />
-            {errors.password && <p className="error">{errors.password}</p>}
+            {errors.password && <p className={styles.error}>{errors.password}</p>}
           </div>
 
-          <div>
-            <label>Confirm Password</label>
+          <div className={styles.formGroup}>
+            <label htmlFor="confirmPassword" className={styles.label}>Confirm Password</label>
             <input
               type="password"
+              id="confirmPassword"
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
+              className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ''}`}
+              placeholder="Confirm your password"
             />
             {errors.confirmPassword && (
-              <p className="error">{errors.confirmPassword}</p>
+              <p className={styles.error}>{errors.confirmPassword}</p>
             )}
           </div>
 
-          {errors.server && <p className="error">{errors.server}</p>}
-          {successMessage && <p className="success">{successMessage}</p>}
+          {errors.server && <p className={styles.error}>{errors.server}</p>}
+          {successMessage && <p className={styles.success}>{successMessage}</p>}
 
-          <button type="submit" disabled={isLoading}>
+          <button type="submit" className={styles.registerButton} disabled={isLoading}>
             {isLoading ? 'Registering...' : 'Register'}
           </button>
-          <p>
-           Already have an account? <Link to="/login">Login here</Link>
+          <p className={styles.loginPrompt}>
+            Already have an account? <Link to="/login" className={styles.loginLink}>Login here</Link>
           </p>
         </form>
       </div>

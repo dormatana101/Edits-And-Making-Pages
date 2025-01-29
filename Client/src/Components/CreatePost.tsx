@@ -1,9 +1,11 @@
+// client/src/Components/CreatePost.tsx
+
 import React, { useState, useRef, useEffect } from "react";
 import { createPost } from "../Services/postsService"; 
 import { AiFillPicture } from "react-icons/ai";
 import { FaTimes } from "react-icons/fa";
-import FormField from "../Components/FormField"; 
-import "../css/CreatePost.css";
+import FormField from "./FormField"; 
+import styles from "../css/CreatePost.module.css"; // Импортируем CSS-модуль
 
 const CreatePost: React.FC = () => {
   const [newPostContent, setNewPostContent] = useState<string>("");
@@ -13,8 +15,8 @@ const CreatePost: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCreatePost = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -58,10 +60,15 @@ const CreatePost: React.FC = () => {
       setImagePreview(URL.createObjectURL(file));
     }
   };
+
   const handleRemoveImage = () => {
     setImage(null);
     setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
+
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -70,58 +77,68 @@ const CreatePost: React.FC = () => {
   }, []);
 
   return (
-    <div className="container">
-      <div className="posts-container">
-        <div className="create-post-form-container">
-          <h2>Create Post</h2>
-          {confirmationMessage && (
-            <div className="confirmation-message">{confirmationMessage}</div>
-          )}
-          {error && <div className="error-message">{error}</div>}
-          <form onSubmit={handleCreatePost} className="create-post-form">
-          <label>Post Image</label>
+    <div className={styles.container}>
+      <div className={styles.createPostContainer}>
+        <h2 className={styles.heading}>Create Post</h2>
+        {confirmationMessage && (
+          <div className={styles.confirmationMessage}>{confirmationMessage}</div>
+        )}
+        {error && <div className={styles.errorMessage}>{error}</div>}
+        <form onSubmit={handleCreatePost} className={styles.createPostForm}>
+          <FormField
+            label="Post Title"
+            value={newPostTitle}
+            onChange={setNewPostTitle}
+            className={styles.formField}
+          />
+          <FormField
+            label="Write your post..."
+            value={newPostContent}
+            onChange={handleTextareaChange}
+            isTextArea
+            textareaRef={textareaRef}
+            className={styles.formField}
+          />
 
-          <div className="image-upload-icon" onClick={() => document.getElementById('fileInput')?.click()}>
-              <AiFillPicture size={30} />
-              </div>
-            <FormField
-              label="Post Title"
-              value={newPostTitle}
-              onChange={setNewPostTitle}
-            />
-            <FormField
-              label="Write your post..."
-              value={newPostContent}
-              onChange={handleTextareaChange}
-              isTextArea
-              textareaRef={textareaRef}
-              className="auto-resize" 
-            />
-             <div className="form-field">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                style={{ display: "none" }}
-                className="input-file"
-                id="fileInput"
-              />
-               
-               {imagePreview && (
-                <div className="image-preview-container">
-                  <img src={imagePreview} alt="Selected" className="image-preview" />
-                  <button type="button" className="remove-image-button" onClick={handleRemoveImage}>
-                    <FaTimes />
-                  </button>
-                </div>
-              )}
-
-            </div>
-            <button type="submit" className="create-post-button">
-              Create Post
+          <div className={styles.uploadSection}>
+            <button
+              type="button"
+              className={styles.imageUploadButton}
+              onClick={() => fileInputRef.current?.click()}
+              aria-label="Add Photo"
+            >
+              <AiFillPicture size={20} className={styles.uploadIcon} />
+              <span className={styles.uploadText}>Add Photo</span>
             </button>
-          </form>
-        </div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ display: "none" }}
+              className={styles.inputFile}
+              id="fileInput"
+              ref={fileInputRef}
+            />
+          </div>
+
+          {imagePreview && (
+            <div className={styles.imagePreviewContainer}>
+              <img src={imagePreview} alt="Selected" className={styles.imagePreview} />
+              <button
+                type="button"
+                className={styles.removeImageButton}
+                onClick={handleRemoveImage}
+                aria-label="Remove image"
+              >
+                <FaTimes />
+              </button>
+            </div>
+          )}
+
+          <button type="submit" className={styles.createPostButton}>
+            Create Post
+          </button>
+        </form>
       </div>
     </div>
   );
