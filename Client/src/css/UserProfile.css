@@ -1,5 +1,28 @@
 .fullscreenBg {
   display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px;
+  background-color: #f0f0f0;
+  min-height: 100vh;
+}
+
+/* Profile card styles */
+.user-profile-card {
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 900px;
+  padding: 40px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* User info section */
+.user-info {
+  display: flex;
+  justify-content: left;
   align-items: center;
   margin-bottom: 30px;
 }
@@ -29,6 +52,7 @@
   color: #555;
 }
 
+/* General button styles */
 button {
   padding: 8px 20px;
   background-color: #1877f2;
@@ -43,7 +67,65 @@ button:hover {
   background-color: #125e97;
 }
 
+/* Edit button */
+.edit-button {
+  padding: 8px 20px;
+  background-color: #ffa500; /* Orange color */
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
 
+.edit-button:hover {
+  background-color: #cc8400; /* Darker orange on hover */
+}
+
+/* Save button */
+.save-button {
+  padding: 8px 20px;
+  background-color: #28a745; /* Green color */
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.save-button:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+/* Delete button */
+.delete-button {
+  padding: 8px 20px;
+  background-color: #dc3545; /* Red color */
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+/* Cancel button */
+.cancel-button {
+  padding: 8px 20px;
+  background-color: #6c757d; /* Grey color */
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.cancel-button:hover {
+  background-color: #5a6268; /* Darker grey on hover */
+}
 
 /* Group buttons together and add margin between them */
 .button-group {
@@ -256,18 +338,3 @@ button:hover {
   border-radius: 5px;
   border: 1px solid #ccc;
 }
-
-button {
-  padding: 8px 20px;
-  background-color: #1877f2;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #125e97;
-}
-
