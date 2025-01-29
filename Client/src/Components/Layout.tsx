@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { FaUser, FaClipboard, FaPlus, FaComments, FaRobot } from "react-icons/fa";
-import "../css/Layout.css";
+import styles from "../css/Layout.module.css"; 
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
@@ -15,43 +15,43 @@ const Layout: React.FC = () => {
   };
 
   return (
-    <div className="layout-dashboard-container">
-      <header className="layout-top-bar">
-        <h2>Ease Platform</h2>
-        <button className="layout-logout-button" onClick={handleLogout}>Logout</button>
+    <div className={styles.dashboardContainer}>
+      <header className={styles.topBar}>
+        <h2 className={styles.title}>Ease Platform</h2>
+        <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
       </header>
 
-      <aside className="layout-sidebar">
-        <ul>
-          <li>
-            <Link to="/chat" className="layout-sidebar-link">
-              <FaComments className="layout-icon" /> Chat 
+      <aside className={styles.sidebar}>
+        <ul className={styles.sidebarList}>
+          <li className={styles.sidebarItem}>
+            <Link to="/chat" className={styles.sidebarLink}>
+              <FaComments className={styles.icon} /> Chat 
             </Link>
           </li>
-          <li>
-            <Link to="/profile" className="layout-sidebar-link">
-              <FaUser className="layout-icon" /> Profile
+          <li className={styles.sidebarItem}>
+            <Link to="/profile" className={styles.sidebarLink}>
+              <FaUser className={styles.icon} /> Profile
             </Link>
           </li>
-          <li>
-            <Link to="/all-posts" className="layout-sidebar-link">
-              <FaClipboard className="layout-icon" /> Posts
+          <li className={styles.sidebarItem}>
+            <Link to="/all-posts" className={styles.sidebarLink}>
+              <FaClipboard className={styles.icon} /> Posts
             </Link>
           </li>
-          <li>
-            <Link to="/create-post" className="layout-sidebar-link">
-              <FaPlus className="layout-icon" /> Create Posts
+          <li className={styles.sidebarItem}>
+            <Link to="/create-post" className={styles.sidebarLink}>
+              <FaPlus className={styles.icon} /> Create Posts
             </Link>
           </li>
-          <li>
-            <Link to="/chatgpt" className="layout-sidebar-link"> 
-              <FaRobot className="layout-icon" /> ChatGPT
+          <li className={styles.sidebarItem}>
+            <Link to="/chatgpt" className={styles.sidebarLink}> 
+              <FaRobot className={styles.icon} /> ChatGPT
             </Link>
           </li>
         </ul>
       </aside>
 
-      <main className="layout-main-content">
+      <main className={styles.mainContent}>
         <Outlet />
       </main>
     </div>
