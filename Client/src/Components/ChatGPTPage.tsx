@@ -1,7 +1,5 @@
-// client/src/Components/ChatGPTPage.tsx
-
 import React, { useState, useEffect, useRef } from "react";
-import styles from "../css/ChatGPTPage.module.css"; // Импортируем CSS-модуль
+import styles from "../css/ChatGPTPage.module.css";
 import SERVER_URL from "../config"; 
 
 interface ChatMessage {

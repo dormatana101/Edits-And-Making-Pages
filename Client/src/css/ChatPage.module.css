@@ -1,10 +1,8 @@
-/* client/src/css/ChatPage.module.css */
-
 .chatContainer {
   display: flex;
   flex-direction: row-reverse; 
   width: 100%;
-  min-height: calc(100vh - 60px - 40px); /* Убедитесь, что высота учитывает шапку и возможные отступы */
+  min-height: calc(100vh - 60px - 40px); 
   box-sizing: border-box;
   background-color: #f0f2f5;
 }
@@ -48,7 +46,7 @@
   display: flex;
   flex-direction: column;
   background-color: #f0f2f5;
-  height: 850px; /* Рассмотрите возможность использования относительных единиц или 100% */
+  height: 850px; 
 }
 
 .chatHeader {
@@ -68,10 +66,9 @@
   overflow-y: auto;
   background-color: #f0f2f5;
   box-sizing: border-box;
-  scroll-behavior: smooth; /* Добавлено для плавной прокрутки */
+  scroll-behavior: smooth; 
 }
 
-/* Стили скроллбара */
 .chatMessages::-webkit-scrollbar {
   width: 8px;
 }
@@ -97,7 +94,7 @@
   padding: 8px 12px;
   border-radius: 8px;
   line-height: 1.4;
-  animation: fadeIn 0.3s ease-in-out; /* Анимация появления сообщений */
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
@@ -170,7 +167,6 @@
   color: #555;
 }
 
-/* Дополнительные улучшения */
 
 @media (max-width: 768px) {
   .chatContainer {
@@ -190,6 +186,6 @@
   }
 
   .chatMessages {
-    height: 300px; /* Пример фиксированной высоты для мобильных устройств */
+    height: 300px;
   }
 }

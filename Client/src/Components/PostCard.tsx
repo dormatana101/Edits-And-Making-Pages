@@ -40,8 +40,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   return (
     <div className={styles.postCard}>
       <div className={styles.postHeader}>
-        {/* Аватар автора (опционально) */}
-        {/* <img src={`${SERVER_URL}${post.authorAvatar}`} alt="Author Avatar" className={styles.authorAvatar} /> */}
         <div className={styles.postAuthorInfo}>
           <span className={styles.authorName}>{post.author}</span>
           <span className={styles.postDate}>{formatDate(post.createdAt)}</span>

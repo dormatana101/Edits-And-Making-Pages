@@ -1,10 +1,8 @@
-/* client/src/css/Register.module.css */
-
 .fullscreenBg {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f2f5; /* Светло-серый фон, похожий на Facebook */
+  background: #f0f2f5; 
   height: 100vh;
   width: 100%;
 }
@@ -20,7 +18,7 @@
 }
 
 .headline {
-  color: #1877f2; /* Синий цвет, как у Facebook */
+  color: #1877f2; 
   margin-bottom: 30px;
   font-size: 2rem;
 }
@@ -49,7 +47,7 @@
   border-radius: 8px;
   font-size: 1rem;
   color: #2e2e2e;
-  background-color: #f0f2f5; /* Светлый фон для инпутов */
+  background-color: #f0f2f5; 
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
@@ -78,7 +76,7 @@
 
 .registerButton {
   padding: 12px 20px;
-  background-color: #1877f2; /* Синий цвет, как у Facebook */
+  background-color: #1877f2; 
   color: #ffffff;
   border: none;
   border-radius: 8px;

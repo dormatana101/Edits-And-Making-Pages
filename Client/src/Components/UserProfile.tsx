@@ -5,14 +5,13 @@ import SERVER_URL from "../config";
 
 
 const UserProfile = () => {
-  const [userData, setUserData] = useState<any>(null); // User data
-  const [error, setError] = useState<string | null>(null); // Errors
-  const [loading, setLoading] = useState(true); // Loading state
-  const [editable, setEditable] = useState(false); // Edit mode
-  const [formData, setFormData] = useState<any>({}); // Form data for edit
-  const [selectedFile, setSelectedFile] = useState<File | null>(null); // Selected file for upload
+  const [userData, setUserData] = useState<any>(null); 
+  const [error, setError] = useState<string | null>(null); 
+  const [loading, setLoading] = useState(true); 
+  const [editable, setEditable] = useState(false); 
+  const [formData, setFormData] = useState<any>({}); 
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); 
 
-  // Fetch user data
   const fetchUserData = async () => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
@@ -32,7 +31,6 @@ const UserProfile = () => {
         profilePicture: response.data.user.profilePicture,
       });
 
-      // Save profile picture in localStorage
       if (response.data.user.profilePicture) {
         localStorage.setItem('profilePicture', response.data.user.profilePicture);
       }
@@ -47,20 +45,17 @@ const UserProfile = () => {
     fetchUserData();
   }, []);
 
-  // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle file change
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
     }
   };
 
-  // Save changes
   const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const token = localStorage.getItem('accessToken');
@@ -93,7 +88,7 @@ const UserProfile = () => {
       }
 
       await fetchUserData();
-      setEditable(false); // End editing
+      setEditable(false); 
     } catch (error: any) {
       if (error.response && error.response.status === 409) {
         setError('Username is already taken.');

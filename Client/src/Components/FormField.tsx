@@ -1,7 +1,5 @@
-// client/src/Components/FormField.tsx
-
 import React, { forwardRef } from "react";
-import styles from "../css/FormField.module.css"; // Импортируем CSS-модуль
+import styles from "../css/FormField.module.css"; 
 
 interface FormFieldProps {
   label: string;

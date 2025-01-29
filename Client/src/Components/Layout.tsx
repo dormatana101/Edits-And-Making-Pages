@@ -1,5 +1,3 @@
-// client/src/Components/Layout.tsx
-
 import React from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { FaUser, FaClipboard, FaPlus, FaComments, FaRobot } from "react-icons/fa";

@@ -1,17 +1,17 @@
 import React, { useRef, useEffect, useState } from "react";
-import styles from "../css/CommentForm.module.css"; // Импортируем CSS-модуль
-import { generateSuggestedComment } from "../Services/commentsService"; // Импортируем функцию API
+import styles from "../css/CommentForm.module.css"; 
+import { generateSuggestedComment } from "../Services/commentsService"; 
 
 interface CommentFormProps {
   newComment: string;
   setNewComment: React.Dispatch<React.SetStateAction<string>>;
   onSubmit: (event: React.FormEvent) => void;
-  postId: string; // Передаём postId как пропс
+  postId: string; 
 }
 
 const CommentForm: React.FC<CommentFormProps> = ({ newComment, setNewComment, onSubmit, postId }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [isGenerating, setIsGenerating] = useState<boolean>(false); // Состояние для индикатора генерации
+  const [isGenerating, setIsGenerating] = useState<boolean>(false); 
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewComment(e.target.value);

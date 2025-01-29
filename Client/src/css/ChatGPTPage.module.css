@@ -1,5 +1,3 @@
-/* client/src/css/ChatGPTPage.module.css */
-
 .chatgptContainer {
   display: flex;
   flex-direction: column;
@@ -15,7 +13,7 @@
 .header {
   text-align: center;
   margin-bottom: 20px;
-  color: #1877f2; /* Синий цвет, как у Facebook */
+  color: #1877f2; 
 }
 
 .errorMessage {
@@ -34,10 +32,9 @@
   padding: 10px;
   overflow-y: auto;
   background-color: #f9f9f9;
-  scroll-behavior: smooth; /* Для плавной прокрутки */
+  scroll-behavior: smooth; 
 }
 
-/* Стили для скроллбара */
 .messagesContainer::-webkit-scrollbar {
   width: 8px;
 }
@@ -111,7 +108,7 @@
   padding: 10px 20px;
   border: none;
   border-radius: 20px;
-  background-color: #1877f2; /* Синий цвет, как у Facebook */
+  background-color: #1877f2;
   color: white;
   cursor: pointer;
   font-weight: 600;
@@ -127,13 +124,11 @@
   cursor: not-allowed;
 }
 
-/* Анимация появления сообщений */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Приветственное сообщение */
 .chatPlaceholder {
   flex: 1;
   display: flex;
@@ -144,7 +139,6 @@
   text-align: center;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
   .chatgptContainer {
     height: 90vh;

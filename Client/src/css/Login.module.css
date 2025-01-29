@@ -1,10 +1,8 @@
-/* client/src/css/Login.module.css */
-
 .loginPage {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f0f2f5; /* Светло-серый фон, как у Facebook */
+  background: #f0f2f5; 
   height: 100vh;
   width: 100%;
 }
@@ -32,13 +30,13 @@
   width: 100%;
   max-width: 400px;
   text-align: center;
-  margin: 0 auto; /* Центрирование */
+  margin: 0 auto;
 }
 
 .headline {
   margin-bottom: 10px;
   font-size: 2rem;
-  color: #1877f2; /* Синий цвет, как у Facebook */
+  color: #1877f2; 
 }
 
 .subHeadline {
@@ -78,7 +76,7 @@
   color: #2e2e2e;
   background-color: #f0f2f5;
   transition: border-color 0.3s, box-shadow 0.3s;
-  box-sizing: border-box; /* Включает паддинги и бордеры в ширину */
+  box-sizing: border-box; 
 }
 
 .input:focus {
@@ -95,7 +93,7 @@
 .loginButton {
   width: 100%;
   padding: 12px;
-  background-color: #1877f2; /* Синий цвет, как у Facebook */
+  background-color: #1877f2;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -173,7 +171,7 @@
 
 .right {
   flex: 1;
-  background: #1877f2; /* Синий цвет, как у Facebook */
+  background: #1877f2; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -200,7 +198,7 @@
   }
 
   .right {
-      display: none; /* Скрываем правую часть на маленьких экранах */
+      display: none;
   }
 
   .left {

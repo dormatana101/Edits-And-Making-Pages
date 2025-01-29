@@ -1,11 +1,9 @@
-// client/src/Components/CreatePost.tsx
-
 import React, { useState, useRef, useEffect } from "react";
 import { createPost } from "../Services/postsService"; 
 import { AiFillPicture } from "react-icons/ai";
 import { FaTimes } from "react-icons/fa";
 import FormField from "./FormField"; 
-import styles from "../css/CreatePost.module.css"; // Импортируем CSS-модуль
+import styles from "../css/CreatePost.module.css"; 
 
 const CreatePost: React.FC = () => {
   const [newPostContent, setNewPostContent] = useState<string>("");

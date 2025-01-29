@@ -1,18 +1,13 @@
-/* client/src/css/PostDetails.module.css */
-
-/* Контейнер для страницы деталей поста */
 .postDetailsContainer {
-  max-width: 800px; /* Ограничение ширины, как у Facebook */
-  margin: 20px auto; /* Центрирование контейнера */
+  max-width: 800px; 
+  margin: 20px auto;  
   padding: 20px;
-  background-color: #f0f2f5; /* Светло-серый фон */
+  background-color: #f0f2f5; 
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-
-/* Секция деталей поста */
-.postDetails {
+ .postDetails {
   background-color: #ffffff;
   padding: 20px;
   border-radius: 10px;
@@ -21,14 +16,12 @@
   position: relative;
 }
 
-/* Хедер поста */
 .postHeader {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
 }
 
-/* Аватар автора (опционально) */
 .authorAvatar {
   width: 50px;
   height: 50px;
@@ -37,7 +30,6 @@
   margin-right: 15px;
 }
 
-/* Информация об авторе */
 .postAuthorInfo {
   display: flex;
   flex-direction: column;
@@ -54,7 +46,6 @@
   color: #65676b;
 }
 
-/* Заголовок поста */
 .postTitle {
   font-size: 24px;
   color: #050505;
@@ -64,7 +55,6 @@
   overflow-wrap: break-word;
 }
 
-/* Содержимое поста */
 .postContent {
   font-size: 16px;
   color: #4b4f56;
@@ -75,7 +65,6 @@
   margin-bottom: 10px;
 }
 
-/* Изображение в посте */
 .postImage {
   width: 100%;
   max-height: 500px;
@@ -85,7 +74,6 @@
   margin-bottom: 10px;
 }
 
-/* Секция комментариев */
 .commentsSection {
   background-color: #ffffff;
   padding: 15px;
@@ -93,21 +81,18 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Заголовок комментариев */
 .commentsHeader {
   font-size: 20px;
   color: #050505;
   margin-bottom: 15px;
 }
 
-/* Список комментариев */
 .commentsList {
-  max-height: 400px; /* Ограничение высоты для прокрутки */
+  max-height: 400px;
   overflow-y: auto;
-  padding-right: 10px; /* Отступ справа для полосы прокрутки */
+  padding-right: 10px;
 }
 
-/* Каждый комментарий */
 .comment {
   padding: 10px;
   margin-bottom: 10px;
@@ -125,7 +110,6 @@
   color: #050505;
 }
 
-/* Сообщения загрузки и отсутствия комментариев */
 .loading,
 .noMoreComments {
   text-align: center;
@@ -134,7 +118,6 @@
   margin-top: 10px;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
   .postDetailsContainer {
     padding: 10px;

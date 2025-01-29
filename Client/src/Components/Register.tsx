@@ -1,8 +1,6 @@
-// client/src/Components/Register.tsx
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import styles from '../css/Register.module.css'; // Импортируем CSS-модуль
+import styles from '../css/Register.module.css';
 import SERVER_URL from "../config"; 
 
 const Register = () => {

@@ -1,10 +1,9 @@
-/* client/src/css/AllPosts.module.css */
 
 .allPostsContainer {
-  max-width: 600px; /* Ограничение ширины, как у Facebook */
-  margin: 20px auto; /* Центрирование контейнера */
+  max-width: 600px; 
+  margin: 20px auto; 
   padding: 20px;
-  background-color: #f0f2f5; /* Светло-серый фон */
+  background-color: #f0f2f5; 
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;

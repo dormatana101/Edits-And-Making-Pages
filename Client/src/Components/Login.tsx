@@ -1,8 +1,6 @@
-// client/src/Components/Login.tsx
-
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import styles from "../css/Login.module.css"; // Импортируем CSS-модуль
+import styles from "../css/Login.module.css";
 import EaseLogo from "../images/EaseLogo.png";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { RxAvatar } from "react-icons/rx";

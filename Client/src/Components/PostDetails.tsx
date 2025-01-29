@@ -5,7 +5,7 @@ import { fetchCommentsByPostId } from "../Services/commentsService";
 import { Post } from "../types/post";
 import { Comment } from "../types/comment";
 import CommentForm from "./CommentForm";
-import styles from "../css/PostDetails.module.css"; // Импортируем CSS-модуль
+import styles from "../css/PostDetails.module.css"; 
 import SERVER_URL from "../config"; 
 
 const PostDetails = () => {

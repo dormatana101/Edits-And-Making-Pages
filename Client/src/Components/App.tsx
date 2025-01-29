@@ -12,10 +12,6 @@ import ChatGPTPage from "./ChatGPTPage";
 import UserProfile from "./UserProfile";
 
 
-
-
-
-
 function App() {
   return (
     <Router>

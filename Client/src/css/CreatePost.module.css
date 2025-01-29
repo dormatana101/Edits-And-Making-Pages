@@ -1,8 +1,6 @@
-/* client/src/css/CreatePost.module.css */
-
 .container {
   padding: 20px;
-  background-color: #f0f2f5; /* Светло-серый фон, как у Facebook */
+  background-color: #f0f2f5;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -25,13 +23,13 @@
 }
 
 .confirmationMessage {
-  color: #28a745; /* Зеленый цвет для подтверждения */
+  color: #28a745; 
   margin-bottom: 10px;
   text-align: center;
 }
 
 .errorMessage {
-  color: #e74c3c; /* Красный цвет для ошибок */
+  color: #e74c3c; 
   margin-bottom: 10px;
   text-align: center;
 }
@@ -45,18 +43,16 @@
   margin-bottom: 15px;
 }
 
-/* Секция загрузки изображения */
 .uploadSection {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
 }
 
-/* Кнопка загрузки изображения */
 .imageUploadButton {
   display: flex;
   align-items: center;
-  background-color: #e4e6eb; /* Светлый фон, похожий на Facebook */
+  background-color: #e4e6eb; 
   color: #050505;
   border: none;
   border-radius: 8px;
@@ -78,12 +74,10 @@
   font-weight: 500;
 }
 
-/* Скрытый input для загрузки файла */
 .inputFile {
   display: none;
 }
 
-/* Контейнер для превью изображения */
 .imagePreviewContainer {
   position: relative;
   display: inline-block;
@@ -115,10 +109,9 @@
   background: rgba(0, 0, 0, 0.8);
 }
 
-/* Кнопка создания поста */
 .createPostButton {
   padding: 12px 20px;
-  background-color: #1877f2; /* Синий цвет, как у Facebook */
+  background-color: #1877f2; 
   color: white;
   border: none;
   border-radius: 8px;
@@ -132,12 +125,10 @@
   background-color: #1558b0;
 }
 
-/* Автоматическое изменение размера текстовой области */
 .createPostForm textarea.autoResize {
   overflow: hidden;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
   .createPostContainer {
     padding: 15px;
@@ -169,6 +160,6 @@
   }
 
   .uploadText {
-    display: none; /* Скрываем текст на маленьких экранах */
+    display: none; 
   }
 }

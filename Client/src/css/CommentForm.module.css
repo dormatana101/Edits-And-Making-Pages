@@ -1,6 +1,4 @@
-/* client/src/css/CommentForm.module.css */
 
-/* Форма добавления комментария */
 .commentForm {
   display: flex;
   flex-direction: column;
@@ -8,7 +6,6 @@
   margin-top: 15px;
 }
 
-/* Текстовая область для комментария */
 .textarea {
   width: 100%;
   padding: 12px 14px;
@@ -31,13 +28,11 @@
   box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
 }
 
-/* Контейнер для кнопок формы */
 .commentFormButtons {
   display: flex;
   justify-content: flex-end;
 }
 
-/* Кнопка генерации комментария */
 .generateCommentButton {
   padding: 8px 16px;
   background-color: #1877f2; 
@@ -59,7 +54,6 @@
   cursor: not-allowed;
 }
 
-/* Кнопка отправки комментария */
 .postCommentButton {
   padding: 8px 16px;
   background-color: #28a745; 
@@ -80,12 +74,10 @@
   cursor: not-allowed;
 }
 
-/* Автоматическое изменение размера текстовой области */
 .autoResize {
   overflow: hidden;
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
   .commentFormButtons {
     flex-direction: column;

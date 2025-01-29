@@ -1,10 +1,8 @@
-// client/src/Components/Chat.tsx
-
 import React, { useEffect, useState, useRef } from "react";
 import { createSocket, sendMessage, listenForMessages, startChat, disconnectSocket } from "../Services/SocketService";
 import { Message } from "../types/message";
 import { User } from "../types/user";
-import styles from "../css/ChatPage.module.css"; // Импортируем CSS-модуль
+import styles from "../css/ChatPage.module.css"; 
 import { Socket } from "socket.io-client";
 import SERVER_URL from "../config"; 
 
@@ -15,12 +13,10 @@ const Chat: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [socket, setSocket] = useState<typeof Socket | null>(null); // Исправлено типирование
+  const [socket, setSocket] = useState<typeof Socket | null>(null); 
 
-  // Реф для отслеживания конца списка сообщений
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Функция прокрутки к последнему сообщению
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -145,7 +141,7 @@ const Chat: React.FC = () => {
                 placeholder="Write a message..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' ? sendMessageHandler() : null} // Добавлена обработка Enter
+                onKeyDown={(e) => e.key === 'Enter' ? sendMessageHandler() : null} 
                 className={styles.messageInput}
               />
               <button onClick={sendMessageHandler} className={styles.sendButton}>Send</button>
