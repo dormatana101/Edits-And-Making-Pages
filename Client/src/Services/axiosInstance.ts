@@ -1,9 +1,9 @@
 import axios from "axios";
-import SERVER_URL from "../config"; 
+import CONFIG from "../config"; 
 
 
 const axiosInstance = axios.create({
-  baseURL: `${SERVER_URL}/api`, 
+  baseURL: `${CONFIG.SERVER_URL}/api`, 
 });
 
 axiosInstance.interceptors.request.use(

@@ -5,7 +5,7 @@ import { Post } from "../types/post";
 import { toggleLike } from "../Services/postsService";
 import { formatDate } from "../utiles/formatDate";
 import styles from "../css/PostCard.module.css";
-import SERVER_URL from "../config";
+import CONFIG from "../config";
 
 interface PostCardProps {
   post: Post;
@@ -49,7 +49,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       <p className={styles.postContent}>{post.content}</p>
       {post.image && (
         <img
-          src={`${SERVER_URL}${post.image}`}
+          src={`${CONFIG.SERVER_URL}${post.image}`}
           alt="Post"
           className={styles.postImage}
           loading="lazy"

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from '../css/Register.module.css';
-import SERVER_URL from "../config"; 
+import CONFIG from "../config"; 
 
 const Register = () => {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ const Register = () => {
     if (validateForm()) {
       setIsLoading(true);
       try {
-        const response = await fetch(`${SERVER_URL}/auth/register`, {
+        const response = await fetch(`${CONFIG.SERVER_URL}/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

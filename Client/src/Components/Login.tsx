@@ -7,7 +7,7 @@ import { RxAvatar } from "react-icons/rx";
 import { FcGoogle } from "react-icons/fc";
 import { login } from "../Services/authService";
 import { validateEmail, validatePassword } from "../utiles/Login_validation";
-import SERVER_URL from "../config"; 
+import CONFIG from "../config"; 
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -52,7 +52,7 @@ function Login() {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${SERVER_URL}/auth/google`;
+    window.location.href = `${CONFIG.SERVER_URL}/auth/google`;
   };
 
   return (

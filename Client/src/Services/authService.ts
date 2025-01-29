@@ -1,10 +1,10 @@
 import axios from "axios";
-import SERVER_URL from "../config"; 
+import CONFIG from "../config"; 
 
 
 export const login = async (email: string, password: string) => {
   try {
-    const response = await axios.post(`${SERVER_URL}/auth/login`, {
+    const response = await axios.post(`${CONFIG.SERVER_URL}/auth/login`, {
       email,
       password,
     });
@@ -43,7 +43,7 @@ export const fetchProtectedData = async () => {
   }
   try {
     const response = await axios.get(
-      `${SERVER_URL}/auth/protected-route`,
+      `${CONFIG.SERVER_URL}/auth/protected-route`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
