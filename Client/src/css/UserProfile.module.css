@@ -94,6 +94,10 @@
   border-color: #1877f2;
   box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
 }
+.inputError {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
 
 .buttonGroup {
   display: flex;
@@ -138,11 +142,11 @@
   color: #606770;
 }
 
-.error {
+.errorMessage {
   color: #e74c3c;
   font-size: 1rem;
   margin-bottom: 20px;
-  text-align: center;
+  text-align: left;
 }
 
 /* סשניית פוסטים */

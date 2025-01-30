@@ -27,6 +27,7 @@ const UserProfile: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]); 
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [hasMorePosts, setHasMorePosts] = useState<boolean>(true);
+  const [usernameError, setUsernameError] = useState<string | null>(null);
 
 
 
@@ -110,6 +111,7 @@ const UserProfile: React.FC = () => {
 
   const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setUsernameError(null);
 
     const token = localStorage.getItem("accessToken");
     if (!token) {
@@ -143,11 +145,12 @@ const UserProfile: React.FC = () => {
       setPage(1);            
       setPosts([]);          
       await fetchUserData(); 
-
       setEditable(false);
+      
+
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response && error.response.status === 409) {
-        setError("Username is already taken.");
+        setUsernameError("Username is already taken.");
       } else {
         setError("Error updating user data");
       }
@@ -242,9 +245,9 @@ const UserProfile: React.FC = () => {
                   value={formData.username}
                   onChange={handleInputChange}
                   placeholder="Enter your username"
-                  className={styles.inputField}
+                  className={`${styles.inputField} ${usernameError ? styles.inputError : ""}`}
                 />
-                {error && <div className={styles.errorMessage}>{error}</div>}
+                {usernameError && <span className={styles.errorMessage}>{usernameError}</span>}
                 <input
                   type="file"
                   name="profilePicture"
