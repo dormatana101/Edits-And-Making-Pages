@@ -56,12 +56,22 @@ const Chat: React.FC = () => {
   }, [currentUserId]);
 
   useEffect(() => {
+    if (selectedUser) {
+      fetchChatHistory(selectedUser._id);
+    }
+  }, [selectedUser]);
+
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   const fetchChatHistory = async (otherUserId: string) => {
+    
     try {
       const response = await fetch(`${CONFIG.SERVER_URL}/api/chat/${currentUserId}/${otherUserId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch messages");
+      }
       const data = await response.json();
       setMessages(data);
     } catch (error) {
