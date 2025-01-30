@@ -31,6 +31,10 @@ const fileFilter = (req: Express.Request, file: Express.Multer.File, cb: multer.
 
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
+router.put("/:id", authMiddleware, upload.single('PostImage'), (req, res) => {
+  Post.updatePost(req, res);
+});
+
 /**
  * @swagger
  * tags:

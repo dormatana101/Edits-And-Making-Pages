@@ -8,26 +8,21 @@ import { Post } from "../types/post";
 
 const UserProfile: React.FC = () => {
   const [userData, setUserData] = useState<IUserProfileResponse | null>(null);
-
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [editable, setEditable] = useState(false);
   const [postEditMode, setPostEditMode] = useState<string | null>(null);
-
   const [formData, setFormData] = useState<IProfileForm>({ username: "" });
-
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
   const [currentPostTitle, setCurrentPostTitle] = useState<string>("");
   const [currentPostContent, setCurrentPostContent] = useState<string>("");
-
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState<string | null>(null);
-
   const [page, setPage] = useState<number>(1);
   const [posts, setPosts] = useState<Post[]>([]); 
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [hasMorePosts, setHasMorePosts] = useState<boolean>(true);
   const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [selectedPostImage, setSelectedPostImage] = useState<File | null>(null);
 
 
 
@@ -81,7 +76,7 @@ const UserProfile: React.FC = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, [fetchUserData]);
+  }, [fetchUserData,page]);
 
   useEffect(() => {
     function handleWindowScroll() {
@@ -140,6 +135,7 @@ const UserProfile: React.FC = () => {
 
       if (response.data?.user?.profilePicture) {
         localStorage.setItem("profilePicture", response.data.user.profilePicture);
+        
       }
 
       setPage(1);            
@@ -161,6 +157,7 @@ const UserProfile: React.FC = () => {
     setPostEditMode(postId);
     setCurrentPostTitle(currentTitle);
     setCurrentPostContent(currentContent);
+    setSelectedPostImage(null);
   };
 
   const handleSavePostChanges = async (postId: string) => {
@@ -180,7 +177,7 @@ const UserProfile: React.FC = () => {
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post._id === postId
-            ? { ...post, title: currentPostTitle, content: currentPostContent }
+            ? { ...post, title: currentPostTitle, content: currentPostContent, }
             : post
         )
       );
@@ -300,6 +297,22 @@ const UserProfile: React.FC = () => {
                             onChange={(e) => setCurrentPostContent(e.target.value)}
                             className={styles.postInput}
                           />
+                          {/* הצגת התמונה הנוכחית אם קיימת */}
+                          {selectedPostImage && (
+                          <div className={styles.postEditField}>
+                            <label>Current Image:</label>
+                            <img src={`${CONFIG.SERVER_URL}${selectedPostImage}`} alt="Post" className={styles.postImage} />
+                          </div>
+                        )}
+                          <div className={styles.postEditField}>
+                            <label>Post Image:</label>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => e.target.files && setSelectedPostImage(e.target.files[0])}
+                              className={styles.postInput}
+                          />
+                          </div>
                         </div>
                         <div className={styles.buttonGroup}>
                           <button
