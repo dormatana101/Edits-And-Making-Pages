@@ -86,8 +86,8 @@ const getPostsBySenderId = async (req: Request, res: Response) => {
 // Update a post
 const updatePost = async (req: Request, res: Response) => {
   try {
-    const { title, content,image } = req.body;
-
+    const { title, content } = req.body;
+    const image = '/'+req.file?.path;
     if (!title || !content) {
       return res
         .status(400)
@@ -100,15 +100,11 @@ const updatePost = async (req: Request, res: Response) => {
           .status(400)
           .json({ message: "Only JPEG or PNG files are allowed" });
       }
-      let image = "";
-      image = `/uploads/${req.file.filename}`;
-
       const updatedFields: any = { title, content };
       if (image) {
       updatedFields.image = image;
       }
       }
-
     const updatedPost = await postModel.findByIdAndUpdate(
       req.params.id,
       { title, content, image },

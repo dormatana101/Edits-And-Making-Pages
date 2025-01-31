@@ -5,6 +5,7 @@ import CONFIG from "../config";
 import { IUserProfileResponse } from "../types/UserProfileResponse";
 import { IProfileForm } from "../types/UserProfileForm"; 
 import { Post } from "../types/post"; 
+import { set } from "mongoose";
 
 const UserProfile: React.FC = () => {
   const [userData, setUserData] = useState<IUserProfileResponse | null>(null);
@@ -23,8 +24,6 @@ const UserProfile: React.FC = () => {
   const [hasMorePosts, setHasMorePosts] = useState<boolean>(true);
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [selectedPostImage, setSelectedPostImage] = useState<File | null>(null);
-
-
 
   const fetchUserData = useCallback(async () => {
     const token = localStorage.getItem("accessToken");
@@ -55,7 +54,6 @@ const UserProfile: React.FC = () => {
           (post: Post) => !prevPosts.some((p: Post) => p._id === post._id)
         );
         return [...prevPosts, ...newPosts];
-        
       });
 
       setHasMorePosts(response.data.hasMorePosts);
@@ -66,7 +64,6 @@ const UserProfile: React.FC = () => {
     }
   }, [page]);
 
-
   const loadMorePosts = useCallback(async () => {
     if (loadingMore || !hasMorePosts) return;
     setLoadingMore(true);
@@ -76,7 +73,7 @@ const UserProfile: React.FC = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, [fetchUserData,page]);
+  }, [fetchUserData, page]);
 
   useEffect(() => {
     function handleWindowScroll() {
@@ -135,15 +132,12 @@ const UserProfile: React.FC = () => {
 
       if (response.data?.user?.profilePicture) {
         localStorage.setItem("profilePicture", response.data.user.profilePicture);
-        
       }
 
       setPage(1);            
       setPosts([]);          
       await fetchUserData(); 
       setEditable(false);
-      
-
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response && error.response.status === 409) {
         setUsernameError("Username is already taken.");
@@ -167,21 +161,36 @@ const UserProfile: React.FC = () => {
       return;
     }
 
+    const formData = new FormData();
+    formData.append("title", currentPostTitle);
+    formData.append("content", currentPostContent);
+    if (selectedPostImage) {
+      formData.append("PostImage", selectedPostImage);
+    }
+
     try {
-      await axios.put(
+      const response = await axios.put(
         `${CONFIG.SERVER_URL}/posts/${postId}`,
-        { title: currentPostTitle, content: currentPostContent },
-        { headers: { Authorization: `Bearer ${token}` } }
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${token}`,
+          },
+        }
       );
 
+      // Update the post in the state
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
-          post._id === postId
-            ? { ...post, title: currentPostTitle, content: currentPostContent, }
-            : post
+          post._id === postId ? { ...post, ...response.data } : post
         )
       );
+
       setPostEditMode(null);
+      setCurrentPostTitle("");
+      setCurrentPostContent("");
+      setSelectedPostImage(null);
     } catch {
       setError("Error saving post changes");
     }
@@ -297,13 +306,12 @@ const UserProfile: React.FC = () => {
                             onChange={(e) => setCurrentPostContent(e.target.value)}
                             className={styles.postInput}
                           />
-                          {/* הצגת התמונה הנוכחית אם קיימת */}
                           {selectedPostImage && (
-                          <div className={styles.postEditField}>
-                            <label>Current Image:</label>
-                            <img src={`${CONFIG.SERVER_URL}${selectedPostImage}`} alt="Post" className={styles.postImage} />
-                          </div>
-                        )}
+                            <div className={styles.postEditField}>
+                              <label>Current Image:</label>
+                              <img src={`${CONFIG.SERVER_URL}${selectedPostImage}`} alt="Post" className={styles.postImage} />
+                            </div>
+                          )}
                           <div className={styles.postEditField}>
                             <label>Post Image:</label>
                             <input
@@ -311,7 +319,7 @@ const UserProfile: React.FC = () => {
                               accept="image/*"
                               onChange={(e) => e.target.files && setSelectedPostImage(e.target.files[0])}
                               className={styles.postInput}
-                          />
+                            />
                           </div>
                         </div>
                         <div className={styles.buttonGroup}>
