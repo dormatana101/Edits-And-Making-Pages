@@ -306,12 +306,6 @@ const UserProfile: React.FC = () => {
                             onChange={(e) => setCurrentPostContent(e.target.value)}
                             className={styles.postInput}
                           />
-                          {selectedPostImage && (
-                            <div className={styles.postEditField}>
-                              <label>Current Image:</label>
-                              <img src={`${CONFIG.SERVER_URL}${selectedPostImage}`} alt="Post" className={styles.postImage} />
-                            </div>
-                          )}
                           <div className={styles.postEditField}>
                             <label>Post Image:</label>
                             <input
