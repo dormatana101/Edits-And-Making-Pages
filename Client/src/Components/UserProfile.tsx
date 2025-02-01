@@ -5,7 +5,6 @@ import CONFIG from "../config";
 import { IUserProfileResponse } from "../types/UserProfileResponse";
 import { IProfileForm } from "../types/UserProfileForm"; 
 import { Post } from "../types/post"; 
-import { set } from "mongoose";
 
 const UserProfile: React.FC = () => {
   const [userData, setUserData] = useState<IUserProfileResponse | null>(null);
