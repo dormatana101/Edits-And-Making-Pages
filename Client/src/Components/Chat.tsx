@@ -46,7 +46,10 @@ const Chat: React.FC = () => {
     setSocket(newSocket);
 
     const cleanup = listenForMessages(newSocket, (message) => {
+      if (selectedUser && 
+        (message.from === selectedUser._id)) {
       setMessages((prev) => [...prev, message]);
+      } 
     });
 
     return () => {
