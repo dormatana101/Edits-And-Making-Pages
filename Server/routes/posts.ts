@@ -1,27 +1,30 @@
-import express  from "express";
+import express from "express";
 import Post from "../controllers/posts_controller";
 import { authMiddleware } from "../controllers/auth_controller";
-import { paginatedResults , PaginatedResults  } from '../Middlewares/Paging';
-import  PostModel  from '../models/Post';
-import multer from 'multer';
-import path from 'path';
-
-
+import { paginatedResults } from "../Middlewares/Paging";
+import PostModel from "../models/Post";
+import multer from "multer";
+import path from "path";
 
 const router = express.Router();
 
+// Configure multer storage and file filter
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
   },
-  filename: function (req, file, cb) {
+  filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const ext = path.extname(file.originalname);
     cb(null, uniqueSuffix + ext);
   }
 });
 
-const fileFilter = (req: Express.Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (
+  req: Express.Request,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+) => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
@@ -30,10 +33,6 @@ const fileFilter = (req: Express.Request, file: Express.Multer.File, cb: multer.
 };
 
 const upload = multer({ storage: storage, fileFilter: fileFilter });
-
-router.put("/:id",authMiddleware,upload.single('PostImage') , (req, res) => {
-  Post.updatePost(req, res);
-});
 
 /**
  * @swagger
@@ -79,9 +78,27 @@ router.put("/:id",authMiddleware,upload.single('PostImage') , (req, res) => {
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Post'
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The post title
+ *               content:
+ *                 type: string
+ *                 description: The post content
+ *               senderId:
+ *                 type: string
+ *                 description: The ID of the sender
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: The image file for the post
+ *             required:
+ *               - title
+ *               - content
+ *               - senderId
  *     responses:
  *       201:
  *         description: The created post
@@ -97,28 +114,51 @@ router.put("/:id",authMiddleware,upload.single('PostImage') , (req, res) => {
 router.post("/", authMiddleware, upload.single('image'), (req, res) => {
   Post.createPost(req, res);
 });
+
 /**
  * @swagger
  * /posts:
  *   get:
- *     summary: Get all posts
+ *     summary: Get all posts with pagination
  *     tags: [Posts]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: The page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: The number of posts per page
  *     responses:
  *       200:
- *         description: List of all posts
+ *         description: List of all posts with pagination details
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Post'
+ *               type: object
+ *               properties:
+ *                 totalCount:
+ *                   type: integer
+ *                   example: 100
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Post'
  *       500:
  *         description: Server error
  */
-router.get('/', paginatedResults(PostModel), (req, res) => {
-  res.json(res.locals.paginatedResults); 
+router.get("/", paginatedResults(PostModel), (req, res) => {
+  res.json(res.locals.paginatedResults);
 });
-
 
 /**
  * @swagger
@@ -198,9 +238,23 @@ router.get("/sender/:senderId", (req, res) => {
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
- *             $ref: '#/components/schemas/Post'
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The updated title
+ *               content:
+ *                 type: string
+ *                 description: The updated content
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: An optional new image file
+ *             required:
+ *               - title
+ *               - content
  *     responses:
  *       200:
  *         description: The updated post
@@ -215,7 +269,7 @@ router.get("/sender/:senderId", (req, res) => {
  *       500:
  *         description: Server error
  */
-router.put("/:id", authMiddleware, (req, res) => {
+router.put("/:id", authMiddleware, upload.single("PostImage"), (req, res) => {
   Post.updatePost(req, res);
 });
 
@@ -277,8 +331,10 @@ router.delete("/:id", authMiddleware, (req, res) => {
  *               properties:
  *                 message:
  *                   type: string
+ *                   example: "Post liked"
  *                 likesCount:
  *                   type: number
+ *                   example: 11
  *       404:
  *         description: Post or user not found
  *       500:

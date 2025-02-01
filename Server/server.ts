@@ -37,9 +37,25 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "API Documentation for the project",
     },
+    servers: [
+      {
+        url: "http://localhost:3000",
+        description: "Local server",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
   apis: ["./routes/*.ts"],
 };
+
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 

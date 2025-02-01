@@ -4,74 +4,59 @@ import postModel from "../models/Post";
 import userModel from "../models/Users";
 
 // Create a new post
-const createPost = async (req: Request, res: Response) => {
+export const createPost = async (req: Request, res: Response): Promise<void> => {
   try {
     const { title, content, author } = req.body;
     let imagePath = '';
 
-    // Проверка, была ли загружена картинка
+    // Check if an image was uploaded
     if (req.file) {
       const fileType = req.file.mimetype;
       if (fileType !== 'image/jpeg' && fileType !== 'image/png') {
-        return res.status(400).json({ message: "Only JPEG or PNG files are allowed" });
+        res.status(400).json({ message: "Only JPEG or PNG files are allowed" });
+        return;
       }
-      imagePath = `/uploads/${req.file.filename}`; // Путь к изображению для хранения в базе данных
+      imagePath = `/uploads/${req.file.filename}`; // Path to the image for storing in DB
     }
 
-
     if (!title || !content || !author) {
-      return res.status(400).json({ message: "All fields are required" });
+      res.status(400).json({ message: "All fields are required" });
+      return;
     }
 
     const post = new postModel({ title, content, author, image: imagePath });
     await post.save();
     res.status(201).json(post);
   } catch (err: any) {
-    res
-      .status(500)
-      .json({ message: "Error creating post", error: err.message });
+    res.status(500).json({ message: "Error creating post", error: err.message });
   }
 };
-// Get all posts
-// const getAllPosts = async (req: Request, res: Response) => {
-//   try {
-//     const posts = await postModel.find();
-    
-//     res.status(200).json(posts);
-//   } catch (err: any) {
-//     res
-//       .status(500)
-//       .json({ message: "Error getting all posts", error: err.message });
-//   }
-// };
 
 // Get a post by ID
-const getPostById = async (req: Request, res: Response) => {
+export const getPostById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const post = await postModel.findById(id);
 
     if (!post) {
-      return res.status(404).json({ message: "Post not found" });
+      res.status(404).json({ message: "Post not found" });
+      return;
     }
 
     res.status(200).json(post);
   } catch (err: any) {
-    res
-      .status(500)
-      .json({ message: "Error getting post by ID", error: err.message });
+    res.status(500).json({ message: "Error getting post by ID", error: err.message });
   }
 };
 
 // Get posts by sender ID
-const getPostsBySenderId = async (req: Request, res: Response) => {
+export const getPostsBySenderId = async (req: Request, res: Response): Promise<void> => {
   try {
     const posts = await postModel.find({ senderId: req.params.senderId });
 
     if (!posts.length) {
-      return res
-        .status(404)
-        .json({ message: "No posts found for this sender" });
+      res.status(404).json({ message: "No posts found for this sender" });
+      return;
     }
 
     res.status(200).json(posts);
@@ -84,66 +69,68 @@ const getPostsBySenderId = async (req: Request, res: Response) => {
 };
 
 // Update a post
-const updatePost = async (req: Request, res: Response) => {
+export const updatePost = async (req: Request, res: Response): Promise<void> => {
   try {
     const { title, content } = req.body;
-    const image = '/'+req.file?.path;
+    // If a file is uploaded, build the image path
+    const image = req.file ? '/' + req.file.path : undefined;
+
     if (!title || !content) {
-      return res
-        .status(400)
-        .json({ message: "Title and content are required" });
+      res.status(400).json({ message: "Title and content are required" });
+      return;
     }
+
+    // If an image file is uploaded, check its mimetype
     if (req.file) {
       const fileType = req.file.mimetype;
       if (fileType !== "image/jpeg" && fileType !== "image/png") {
-        return res
-          .status(400)
-          .json({ message: "Only JPEG or PNG files are allowed" });
+        res.status(400).json({ message: "Only JPEG or PNG files are allowed" });
+        return;
       }
-      const updatedFields: any = { title, content };
-      if (image) {
-      updatedFields.image = image;
-      }
-      }
+    }
+
+    const updateData: any = { title, content };
+    if (image) {
+      updateData.image = image;
+    }
+
     const updatedPost = await postModel.findByIdAndUpdate(
       req.params.id,
-      { title, content, image },
+      updateData,
       { new: true }
     );
 
     if (!updatedPost) {
-      return res.status(404).json({ message: "Post not found" });
+      res.status(404).json({ message: "Post not found" });
+      return;
     }
 
     res.status(200).json(updatedPost);
   } catch (err: any) {
-    res
-      .status(500)
-      .json({ message: "Error updating post", error: err.message });
+    res.status(500).json({ message: "Error updating post", error: err.message });
   }
 };
 
 // Delete a post
-const deletePost = async (req: Request, res: Response) => {
+export const deletePost = async (req: Request, res: Response): Promise<void> => {
   try {
     const deletedPost = await postModel.findByIdAndDelete(req.params.id);
 
     if (!deletedPost) {
-      return res.status(404).json({ message: "Post not found" });
+      res.status(404).json({ message: "Post not found" });
+      return;
     }
 
     res.status(200).json(deletedPost);
   } catch (err: any) {
-    res
-      .status(500)
-      .json({ message: "Error deleting post", error: err.message });
+    res.status(500).json({ message: "Error deleting post", error: err.message });
   }
 };
 
-const toggleLike = async (req: Request, res: Response): Promise<void> => {
+// Toggle like for a post
+export const toggleLike = async (req: Request, res: Response): Promise<void> => {
   try {
     const postId = req.params.id;
-
     const userId = req.params.userId;
 
     if (!userId) {
@@ -175,7 +162,7 @@ const toggleLike = async (req: Request, res: Response): Promise<void> => {
       user.likedPosts = user.likedPosts.filter(
         (likedPostId) => likedPostId.toString() !== postId
       );
-      post.likesCount = Math.max(0, (post.likesCount || 0) - 1); 
+      post.likesCount = Math.max(0, (post.likesCount || 0) - 1);
     } else {
       user.likedPosts.push(postId as unknown as mongoose.Schema.Types.ObjectId);
       post.likesCount = (post.likesCount || 0) + 1;
@@ -195,7 +182,6 @@ const toggleLike = async (req: Request, res: Response): Promise<void> => {
 };
 
 export default {
- 
   createPost,
   getPostById,
   getPostsBySenderId,

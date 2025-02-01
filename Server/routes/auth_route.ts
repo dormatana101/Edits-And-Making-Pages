@@ -1,14 +1,11 @@
 import express from "express";
-const router = express.Router();
 import authController from "../controllers/auth_controller";
 import { authMiddleware } from "../controllers/auth_controller";
 import passport from "passport";
 import multer from "multer";
 
+const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
-
-
-//router.post("/logout", authController.logout);
 
 /**
  * @swagger
@@ -26,16 +23,24 @@ const upload = multer({ dest: 'uploads/' });
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
  *               username:
  *                 type: string
+ *                 description: The user's username.
  *               email:
  *                 type: string
+ *                 format: email
+ *                 description: The user's email.
  *               password:
  *                 type: string
+ *                 description: The user's password.
+ *               profilePicture:
+ *                 type: string
+ *                 format: binary
+ *                 description: Profile picture file.
  *             required:
  *               - username
  *               - email
@@ -45,6 +50,8 @@ const upload = multer({ dest: 'uploads/' });
  *         description: User registered successfully
  *       400:
  *         description: Bad request (e.g. missing parameters or validation errors)
+ *       409:
+ *         description: Conflict (e.g. username or email already exists)
  *       500:
  *         description: Server error
  */
@@ -65,16 +72,19 @@ router.post("/register", upload.single('profilePicture'), authController.registe
  *             properties:
  *               email:
  *                 type: string
+ *                 format: email
+ *                 description: The user's email.
  *               password:
  *                 type: string
+ *                 description: The user's password.
  *             required:
  *               - email
  *               - password
  *     responses:
  *       200:
- *         description: Login successful and token returned
+ *         description: Login successful and tokens returned
  *       400:
- *         description: Invalid login credentials
+ *         description: Invalid login credentials or missing fields
  *       500:
  *         description: Server error
  */
@@ -113,6 +123,7 @@ router.get("/protected-route", authMiddleware, (req, res) => {
  *             properties:
  *               refreshToken:
  *                 type: string
+ *                 description: The refresh token.
  *             required:
  *               - refreshToken
  *     responses:
@@ -144,15 +155,15 @@ router.get("/google", passport.authenticate('google', { scope: ['profile', 'emai
  *     summary: Google OAuth callback URL
  *     tags: [Auth]
  *     responses:
- *       200:
- *         description: Successfully authenticated via Google
+ *       302:
+ *         description: Redirects after successful Google authentication
  *       400:
  *         description: Bad request or authentication failed
  */
-router.get("/google/callback", 
+router.get(
+  "/google/callback",
   passport.authenticate('google', { session: false, failureRedirect: '/auth/login' }),
-  authController.googleCallback 
+  authController.googleCallback
 );
-
 
 export default router;
