@@ -244,6 +244,7 @@ const UserProfile: React.FC = () => {
             />
             {editable ? (
               <div className={styles.editForm}>
+              <label>Username:</label>
                 <input
                   type="text"
                   name="username"
@@ -253,6 +254,7 @@ const UserProfile: React.FC = () => {
                   className={`${styles.inputField} ${usernameError ? styles.inputError : ""}`}
                 />
                 {usernameError && <span className={styles.errorMessage}>{usernameError}</span>}
+                <label>Profile Image:</label>
                 <input
                   type="file"
                   name="profilePicture"
@@ -287,9 +289,10 @@ const UserProfile: React.FC = () => {
                 {posts.map((post) => (
                   <li key={post._id} className={styles.postItem}>
                     {postEditMode === post._id ? (
+                      <div className={styles.postEditContainer}>
                       <div>
+                        <label>Post Title:</label>
                         <div className={styles.postEditField}>
-                          <label>Post Title:</label>
                           <input
                             type="text"
                             value={currentPostTitle}
@@ -297,23 +300,23 @@ const UserProfile: React.FC = () => {
                             className={styles.postInput}
                           />
                         </div>
+                        <label>Post Content:</label>
                         <div className={styles.postEditField}>
-                          <label>Post Content:</label>
                           <input
                             type="text"
                             value={currentPostContent}
                             onChange={(e) => setCurrentPostContent(e.target.value)}
                             className={styles.postInput}
                           />
+                          </div>
+                          <label>Post Image:</label>
                           <div className={styles.postEditField}>
-                            <label>Post Image:</label>
                             <input
                               type="file"
                               accept="image/*"
                               onChange={(e) => e.target.files && setSelectedPostImage(e.target.files[0])}
                               className={styles.postInput}
                             />
-                          </div>
                         </div>
                         <div className={styles.buttonGroup}>
                           <button
@@ -329,6 +332,7 @@ const UserProfile: React.FC = () => {
                             Cancel
                           </button>
                         </div>
+                      </div>
                       </div>
                     ) : (
                       <div>

@@ -4,6 +4,7 @@ import { AiFillPicture } from "react-icons/ai";
 import { FaTimes } from "react-icons/fa";
 import FormField from "./FormField"; 
 import styles from "../css/CreatePost.module.css"; 
+import { useNavigate } from "react-router-dom";
 
 const CreatePost: React.FC = () => {
   const [newPostContent, setNewPostContent] = useState<string>("");
@@ -15,6 +16,7 @@ const CreatePost: React.FC = () => {
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const handleCreatePost = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -35,6 +37,11 @@ const CreatePost: React.FC = () => {
         setConfirmationMessage("Post created successfully!");
         setTimeout(() => setConfirmationMessage(""), 3000);
         setError(null);
+
+        setTimeout(() => {
+          navigate("/all-posts"); // עדכן את הנתיב בהתאם למסך הפוסטים שלך
+        }, 1000);
+
       } else {
         setError(response.message || "Error creating post");
       }
@@ -73,6 +80,8 @@ const CreatePost: React.FC = () => {
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, []);
+
+  
 
   return (
     <div className={styles.container}>
