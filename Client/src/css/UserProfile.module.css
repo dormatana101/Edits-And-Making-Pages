@@ -75,8 +75,8 @@
 .editForm {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: 100%;
+  gap: 5px;
+  width: 75%;
 }
 
 .inputField {
@@ -98,10 +98,32 @@
   border-color: #e74c3c;
   box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
 }
+.postInput {
+  padding: 10px 15px;
+  border: 1px solid #ccd0d5;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #2e2e2e;
+  background-color: #f0f2f5; 
+  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 75%;
+}
+
+.postInput:focus {
+  outline: none;
+  border-color: #1877f2;
+  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+}
+.postEditContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; 
+}
 
 .buttonGroup {
   display: flex;
   gap: 10px;
+  margin-top: 15px;
 }
 
 .saveButton {
