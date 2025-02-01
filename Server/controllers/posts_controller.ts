@@ -131,10 +131,14 @@ export const deletePost = async (req: Request, res: Response): Promise<void> => 
 export const toggleLike = async (req: Request, res: Response): Promise<void> => {
   try {
     const postId = req.params.id;
-    const userId = req.params.userId;
-
+    const userId = req.params.userId || req.query.userId;
+    
+    if (!postId) {
+      res.status(400).json({ message: "Post ID is required." });
+      return;
+    }
     if (!userId) {
-      res.status(401).json({ message: "Unauthorized. User ID is missing in the request." });
+      res.status(401).json({ message: "User ID is required." });
       return;
     }
 
@@ -180,6 +184,7 @@ export const toggleLike = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 export default {
   createPost,

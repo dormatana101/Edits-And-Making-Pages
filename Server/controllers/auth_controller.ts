@@ -97,51 +97,52 @@ const generateToken = (userId: string): tTokens | null => {
     };
 };
 const login = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const { email, password } = req.body;
-  
-      if (!email || !password) {
-        res.status(400).json({ message: 'Email and password are required' });
-        return;
-      }
-  
-      const user = await userModel.findOne({ email });
-      if (!user) {
-        res.status(400).json({ message: 'Wrong email or password' });
-        return;
-      }
+  try {
+    const { email, password } = req.body;
 
-      const validPassword = user.password ? await bcrypt.compare(password, user.password) : false;
-      if (!validPassword) {
-        res.status(400).json({ message: 'Wrong email or password' });
-        return;
-      }
-  
-      const tokens = generateToken(user._id);
-      if (!tokens) {
-        res.status(500).json({ message: 'Failed to generate tokens' });
-        return;
-      }
-  
-      if (!user.refreshToken) {
-        user.refreshToken = [];
-      }
-      user.refreshToken.push(tokens.refreshToken);
-      await user.save();
-  
-      res.status(200).json({
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-        _id: user._id,
-        username: user.username, 
-        isAuthenticated: true,
-        likedPosts: user.likedPosts,
-      });
-    } catch (err) {
-      console.error('Error during login:', err);
-      res.status(500).json({ message: 'Internal server error' });
+    if (!email || !password) {
+      res.status(400).json({ message: 'Email and password are required' });
+      return;
     }
-  };
+
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      res.status(400).json({ message: 'Wrong email or password' });
+      return;
+    }
+
+    const validPassword = user.password ? await bcrypt.compare(password, user.password) : false;
+    if (!validPassword) {
+      res.status(400).json({ message: 'Wrong email or password' });
+      return;
+    }
+
+    const tokens = generateToken(user._id);
+    if (!tokens) {
+      res.status(500).json({ message: 'Failed to generate tokens' });
+      return;
+    }
+
+    if (!user.refreshToken) {
+      user.refreshToken = [];
+    }
+    // Используем updateOne вместо save для избежания VersionError
+    await user.updateOne({ $push: { refreshToken: tokens.refreshToken } });
+
+    res.status(200).json({
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      _id: user._id,
+      username: user.username,
+      isAuthenticated: true,
+      likedPosts: user.likedPosts,
+    });
+  } catch (err) {
+    console.error('Error during login:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
   
 type tUser = Document<unknown, {}, IUser> & IUser & Required<{
     _id: string;
@@ -192,15 +193,15 @@ const verifyRefreshToken = (refreshToken: string | undefined) => {
     });
 }
 
-// const logout = async (req: Request, res: Response) => {
-//     try {
-//         const user = await verifyRefreshToken(req.body.refreshToken);
-//         await user.save();
-//         res.status(200).send("success");
-//     } catch (err) {
-//         res.status(400).send("fail");
-//     }
-// };
+const logout = async (req: Request, res: Response) => {
+    try {
+        const user = await verifyRefreshToken(req.body.refreshToken);
+        await user.save();
+        res.status(200).send("success");
+    } catch (err) {
+        res.status(400).send("fail");
+    }
+};
 
 const refresh = async (req: Request, res: Response) => {
     try {
@@ -306,6 +307,6 @@ export default {
     login,
     refresh,
     authMiddleware,
-    googleCallback
-   // logout
+    googleCallback,
+    logout
 };
