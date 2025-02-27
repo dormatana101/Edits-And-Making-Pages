@@ -4,6 +4,7 @@
   "description": "Assigment 1",
   "main": "app.js",
   "scripts": {
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --testPathPattern=__tests__/chatGPT.test.ts",
     "dev": "nodemon app.ts",
     "start": "SET NODE_ENV=local && nodemon app.ts",
     "test": "tsc && jest --detectOpenHandles --forceExit --coverage",

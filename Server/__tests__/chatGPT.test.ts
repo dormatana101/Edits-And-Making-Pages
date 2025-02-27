@@ -2,13 +2,17 @@ import request from "supertest";
 import app from "../server"; // אם השרת שלך נמצא כאן
 import NodeCache from "node-cache";
 import fetch from "node-fetch";
+require("dotenv").config();
+
+console.log("API KEY:", process.env.OPENAI_API_KEY);
+
 
 // Mock של fetch
 jest.mock("node-fetch");
 const { Response } = jest.requireActual("node-fetch");
 
 describe("chatWithGPT API Tests", () => {
-  const OPENAI_API_KEY = "your-api-key"; // אם יש לך API KEY אמיתי או אתחול במוק
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
   const cache = new NodeCache();
 
   beforeEach(() => {
@@ -17,7 +21,7 @@ describe("chatWithGPT API Tests", () => {
 
   it("should return an error if no message is provided", async () => {
     const response = await request(app)
-      .post("/api/chat") // עדכן את הנתיב בהתאם לנתיב שלך
+      .post("/api/chatgpt") // עדכן את הנתיב בהתאם לנתיב שלך
       .send({});
 
     expect(response.statusCode).toBe(400); // וודא שהסטטוס הוא 400
