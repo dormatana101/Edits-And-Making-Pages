@@ -21,12 +21,14 @@ afterAll(async () => {
   
     // Also clear any timers or intervals if necessary
   });
+  beforeAll(async () => {
+    app = await initApp();
+    });
 describe("chatWithGPT API Tests", () => {
   
-  //const cache = new NodeCache();
 
   beforeEach( async() => {
-    app = await initApp();
+  
 
     cache.flushAll(); 
   });
