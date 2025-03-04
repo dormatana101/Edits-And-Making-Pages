@@ -28,7 +28,7 @@ const fileFilter = (
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
-    cb(new Error('Only image files are allowed!'));
+    cb(new Error('Only JPEG or PNG files are allowed'));
   }
 };
 
@@ -111,10 +111,19 @@ const upload = multer({ storage: storage, fileFilter: fileFilter });
  *       500:
  *         description: Server error
  */
-router.post("/", authMiddleware, upload.single('image'), (req, res) => {
-  Post.createPost(req, res);
+// router.post("/", authMiddleware, upload.single('image'), (req, res) => {
+//   Post.createPost(req, res);
+// });
+router.post('/', (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      // If there's an error (e.g., from fileFilter), send a 400 response
+      return res.status(400).json({ message: err.message });
+    }
+    // Proceed to your controller if there's no error
+    Post.createPost(req, res);
+  });
 });
-
 /**
  * @swagger
  * /posts:
@@ -273,32 +282,7 @@ router.put("/:id", authMiddleware, upload.single("PostImage"), (req, res) => {
   Post.updatePost(req, res);
 });
 
-/**
- * @swagger
- * /posts/{id}:
- *   delete:
- *     summary: Delete a post by ID
- *     tags: [Posts]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: string
- *         required: true
- *         description: The post ID
- *     responses:
- *       200:
- *         description: Post deleted successfully
- *       404:
- *         description: Post not found
- *       500:
- *         description: Server error
- */
-router.delete("/:id", authMiddleware, (req, res) => {
-  Post.deletePost(req, res);
-});
+
 
 /**
  * @swagger
@@ -341,5 +325,32 @@ router.delete("/:id", authMiddleware, (req, res) => {
  *         description: Internal server error
  */
 router.post("/:id/like", authMiddleware, Post.toggleLike);
+
+/**
+ * @swagger
+ * /posts/{id}:
+ *   delete:
+ *     summary: Delete a post by ID
+ *     tags: [Posts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The post ID
+ *     responses:
+ *       200:
+ *         description: Post deleted successfully
+ *       404:
+ *         description: Post not found
+ *       500:
+ *         description: Server error
+ */
+router.delete("/:id", authMiddleware, (req, res) => {
+  Post.deletePost(req, res);
+});
 
 export default router;

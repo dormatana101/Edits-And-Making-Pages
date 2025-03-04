@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import postModel from "../models/Post";
 import userModel from "../models/Users";
+import { log } from "console";
 
 // Create a new post
 export const createPost = async (req: Request, res: Response): Promise<void> => {
@@ -16,7 +17,7 @@ export const createPost = async (req: Request, res: Response): Promise<void> => 
         res.status(400).json({ message: "Only JPEG or PNG files are allowed" });
         return;
       }
-      imagePath = `/uploads/${req.file.filename}`; // Path to the image for storing in DB
+      imagePath = `/uploads/${req.file.filename}`;
     }
 
     if (!title || !content || !author) {
@@ -130,6 +131,8 @@ export const deletePost = async (req: Request, res: Response): Promise<void> => 
 // Toggle like for a post
 export const toggleLike = async (req: Request, res: Response): Promise<void> => {
   try {
+    console.log("req.params.userId: " + req.params.userId);
+    console.log("req.query.userId: " + req.query.userId);
     const postId = req.params.id;
     const userId = req.params.userId || req.query.userId;
     
@@ -137,6 +140,7 @@ export const toggleLike = async (req: Request, res: Response): Promise<void> => 
       res.status(400).json({ message: "Post ID is required." });
       return;
     }
+    console.log("user id is:" + userId);
     if (!userId) {
       res.status(401).json({ message: "User ID is required." });
       return;

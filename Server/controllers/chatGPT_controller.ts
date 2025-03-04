@@ -31,8 +31,7 @@ if (!OPENAI_API_KEY) {
   throw new Error("Missing OpenAI API Key in environment variables");
 }
 
-const cache = new NodeCache({ stdTTL: 3600 }); 
-
+export const cache = new NodeCache({ stdTTL: 3600 });
 export const chatWithGPT = async (
   req: Request,
   res: Response,

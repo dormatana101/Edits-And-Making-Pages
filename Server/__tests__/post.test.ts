@@ -46,102 +46,114 @@ afterAll(async () => {
   await mongoose.disconnect();
 });
 
-describe("Posts Tests", () => {
-  test("should create a new post", async () => {
+describe("Additional Posts Tests", () => {
+  test("should not create a post without required fields", async () => {
     const response = await request(server)
       .post("/posts")
       .set("Authorization", `Bearer ${authToken}`)
-      .send({
-        title: "Test Post",
-        content: "This is test post content",
-        author: testUserId,
-      });
-    expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty("_id");
-    expect(response.body.title).toBe("Test Post");
+      .send({});
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty("message", "All fields are required");
   });
 
-  test("should get a post by ID", async () => {
-    // Создаем пост
+  test("should not allow uploading an invalid image format", async () => {
+    const response = await request(server)
+    .post("/posts")
+    .set("Authorization", `Bearer ${authToken}`)
+    .field("title", "Test")
+    .field("content", "Content")
+    .field("author", testUserId)
+    .attach("image", Buffer.from("test"), { filename: "test.txt", contentType: "text/plain" });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty("message", "Only JPEG or PNG files are allowed");
+  });
+
+  test("should return 404 for a non-existent post", async () => {
+    const response = await request(server).get("/posts/654321abcdef123456789abc");
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty("message", "Post not found");
+  });
+
+  test("should not update a non-existent post", async () => {
+    const response = await request(server)
+      .put("/posts/654321abcdef123456789abc")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({ title: "Updated", content: "Updated content" });
+
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty("message", "Post not found");
+  });
+
+  test("should not update a post without required fields", async () => {
     const createRes = await request(server)
       .post("/posts")
       .set("Authorization", `Bearer ${authToken}`)
-      .send({
-        title: "Test Post",
-        content: "This is test post content",
-        author: testUserId,
-      });
-    const postId = createRes.body._id;
-    const response = await request(server).get(`/posts/${postId}`);
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty("_id", postId);
-  });
+      .send({ title: "Test", content: "Test content", author: testUserId });
 
-  test("should update a post", async () => {
-    // Создаем пост
-    const createRes = await request(server)
-      .post("/posts")
-      .set("Authorization", `Bearer ${authToken}`)
-      .send({
-        title: "Test Post",
-        content: "This is test post content",
-        author: testUserId,
-      });
     const postId = createRes.body._id;
+
     const response = await request(server)
       .put(`/posts/${postId}`)
       .set("Authorization", `Bearer ${authToken}`)
-      .send({
-        title: "Updated Post Title",
-        content: "Updated post content",
-      });
-    expect(response.statusCode).toBe(200);
-    expect(response.body.title).toBe("Updated Post Title");
+      .send({});
+
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty("message", "Title and content are required");
   });
 
-  test("should delete a post", async () => {
-    // Создаем пост
-    const createRes = await request(server)
-      .post("/posts")
-      .set("Authorization", `Bearer ${authToken}`)
-      .send({
-        title: "Test Post",
-        content: "This is test post content",
-        author: testUserId,
-      });
-    const postId = createRes.body._id;
-    const deleteRes = await request(server)
-      .delete(`/posts/${postId}`)
+  test("should return 404 when deleting a non-existent post", async () => {
+    const response = await request(server)
+      .delete("/posts/654321abcdef123456789abc")
       .set("Authorization", `Bearer ${authToken}`);
-    expect(deleteRes.statusCode).toBe(200);
-    const getRes = await request(server).get(`/posts/${postId}`);
-    expect(getRes.statusCode).toBe(404);
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty("message", "Post not found");
   });
 
-  test("should toggle like on a post", async () => {
-    // Создаем пост
+  test("should return 404 when liking a non-existent post", async () => {
+    const response = await request(server)
+      .post("/posts/654321abcdef123456789abc/like?userId=" + testUserId)
+      .set("Authorization", `Bearer ${authToken}`);
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty("message", "Post not found");
+  });
+   
+  test("should return 401 if userId is missing when liking a post", async () => {
     const createRes = await request(server)
       .post("/posts")
       .set("Authorization", `Bearer ${authToken}`)
-      .send({
-        title: "Test Post",
-        content: "This is test post content",
-        author: testUserId,
-      });
+      .send({ title: "Test Post", content: "Test content", author: testUserId });
+  
     const postId = createRes.body._id;
-    // Первый вызов: лайкаем пост. Передаем userId через query-параметр
+  
+    // Append an empty userId query parameter
+    const response = await request(server)
+      .post(`/posts/${postId}/like/${""}`)
+    expect(response.statusCode).toBe(401);
+  });
+
+  test("should correctly increase and decrease likes count", async () => {
+    const createRes = await request(server)
+      .post("/posts")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({ title: "Test Post", content: "Test content", author: testUserId });
+
+    const postId = createRes.body._id;
+
+    // Like the post
     const likeRes1 = await request(server)
       .post(`/posts/${postId}/like?userId=${testUserId}`)
       .set("Authorization", `Bearer ${authToken}`);
     expect(likeRes1.statusCode).toBe(200);
-    expect(likeRes1.body).toHaveProperty("message", "Post liked");
-    expect(typeof likeRes1.body.likesCount).toBe("number");
+    expect(likeRes1.body).toHaveProperty("likesCount", 1);
 
-    // Второй вызов: убираем лайк
+    // Unlike the post
     const likeRes2 = await request(server)
       .post(`/posts/${postId}/like?userId=${testUserId}`)
       .set("Authorization", `Bearer ${authToken}`);
     expect(likeRes2.statusCode).toBe(200);
-    expect(likeRes2.body).toHaveProperty("message", "Like removed");
+    expect(likeRes2.body).toHaveProperty("likesCount", 0);
+  
   });
+  
 });

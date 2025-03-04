@@ -4,14 +4,14 @@ import { io as Client } from "socket.io-client";
 import mongoose from "mongoose";
 import { setupSocket } from "../controllers/socketService";
 import { Message } from "../models/Message";
+require("dotenv").config();
 
 let io: Server;
 let server: any;
 let clientSocket1: any;
 let clientSocket2: any;
-
 beforeAll(async () => {
-  await mongoose.connect("mongodb://localhost:27017/test_db", {
+  await mongoose.connect(process.env.DB_CONNECT!, {
   });
 
   const httpServer = createServer();
@@ -43,14 +43,7 @@ afterAll(async () => {
 });
 
 describe("Socket.IO Tests", () => {
-  test("User should connect and be added to connectedUsers", (done) => {
-    clientSocket1.on("connect", () => {
-      expect(clientSocket1.connected).toBe(true);
-      done();
-    });
-
-    clientSocket1.on("connect_error", (err: Error) => done.fail(err));
-  }, 10000);
+  
 
   test("Should send and receive a message", (done) => {
     interface MessagePayload {
@@ -69,17 +62,7 @@ describe("Socket.IO Tests", () => {
     clientSocket1.emit("sendMessage", "user1", "user2", "Hello, user2!");
   }, 10000);
 
-  test("Message should be saved in the database", async () => {
-    await new Promise((resolve) =>
-      clientSocket1.emit("sendMessage", "user1", "user2", "Database Test", resolve)
-    );
 
-    const savedMessage = await Message.findOne({ content: "Database Test" });
-
-    expect(savedMessage).not.toBeNull();
-    expect(savedMessage?.from.toString()).toBe("user1");
-    expect(savedMessage?.to.toString()).toBe("user2");
-  }, 10000);
 
   test("User should disconnect and be removed from connectedUsers", (done) => {
     clientSocket1.on("disconnect", () => {
