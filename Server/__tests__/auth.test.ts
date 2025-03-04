@@ -146,40 +146,40 @@ describe("Auth Tests", () => {
     expect(response3.statusCode).not.toBe(200);
   });
 
-  // test("Test timeout token", async () => {
-  //   const response = await request(app).post(baseUrl + "/login").send(testUser);
-  //   expect(response.statusCode).toBe(200);
-  //   testUser.accessToken = response.body.accessToken;
-  //   testUser.refreshToken = response.body.refreshToken;
+  test("Test timeout token", async () => {
+    const response = await request(app).post(baseUrl + "/login").send(testUser);
+    expect(response.statusCode).toBe(200);
+    testUser.accessToken = response.body.accessToken;
+    testUser.refreshToken = response.body.refreshToken;
 
-  //   await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
-  //   const response2 = await request(app)
-  //     .post("/posts")
-  //     .set({ authorization: "JWT " + testUser.accessToken })
-  //     .send({
-  //       title: "Test Post",
-  //       content: "Test Content",
-  //       author: "invalid", 
-  //     });
-  //   expect(response2.statusCode).not.toBe(201);
+    const response2 = await request(app)
+      .post("/posts")
+      .set({ authorization: "JWT " + testUser.accessToken })
+      .send({
+        title: "Test Post",
+        content: "Test Content",
+        author: "invalid", 
+      });
+    expect(response2.statusCode).not.toBe(201);
 
-  //   const response3 = await request(app).post(baseUrl + "/refresh").send({
-  //     refreshToken: testUser.refreshToken,
-  //   });
-  //   expect(response3.statusCode).toBe(200);
-  //   testUser.accessToken = response3.body.accessToken;
+    const response3 = await request(app).post(baseUrl + "/refresh").send({
+      refreshToken: testUser.refreshToken,
+    });
+    expect(response3.statusCode).toBe(200);
+    testUser.accessToken = response3.body.accessToken;
 
-  //   const response4 = await request(app)
-  //     .post("/posts")
-  //     .set({ authorization: "JWT " + testUser.accessToken })
-  //     .send({
-  //       title: "Test Post",
-  //       content: "Test Content",
-  //       author: "invalid", 
-  //     });
-  //   expect(response4.statusCode).toBe(201);
-  // });
+    const response4 = await request(app)
+      .post("/posts")
+      .set({ authorization: "JWT " + testUser.accessToken })
+      .send({
+        title: "Test Post",
+        content: "Test Content",
+        author: "invalid", 
+      });
+    expect(response4.statusCode).toBe(201);
+  });
 
   test("Test verifyRefreshToken user fail", async () => {
     const response = await request(app).post(baseUrl + "/refresh").send({});

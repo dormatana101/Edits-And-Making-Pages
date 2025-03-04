@@ -3,6 +3,7 @@ import initApp from "../server";
 import mongoose from "mongoose";
 import postModel from "../models/Post";
 import userModel from "../models/Users";
+import { Express } from "express";
 
 type User = {
   email: string;
@@ -18,7 +19,7 @@ const testUser: User = {
   username: "testuser",
 };
 
-let server: any;
+var server: any;
 let authToken: string;
 let testUserId: string;
 
