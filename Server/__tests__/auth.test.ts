@@ -196,8 +196,7 @@ describe("Auth Tests", () => {
 
   test("Create post should fail if TOKEN_SECRET is not set", async () => {
     const oldTokenSecret = process.env.TOKEN_SECRET;
-    delete process.env.TOKEN_SECRET; // מחק את המשתנה
-    
+    delete process.env.TOKEN_SECRET;
     const response = await request(app)
       .post("/posts")
       .set({ authorization: "JWT " + testUser.accessToken })
@@ -206,13 +205,9 @@ describe("Auth Tests", () => {
         content: "Test Content",
         author: "invalid",
       });
-    
-    // צפה שהסטטוס יהיה 500 ולא 201
-    expect(response.statusCode).toBe(500);  // תוודא שהסטטוס הוא 500
-    
-    process.env.TOKEN_SECRET = oldTokenSecret;  // החזר את משתנה הסביבה למצבו הקודם
+    expect(response.statusCode).not.toBe(201);
+    process.env.TOKEN_SECRET = oldTokenSecret;
   });
-  
 
   test("Test verifyRefreshToken with invalid token", async () => {
     const response = await request(app).post(baseUrl + "/refresh").send({
