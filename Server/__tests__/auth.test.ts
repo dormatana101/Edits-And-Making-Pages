@@ -1,4 +1,4 @@
-// __tests__/auth.test.ts
+
 import request from "supertest";
 import initApp from "../server";
 import mongoose from "mongoose";

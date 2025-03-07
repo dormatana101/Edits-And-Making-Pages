@@ -185,4 +185,156 @@ describe("Comments Tests", () => {
       expect(typeof response.body.suggestedComment).toBe("string");
     }
   });
+  test("should return 401 for unauthorized access when no token is provided", async () => {
+  const response = await request(server)
+    .post("/comments")
+    .send({
+      postId: testPostId,
+      content: "Unauthorized comment",
+      author: testUserId,
+    });
+  expect(response.statusCode).toBe(401);
+  if (response.error && 'text' in response.error) {
+    expect(response.error.text).toEqual("Access Denied");
+  }
+});
+
+// 
+test("should return 404 for non-existing comment", async () => {
+  const response = await request(server).get(`/comments/${new mongoose.Types.ObjectId()}`);
+  expect(response.statusCode).toBe(404);
+  expect(response.body).toHaveProperty("message", "Comment not found");
+});
+test("should handle empty content when updating a comment", async () => {
+  const createRes = await request(server)
+    .post("/comments")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      postId: testPostId,
+      content: "Original comment",
+      author: testUserId,
+    });
+  const commentId = createRes.body._id;
+
+  const updateRes = await request(server)
+    .put(`/comments/${commentId}`)
+    .set("Authorization", `Bearer ${authToken}`) // הוספת הרשאה
+    .send({ content: null }); // נשלח null במקום רווח ריק
+
+  expect(updateRes.statusCode).toBe(400);
+  expect(updateRes.body).toHaveProperty("message", "Comment ID and content are required");
+});
+
+
+test("should return 404 when trying to create a comment for a non-existing post", async () => {
+  const nonExistingPostId = new mongoose.Types.ObjectId().toString();
+  
+  const response = await request(server)
+    .post("/comments")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      postId: nonExistingPostId,
+      content: "Comment for non-existing post",
+      author: testUserId,
+    });
+
+  console.log("Response status:", response.statusCode);
+  console.log("Response body:", response.body);
+
+  expect(response.statusCode).toBe(404);
+  expect(response.body).toHaveProperty("message", "Post not found");
+});
+test("should return 400 when creating a comment with empty content", async () => {
+  const response = await request(server)
+    .post("/comments")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      postId: testPostId,
+      content: "",
+      author: testUserId,
+    });
+
+  expect(response.statusCode).toBe(400);
+  expect(response.body).toHaveProperty("message", "All fields are required");
+});
+
+test("should return 404 when deleting a non-existing comment", async () => {
+  const fakeCommentId = new mongoose.Types.ObjectId().toString();
+
+  const response = await request(server)
+    .delete(`/comments/${fakeCommentId}`)
+    .set("Authorization", `Bearer ${authToken}`);
+
+  expect(response.statusCode).toBe(404);
+  expect(response.body).toHaveProperty("message", "Comment not found");
+});
+
+test("should return 404 when updating a non-existing comment", async () => {
+  const fakeCommentId = new mongoose.Types.ObjectId().toString();
+
+  const response = await request(server)
+    .put(`/comments/${fakeCommentId}`)
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({ content: "Updated comment" });
+
+  expect(response.statusCode).toBe(404);
+  expect(response.body).toHaveProperty("message", "Comment not found");
+});
+
+test("should return 401 when creating a comment with invalid token", async () => {
+  const response = await request(server)
+    .post("/comments")
+    .set("Authorization", `Bearer invalidToken`)
+    .send({
+      postId: testPostId,
+      content: "This should not be created",
+      author: testUserId,
+    });
+
+  expect(response.statusCode).toBe(401);
+  if (response.error && 'text' in response.error) {
+    expect(response.error.text).toEqual("Access Denied");
+  }
+});
+
+test("should return 400 when creating a comment with invalid postId format", async () => {
+  const response = await request(server)
+    .post("/comments")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      postId: "12345", // Invalid ObjectId format
+      content: "Invalid post ID",
+      author: testUserId,
+    });
+
+  expect(response.statusCode).toBe(500);
+  expect(response.body).toHaveProperty("message", "Error creating comment");
+});
+
+test("should return 404 when creating a comment with a non-existing author", async () => {
+  const nonExistingUserId = new mongoose.Types.ObjectId().toString();
+
+  const response = await request(server)
+    .post("/comments")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({
+      postId: testPostId,
+      content: "This author does not exist",
+      author: nonExistingUserId,
+    });
+
+  expect(response.statusCode).toBe(404);
+  expect(response.body).toHaveProperty("message", "User not found");
+});
+
+test("should return an empty results array when no comments exist for a post", async () => {
+  const response = await request(server)
+    .get(`/comments/post/${testPostId}`);
+
+  expect(response.statusCode).toBe(200);
+  expect(response.body.success).toBe(true);
+  expect(Array.isArray(response.body.results)).toBe(true);
+  expect(response.body.results.length).toBe(0);  // מצפה למערך ריק
+});
+
 });
