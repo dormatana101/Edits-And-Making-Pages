@@ -337,4 +337,14 @@ test("should return an empty results array when no comments exist for a post", a
   expect(response.body.results.length).toBe(0);  // מצפה למערך ריק
 });
 
+test("should return 400 if postId is not provided", async () => {
+  const response = await request(server)
+    .post("/comments/generate")
+    .set("Authorization", `Bearer ${authToken}`)
+    .send({});  // שליחה של בקשה בלי postId
+
+  expect(response.statusCode).toBe(400);
+  expect(response.body).toHaveProperty("message", "postId is a required parameter");
+});
+
 });
