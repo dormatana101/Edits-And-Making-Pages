@@ -295,7 +295,7 @@ const googleCallback = async (req: Request, res: Response) => {
 
 
   } catch (err) {
-      console.error('Error googleCallback:', err);
+      
       res.status(500).json({ message: 'Error' });
   }
 };

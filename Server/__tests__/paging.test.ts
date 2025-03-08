@@ -3,6 +3,7 @@ import initApp from "../server";
 import mongoose from "mongoose";
 import postModel from "../models/Post";
 import userModel from "../models/Users"; // Adjust the path if needed
+const baseUrl = "/auth";
 
 interface User {
   email: string;
@@ -34,9 +35,15 @@ beforeAll(async () => {
   await userModel.deleteMany({});
 
   // Seed 15 posts for paging tests
+  const response3 = await request(server).post(baseUrl + "/register").send(testUser);
+  const response = await request(server).post(baseUrl + "/login").send({
+        email: testUser.email,
+        password: testUser.password,
+      });
   for (let i = 1; i <= 15; i++) {
     await request(server)
       .post("/posts")
+      .set("Authorization", `Bearer ${response.body.accessToken}`)
       .send({ title: `Test Post ${i}`, content: "Lorem ipsum", author: "test-author" });
   }
 });

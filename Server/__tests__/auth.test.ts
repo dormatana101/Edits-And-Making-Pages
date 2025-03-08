@@ -3,7 +3,13 @@ import request from "supertest";
 import initApp from "../server";
 import mongoose from "mongoose";
 import userModel, { IUser } from "../models/Users";
+import postModel from "../models/Post";
+import authController from "../controllers/auth_controller";
+import { Request, Response } from "express";
 
+interface CustomRequest extends Request {
+  user?: any;
+}
 type User = IUser & {
   accessToken?: string,
   refreshToken?: string,
@@ -30,6 +36,8 @@ beforeAll(async () => {
 
 afterAll(async () => {
   console.log("afterAll");
+  await postModel.deleteMany({});
+  await userModel.deleteMany({});
   await mongoose.disconnect();
   app.close();
 });
@@ -215,6 +223,91 @@ describe("Auth Tests", () => {
     });
     expect(response.statusCode).not.toBe(200);
   });
+  test("Test refresh with valid token not in user's token list", async () => {
+    // Register a new user
+    const newUser: User = {
+      username: "refreshFail",
+      email: "refreshfail@user.com",
+      password: "testpassword",
+      profilePicture: "",
+      posts: []
+    };
+    await request(app).post(baseUrl + "/register").send(newUser);
+    const loginResponse = await request(app).post(baseUrl + "/login").send({
+      email: newUser.email,
+      password: newUser.password,
+    });
+    expect(loginResponse.statusCode).toBe(200);
+    // Generate a refresh token manually that is valid but not stored in the user's refreshToken list
+    
+    const refreshResponse = await request(app).post(baseUrl + "/refresh").send({
+      refreshToken: 'fakeRefreshToken',
+    });
+    expect(refreshResponse.statusCode).not.toBe(200);
+  });
+  
+    test("Auth test login fail with missing password", async () => {
+      const response = await request(app)
+        .post(baseUrl + "/login")
+        .send({ email: testUser.email });
+      expect(response.statusCode).not.toBe(200);
+    });
+  
+    test("Auth test login fail with missing email", async () => {
+      const response = await request(app)
+        .post(baseUrl + "/login")
+        .send({ password: testUser.password });
+      expect(response.statusCode).not.toBe(200);
+    });
+  
+    test("Auth test logout fail with missing refresh token", async () => {
+      const response = await request(app)
+        .post(baseUrl + "/logout")
+        .send({});
+      expect(response.statusCode).not.toBe(200);
+    });
+  
+    test("Auth test logout fail with invalid refresh token", async () => {
+      const response = await request(app)
+        .post(baseUrl + "/logout")
+        .send({ refreshToken: "invalidToken" });
+      expect(response.statusCode).not.toBe(200);
+    });
+  
+    test("Auth test refresh fail with no token provided", async () => {
+      const response = await request(app)
+        .post(baseUrl + "/refresh")
+        .send({});
+      expect(response.statusCode).not.toBe(200);
+    });
+    
+    test("Auth test google login - missing user ID", async () => {
+      const fakeReq = {
+        user: { _id: undefined, username: "googleUser" }
+      } as unknown as Request;
+      const fakeRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      } as unknown as Response;
+      await authController.googleCallback(fakeReq, fakeRes);
+      expect(fakeRes.status).toHaveBeenCalledWith(500);
+      expect(fakeRes.json).toHaveBeenCalledWith({ message: 'User ID is undefined' });
+    });
+    
+    test("Auth test google login - no token generated", async () => {
+      const fakeUser = { _id: "12345", username: "googleUser", refreshToken: [] };
+      const fakeReq = { user: fakeUser } as unknown as Request;
+      const fakeRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      } as unknown as Response;
+      await authController.googleCallback(fakeReq, fakeRes);
+      expect(fakeRes.status).toHaveBeenCalledWith(500);
+      expect(fakeRes.json).toHaveBeenCalledWith({ message: 'Error' });
+    });
+      
+    jest.setTimeout(10000);
+  });
 
-  jest.setTimeout(10000);
-});
+  
+
