@@ -1,5 +1,6 @@
 import axios from 'axios';
 import CONFIG from "../config"; 
+import api from "./axiosInstance";
 
 const userId = localStorage.getItem("userId");
 
@@ -16,7 +17,7 @@ export const fetchPosts = async <T>(
   limit: number,
 ): Promise<PaginatedApiResponse<T>> => {
   try {
-    const response = await axios.get(`${CONFIG.SERVER_URL}/posts`, {
+    const response = await api.get(`${CONFIG.SERVER_URL}/posts`, {
       params: {
         page,
         limit,
@@ -50,7 +51,7 @@ export const fetchPosts = async <T>(
 // Fetch post by ID
 export const fetchPostById = async (id: string) => {
   try {
-    const response = await axios.get(`${CONFIG.SERVER_URL}/posts/${id}`, {
+    const response = await api.get(`${CONFIG.SERVER_URL}/posts/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
@@ -66,7 +67,7 @@ export const fetchPostById = async (id: string) => {
 // Fetch comments by Post ID
 export const fetchCommentsByPostId = async (postId: string) => {
   try {
-    const response = await axios.get(`${CONFIG.SERVER_URL}/comments/post/${postId}`);
+    const response = await api.get(`${CONFIG.SERVER_URL}/comments/post/${postId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching comments:', error);
@@ -77,7 +78,7 @@ export const fetchCommentsByPostId = async (postId: string) => {
 // Post a new comment
 export const postComment = async (postId: string, content: string) => {
   try {
-    const response = await axios.post(
+    const response = await api.post(
      `${CONFIG.SERVER_URL}/comments`,
       {
         postId,
@@ -109,7 +110,7 @@ export const createPost = async (title: string, content: string, image: File | n
       formData.append("image", image);
     }
 
-    const response = await axios.post(
+    const response = await api.post(
       `${CONFIG.SERVER_URL}/posts`,
       formData,
       {
@@ -134,7 +135,7 @@ export const createPost = async (title: string, content: string, image: File | n
 
 export const toggleLike = async (postId: string) => {
   try {
-    const response = await axios.post(
+    const response = await api.post(
       `${CONFIG.SERVER_URL}/posts/${postId}/like`,
       {},
       {

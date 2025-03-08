@@ -1,10 +1,11 @@
 import axios from "axios";
 import CONFIG from "../config"; 
+import api from "./axiosInstance";
 
 
 export const login = async (email: string, password: string) => {
   try {
-    const response = await axios.post(`${CONFIG.SERVER_URL}/auth/login`, {
+    const response = await api.post(`${CONFIG.SERVER_URL}/auth/login`, {
       email,
       password,
     });
@@ -42,7 +43,7 @@ export const fetchProtectedData = async () => {
     return { success: false, message: "No token found" };
   }
   try {
-    const response = await axios.get(
+    const response = await api.get(
       `${CONFIG.SERVER_URL}/auth/protected-route`,
       {
         headers: {

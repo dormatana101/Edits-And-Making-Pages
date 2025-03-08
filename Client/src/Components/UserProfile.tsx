@@ -5,6 +5,8 @@ import CONFIG from "../config";
 import { IUserProfileResponse } from "../types/UserProfileResponse";
 import { IProfileForm } from "../types/UserProfileForm"; 
 import { Post } from "../types/post"; 
+import api from "../Services/axiosInstance";
+
 
 const UserProfile: React.FC = () => {
   const [userData, setUserData] = useState<IUserProfileResponse | null>(null);
@@ -33,7 +35,7 @@ const UserProfile: React.FC = () => {
     }
 
     try {
-      const response = await axios.get(`${CONFIG.SERVER_URL}/api/users/profile`, {
+      const response = await api.get(`${CONFIG.SERVER_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { userId: localStorage.getItem("userId"), page, limit: 5 },
       });
@@ -117,7 +119,7 @@ const UserProfile: React.FC = () => {
         formDataToSend.append("profilePicture", selectedFile);
       }
 
-      const response = await axios.put(
+      const response = await api.put(
         `${CONFIG.SERVER_URL}/api/users/profile`,
         formDataToSend,
         {
@@ -168,7 +170,7 @@ const UserProfile: React.FC = () => {
     }
 
     try {
-      const response = await axios.put(
+      const response = await api.put(
         `${CONFIG.SERVER_URL}/posts/${postId}`,
         formData,
         {
@@ -203,7 +205,7 @@ const UserProfile: React.FC = () => {
     }
 
     try {
-      await axios.delete(`${CONFIG.SERVER_URL}/posts/${postId}`, {
+      await api.delete(`${CONFIG.SERVER_URL}/posts/${postId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
