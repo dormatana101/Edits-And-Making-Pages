@@ -21,7 +21,7 @@ const OAuthCallback: React.FC = () => {
           localStorage.setItem("userId", userId);
           localStorage.setItem("username", username);
         }
-
+        window.location.replace("/all-posts");
         navigate("/all-posts", { replace: true });
       } else {
         navigate("/login", { replace: true });
