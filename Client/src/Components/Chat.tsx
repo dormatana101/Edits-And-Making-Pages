@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
-import { createSocket, sendMessage, listenForMessages, startChat, disconnectSocket } from "../Services/SocketService";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { createSocket, sendMessage, startChat, disconnectSocket } from "../Services/SocketService";
 import { Message } from "../types/message";
 import { User } from "../types/user";
-import styles from "../css/ChatPage.module.css"; 
+import styles from "../css/ChatPage.module.css";
 import { Socket } from "socket.io-client";
-import CONFIG from "../config"; 
+import CONFIG from "../config";
 
 const Chat: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -13,27 +13,26 @@ const Chat: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [socket, setSocket] = useState<typeof Socket | null>(null); 
+  const [socket, setSocket] = useState<typeof Socket | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await fetch(`${CONFIG.SERVER_URL}/api/users`);
         const data: User[] = await response.json();
-
         const filtered = data.filter((u) => u._id !== currentUserId);
         setUsers(filtered);
 
         const dict: Record<string, string> = {};
-        for (const u of data) {
+        data.forEach((u) => {
           dict[u._id] = u.username;
-        }
+        });
         setUserMap(dict);
       } catch (err) {
         console.error("Error fetching users:", err);
@@ -45,31 +44,32 @@ const Chat: React.FC = () => {
     const newSocket = createSocket(currentUserId);
     setSocket(newSocket);
 
-    const cleanup = listenForMessages(newSocket, (message) => {
-      if (selectedUser && 
-        (message.from === selectedUser._id)) {
-      setMessages((prev) => [...prev, message]);
-      } 
-    });
-
     return () => {
-      cleanup();
-      disconnectSocket(newSocket);
+      if (newSocket) {
+        disconnectSocket(newSocket);
+      }
     };
   }, [currentUserId]);
 
   useEffect(() => {
-    if (selectedUser) {
-      fetchChatHistory(selectedUser._id);
-    }
-  }, [selectedUser]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (!socket) return;
+    const handleReceiveMessage = (message: {
+      from: string;
+      to: string;
+      content: string;
+      timestamp: Date;
+    }) => {
+      if (selectedUser && message.from === selectedUser._id) {
+        setMessages((prev) => [...prev, message]);
+      }
+    };
+    socket.on("receiveMessage", handleReceiveMessage);
+    return () => {
+      socket.off("receiveMessage", handleReceiveMessage);
+    };
+  }, [socket, selectedUser]);
 
   const fetchChatHistory = async (otherUserId: string) => {
-    
     try {
       const response = await fetch(`${CONFIG.SERVER_URL}/api/chat/${currentUserId}/${otherUserId}`);
       if (!response.ok) {
@@ -85,19 +85,15 @@ const Chat: React.FC = () => {
   const startChatHandler = async (user: User) => {
     if (selectedUser?._id === user._id) return;
     setSelectedUser(user);
-
     if (socket) {
       startChat(socket, currentUserId, user._id);
     }
-
     await fetchChatHistory(user._id);
   };
 
   const sendMessageHandler = () => {
     if (!newMessage.trim() || !currentUserId || !selectedUser || !socket) return;
-
     sendMessage(socket, currentUserId, selectedUser._id, newMessage);
-
     setMessages((prev) => [
       ...prev,
       {
@@ -109,6 +105,10 @@ const Chat: React.FC = () => {
     ]);
     setNewMessage("");
   };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
 
   return (
     <div className={styles.chatContainer}>
@@ -129,12 +129,10 @@ const Chat: React.FC = () => {
             <div className={styles.chatHeader}>
               Chat with {selectedUser.username}
             </div>
-
             <div className={styles.chatMessages}>
               {messages.map((msg, index) => {
                 const isMyMessage = msg.from === currentUserId;
                 const fromName = userMap[msg.from] || msg.from;
-
                 return (
                   <div
                     key={index}
@@ -147,14 +145,13 @@ const Chat: React.FC = () => {
               })}
               <div ref={messagesEndRef} />
             </div>
-
             <div className={styles.chatInputArea}>
               <input
                 type="text"
                 placeholder="Write a message..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' ? sendMessageHandler() : null} 
+                onKeyDown={(e) => e.key === "Enter" ? sendMessageHandler() : null}
                 className={styles.messageInput}
               />
               <button onClick={sendMessageHandler} className={styles.sendButton}>Send</button>
