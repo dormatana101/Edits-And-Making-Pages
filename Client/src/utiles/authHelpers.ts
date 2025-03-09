@@ -1,52 +1,63 @@
-import { login } from "../Services/authService";
-import { validateEmail, validatePassword } from "./Login_validation";
+import api from "../Services/axiosInstance";
 import { NavigateFunction } from "react-router-dom";
 
-
-export const handleLogin = async (
-  event: React.FormEvent,
+export async function handleLogin(
+  e: React.FormEvent,
   email: string,
   password: string,
   setErrorMessage: (msg: string) => void,
   navigate: NavigateFunction
-) => {
-  event.preventDefault();
-
-  if (!validateEmail(email)) {
-    setErrorMessage("Invalid Email Address");
-    setTimeout(() => setErrorMessage(""), 3000);
-    return;
-  }
-
-  if (!validatePassword(password)) {
-    setErrorMessage("Password must be at least 6 characters long");
-    setTimeout(() => setErrorMessage(""), 3000);
-    return;
-  }
-
+) {
+  e.preventDefault();
   setErrorMessage("");
 
-  const result = await login(email, password);
-  if (result.success) {
-    localStorage.setItem("accessToken", result.accessToken);
-    localStorage.setItem("username", result.data.username);
-    localStorage.setItem("userId", result.data._id);
-
-    navigate("/all-posts", { state: { likedPosts: result.data.likedPosts, userId: result.data._id } });
-  } else {
-    setErrorMessage(result.message);
-    setTimeout(() => setErrorMessage(""), 2000);
+  if (!email || !password) {
+    setErrorMessage("Please fill in both email and password.");
+    return;
   }
-};
 
+  try {
+    const response = await api.post("/auth/login", { email, password });
+    if (response.status === 200 && response.data && response.data.accessToken) {
+      localStorage.setItem("accessToken", response.data.accessToken);
 
-export const handleKeyDown = (event: React.KeyboardEvent, handleLogin: () => void) => {
-  if (event.key === "Enter") {
-    handleLogin();
+      if (response.data._id) localStorage.setItem("userId", response.data._id);
+      if (response.data.username) localStorage.setItem("username", response.data.username);
+
+      navigate("/all-posts");
+    } else {
+      setErrorMessage(response.data?.message || "Login failed");
+    }
+  } catch {
+      setErrorMessage("An unexpected error occurred");
+    }
+  
+}
+
+export function handleKeyDown(
+  e: React.KeyboardEvent,
+  submitFunc: () => void
+) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    submitFunc();
   }
-};
+}
 
-
-export const handleGoogleLogin = (serverUrl: string) => {
+export function handleGoogleLogin(serverUrl: string) {
   window.location.href = `${serverUrl}/auth/google`;
-};
+}
+
+export async function handleLogout(navigate: NavigateFunction) {
+  try {
+    await api.post("/auth/logout"); 
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("username");
+    navigate("/login");
+  } catch (err) {
+    console.error("Error logging out:", err);
+    navigate("/login");
+  }
+}
+

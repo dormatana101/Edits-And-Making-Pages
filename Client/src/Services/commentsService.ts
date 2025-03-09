@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Comment } from "../types/comment";
 import CONFIG from "../config"; 
+import api from "./axiosInstance";
 
 
 export interface PaginatedApiResponse<T> {
@@ -17,7 +18,7 @@ export interface PaginatedApiResponse<T> {
     limit: number
   ): Promise<PaginatedApiResponse<Comment>> => {
     try {
-      const response = await axios.get(
+      const response = await api.get(
         `${CONFIG.SERVER_URL}/comments/post/${postId}?page=${page}&limit=${limit}`
       );
       return {
@@ -34,7 +35,7 @@ export interface PaginatedApiResponse<T> {
     postId: string
   ): Promise<string> => {
     try {
-      const response = await axios.post(
+      const response = await api.post(
         `${CONFIG.SERVER_URL}/comments/generate`,
         { postId },
         {
