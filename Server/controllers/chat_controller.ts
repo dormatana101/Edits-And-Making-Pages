@@ -24,7 +24,10 @@ export const getMessages = async (req: Request, res: Response) => {
         { from: otherUserId, to: userId }
       ]
     }).sort({ timestamp: 1 });
-
+    if(messages.length === 0) {
+      res.status(500).send("Server error");
+      return;
+     }
 
     const transformed = messages.map(doc => ({
       from: doc.from,

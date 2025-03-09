@@ -100,7 +100,7 @@ describe("Chat Tests", () => {
     await message2.save();
 
     const response = await request(server)
-      .get(`/api/chat/messages/${testUserId}/${otherUserId}`)
+      .get(`/api/chat/${testUserId}/${otherUserId}`)
       .set("Authorization", `Bearer ${authToken}`);
 
     expect(response.statusCode).toBe(200);
@@ -115,7 +115,7 @@ describe("Chat Tests", () => {
 
   test("should return 500 if there is an error fetching messages", async () => {
     const response = await request(server)
-      .get(`/api/chat/messages/${testUserId}/invalidUserId`)
+      .get(`/api/chat/${testUserId}/invalidUserId`)
       .set("Authorization", `Bearer ${authToken}`);
       
     expect(response.statusCode).toBe(500);

@@ -3,6 +3,7 @@ import initApp from "../server";
 import mongoose from "mongoose";
 import postModel from "../models/Post";
 import userModel from "../models/Users";
+import { Express } from "express";
 
 type User = {
   email: string;
@@ -18,7 +19,7 @@ const testUser: User = {
   username: "testuser",
 };
 
-let server: any;
+var server: any;
 let authToken: string;
 let testUserId: string;
 
@@ -155,5 +156,103 @@ describe("Additional Posts Tests", () => {
     expect(likeRes2.body).toHaveProperty("likesCount", 0);
   
   });
+
+  test("should return 404 when no posts found for the given sender ID", async () => {
+    const response = await request(server)
+      .get(`/posts/sender/${new mongoose.Types.ObjectId()}`)
+      .set("Authorization", `Bearer ${authToken}`);
+
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty("message", "No posts found for this sender");
+  });
+
+  test("should return 500 if there is a database error", async () => {
+    // סימולציה של תקלה במסד נתונים
+    jest.spyOn(postModel, "find").mockRejectedValue(new Error("Database error"));
+
+    const response = await request(server)
+      .get(`/posts/sender/${testUserId}`)
+      .set("Authorization", `Bearer ${authToken}`);
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toHaveProperty("message", "Error getting posts by sender ID");
+
+    // שחזור הפונקציה המקורית
+    jest.restoreAllMocks();
+  });
+
+  test("should return 404 when senderId is not a valid ObjectId", async () => {
+    const response = await request(server)
+      .get("/posts/sender/invalid-id")
+      .set("Authorization", `Bearer ${authToken}`);
+
+    expect(response.statusCode).toBe(404); // Mongo יגרום לשגיאה בגלל ObjectId לא חוקי
+  });
+  test("should allow creating a post without an image", async () => {
+    const response = await request(server)
+      .post("/posts")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({
+        title: "Test Post Without Image",
+        content: "Test Content",
+        author: testUserId,
+      });
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).not.toHaveProperty("imagePath");
+  });
+
+  test("should return 500 if an unexpected error occurs", async () => {
+    jest.spyOn(postModel, "findById").mockImplementationOnce(() => {
+      throw new Error("Database connection error");
+    });
+    const createRes = await request(server)
+      .post("/posts")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({ title: "Test Post", content: "Test content", author: testUserId });
+
+    const postId = createRes.body._id;
+
+    const response = await request(server)
+      .post(`/posts/${postId}/like?userId=${testUserId}`)
+      .set("Authorization", `Bearer ${authToken}`);
+
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toHaveProperty("message", "Internal server error");
+  });
   
+  test("should return 404 if user not found", async () => {
+    jest.spyOn(userModel, "findById").mockResolvedValueOnce(null);
+
+    const createRes = await request(server)
+      .post("/posts")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({ title: "Test Post", content: "Test content", author: testUserId });
+
+    const postId = createRes.body._id;
+  
+    const response = await request(server)
+      .post(`/posts/${postId}/like?userId=${testUserId}`)
+      .set("Authorization", `Bearer ${authToken}`);
+  
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty("message", "User not found");
+  
+    jest.restoreAllMocks(); // מחזיר את הפונקציה למצבה המקורי
+  });
+  
+  test("should return 500 if there is a server error during deletion", async () => {
+    jest.spyOn(postModel, "findByIdAndDelete").mockRejectedValueOnce(new Error("Database error"));
+  
+    const response = await request(server)
+      .delete(`/posts/${testUserId}`)
+      .set("Authorization", `Bearer ${authToken}`);
+  
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toHaveProperty("message", "Error deleting post");
+    expect(response.body).toHaveProperty("error", "Database error");
+  
+    jest.restoreAllMocks(); // מנקה את ה-mock אחרי הבדיקה
+  });
+    
 });

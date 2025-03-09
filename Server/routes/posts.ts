@@ -114,7 +114,7 @@ const upload = multer({ storage: storage, fileFilter: fileFilter });
 // router.post("/", authMiddleware, upload.single('image'), (req, res) => {
 //   Post.createPost(req, res);
 // });
-router.post('/', (req, res, next) => {
+router.post('/', authMiddleware,(req, res, next) => {
   upload.single('image')(req, res, (err) => {
     if (err) {
       // If there's an error (e.g., from fileFilter), send a 400 response

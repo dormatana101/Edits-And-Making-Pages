@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import CommentModel from "../models/Comment";
 import PostModel from "../models/Post";
+import UserModel from "../models/Users";
 import fetch from "node-fetch";
 
 //get all comments
@@ -25,6 +26,15 @@ const createComment = async (req: Request, res: Response) => {
 
     if (!postId || !content || !author) {
       return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const postExists = await PostModel.findById(postId);
+    if (!postExists) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    const userExists = await UserModel.findById(author);
+    if (!userExists) {
+      return res.status(404).json({ message: "User not found" });
     }
 
     const comment = new CommentModel({ postId, content, author });

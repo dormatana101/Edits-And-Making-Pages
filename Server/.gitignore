@@ -3,3 +3,4 @@ node_modules/
 uploads/
 dist/
 coverage/
+.env_test
