@@ -9,24 +9,20 @@ import {
 } from "react-icons/fa";
 import { MdArticle } from "react-icons/md";
 import styles from "../css/Layout.module.css";
+import { handleLogout } from "../utiles/authHelpers";
 
 const Layout: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("profilePicture");
-
-    navigate("/login");
+  const onLogout = async () => {
+    await handleLogout(navigate);
   };
 
   return (
     <div className={styles.dashboardContainer}>
       <header className={styles.topBar}>
         <h2 className={styles.title}>Ease Platform</h2>
-        <button className={styles.logoutButton} onClick={handleLogout}>
+        <button className={styles.logoutButton} onClick={onLogout}>
           Logout
         </button>
       </header>
@@ -53,7 +49,7 @@ const Layout: React.FC = () => {
               <FaPlus className={styles.icon} /> Create Posts
             </Link>
           </li>
-
+          
           <li className={styles.sidebarItem}>
             <Link to="/articles" className={styles.sidebarLink}>
               <MdArticle className={styles.icon} /> Articles

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "../css/Login.module.css";
 import EaseLogo from "../images/EaseLogo.png";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { RxAvatar } from "react-icons/rx";
 import { FcGoogle } from "react-icons/fc";
-import CONFIG from "../config"; 
+import CONFIG from "../config";
 import { handleLogin, handleKeyDown, handleGoogleLogin } from "../utiles/authHelpers";
 
 function Login() {
@@ -21,7 +21,12 @@ function Login() {
           <div className={styles.formContainer}>
             <h1 className={styles.headline}>LOGIN</h1>
             <p className={styles.subHeadline}>How do I get started with Ease?</p>
-            <form onSubmit={(e) => handleLogin(e, email, password, setErrorMessage, navigate)} className={styles.loginForm}>
+            <form
+              onSubmit={(e) =>
+                handleLogin(e, email, password, setErrorMessage, navigate)
+              }
+              className={styles.loginForm}
+            >
               <div className={styles.inputContainer}>
                 <RxAvatar className={styles.inputIcon} />
                 <input
@@ -29,8 +34,14 @@ function Login() {
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(e, () => handleLogin(e, email, password, setErrorMessage, navigate))}
-                  className={`${styles.input} ${errorMessage && !email ? styles.inputError : ''}`}
+                  onKeyDown={(e) =>
+                    handleKeyDown(e, () =>
+                      handleLogin(e, email, password, setErrorMessage, navigate)
+                    )
+                  }
+                  className={`${styles.input} ${
+                    errorMessage && !email ? styles.inputError : ""
+                  }`}
                   aria-label="Email"
                 />
               </div>
@@ -41,8 +52,14 @@ function Login() {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(e, () => handleLogin(e, email, password, setErrorMessage, navigate))}
-                  className={`${styles.input} ${errorMessage && !password ? styles.inputError : ''}`}
+                  onKeyDown={(e) =>
+                    handleKeyDown(e, () =>
+                      handleLogin(e, email, password, setErrorMessage, navigate)
+                    )
+                  }
+                  className={`${styles.input} ${
+                    errorMessage && !password ? styles.inputError : ""
+                  }`}
                   aria-label="Password"
                 />
               </div>
@@ -53,10 +70,17 @@ function Login() {
             </form>
             <div className={styles.footer}>
               <p>
-                Don't have an account? <Link to="/register" className={styles.registerLink}>Register here</Link>
+                Don't have an account?{" "}
+                <Link to="/register" className={styles.registerLink}>
+                  Register here
+                </Link>
               </p>
               <p className={styles.orText}>or Sign in with</p>
-              <button className={styles.googleLogin} onClick={() => handleGoogleLogin(CONFIG.SERVER_URL)} aria-label="Sign in with Google">
+              <button
+                className={styles.googleLogin}
+                onClick={() => handleGoogleLogin(CONFIG.SERVER_URL)}
+                aria-label="Sign in with Google"
+              >
                 <FcGoogle className={styles.googleIcon} />
                 Google
               </button>

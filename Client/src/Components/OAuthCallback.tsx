@@ -1,34 +1,28 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import setAccessToken from "../Services/axiosInstance";
 
 const OAuthCallback: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchToken = async () => {
-      const params = new URLSearchParams(location.search);
-      const token = params.get("token");
+    const urlParams = new URLSearchParams(location.search);
+    const token = urlParams.get("token");
+    const userId = urlParams.get("userId");
+    const username = urlParams.get("username");
 
-      if (token) {
-        localStorage.setItem("accessToken", token);
+    if (token) {
+      localStorage.setItem("accessToken", token);
+      setAccessToken(token);
 
+      if (userId) localStorage.setItem("userId", userId);
+      if (username) localStorage.setItem("username", username);
 
-        const userId = params.get("userId");
-        const username = params.get("username");
-
-        if (userId && username) {
-          localStorage.setItem("userId", userId);
-          localStorage.setItem("username", username);
-        }
-        window.location.replace("/all-posts");
-        navigate("/all-posts", { replace: true });
-      } else {
-        navigate("/login", { replace: true });
-      }
-    };
-
-    fetchToken();
+      navigate("/all-posts", { replace: true });
+    } else {
+      navigate("/login", { replace: true });
+    }
   }, [location.search, navigate]);
 
   return <div>Loading...</div>;

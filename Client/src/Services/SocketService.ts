@@ -1,12 +1,12 @@
 import socketIo, { Socket } from "socket.io-client";
 import CONFIG from "../config"; 
 
-
 export const createSocket = (userId: string): typeof Socket => {
   return socketIo(`${CONFIG.SERVER_URL}`, {
     query: { userId },
-    transports: ["websocket"],
-  });
+    transports: ["polling", "websocket"],
+    withCredentials: true
+  } as SocketIOClient.ConnectOpts);
 };
 
 export const sendMessage = (
