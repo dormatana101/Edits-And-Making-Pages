@@ -24,7 +24,7 @@ app.use(cookieParser());
 
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: `${CLIENT_CONNECT}`,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
@@ -40,21 +40,15 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "API Documentation for the project",
     },
-    servers: [
-      {
-        url: `${CLIENT_CONNECT}`,
-        description: "Local server",
-      },
-    ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
-        },
-      },
+    servers:[{
+      url: "http://localhost:" + process.env.PORT,
     },
+  {
+    url: "http://193.106.55.199",
+  },
+  {
+    url: "https://193.106.55.199",
+  }]
   },
   apis: ["./routes/*.ts"],
 };
@@ -72,6 +66,11 @@ app.use("/api/users", userRoutes);
 app.use("/api", chatgptRoutes); 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+app.use(express.static(path.resolve(__dirname, '..', 'front')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '..', 'front', 'index.html'));
+});
 
 const server = http.createServer(app);
 const io = new socketIo.Server(server, {
