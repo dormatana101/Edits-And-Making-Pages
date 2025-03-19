@@ -62,6 +62,9 @@ const register = async (req: Request, res: Response, next: NextFunction): Promis
     if (req.file) {
       const SERVER_CONNECT = process.env.SERVER_CONNECT;
       profilePictureUrl = `${SERVER_CONNECT}/uploads/${req.file.filename}`;
+    } else {
+      const SERVER_CONNECT = process.env.SERVER_CONNECT;
+      profilePictureUrl = `${SERVER_CONNECT}/uploads/1741781673180-376059482.jpg`;
     }
 
     const user = await userModel.create({
@@ -274,6 +277,10 @@ const googleCallback = async (req: Request, res: Response) => {
       return;
     }
 
+    if (!user.profilePicture) {
+      const SERVER_CONNECT = process.env.SERVER_CONNECT;
+      user.profilePicture = `${SERVER_CONNECT}/uploads/1741781673180-376059482.jpg`; 
+    }
     const tokens = generateToken(user._id);
     if (!tokens) {
       res.status(500).json({ message: 'No token' });

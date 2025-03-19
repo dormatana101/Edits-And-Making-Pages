@@ -7,7 +7,7 @@ import {
   FaComments,
   FaRobot,
 } from "react-icons/fa";
-import { MdArticle } from "react-icons/md";
+//import { MdArticle } from "react-icons/md";
 import styles from "../css/Layout.module.css";
 import { handleLogout } from "../utiles/authHelpers";
 
@@ -50,11 +50,11 @@ const Layout: React.FC = () => {
             </Link>
           </li>
           
-          <li className={styles.sidebarItem}>
+          {/*<li className={styles.sidebarItem}>
             <Link to="/articles" className={styles.sidebarLink}>
               <MdArticle className={styles.icon} /> Articles
             </Link>
-          </li>
+          </li>*/}
           <li className={styles.sidebarItem}>
             <Link to="/chatgpt" className={styles.sidebarLink}>
               <FaRobot className={styles.icon} /> ChatGPT

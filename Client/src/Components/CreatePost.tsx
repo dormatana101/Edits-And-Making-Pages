@@ -21,7 +21,7 @@ const CreatePost: React.FC = () => {
   const handleCreatePost = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!newPostContent || !newPostTitle) {
+    if (!newPostContent.trim() || !newPostTitle.trim()) {
       setError("Please fill in both title and content!");
       return;
     }
@@ -39,7 +39,7 @@ const CreatePost: React.FC = () => {
         setError(null);
 
         setTimeout(() => {
-          navigate("/all-posts"); // עדכן את הנתיב בהתאם למסך הפוסטים שלך
+          navigate("/all-posts"); 
         }, 1000);
 
       } else {

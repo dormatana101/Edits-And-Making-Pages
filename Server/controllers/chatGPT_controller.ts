@@ -58,12 +58,19 @@ export const chatWithGPT = async (
         Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo", 
+        model: "gpt-3.5-turbo",
         messages: [
-          { role: "system", content: "You are a helpful assistant." },
-          { role: "user", content: message },
+          {
+            role: "system",
+            content:
+              "You are a helpful assistant that provides short, relevant comments about the user's topic. Do not include the text 'recommended comment' or quotes in your answer.",
+          },
+          {
+            role: "user",
+            content: message,
+          },
         ],
-        max_tokens: 250, 
+        max_tokens: 250,
       }),
     });
 
@@ -76,8 +83,11 @@ export const chatWithGPT = async (
       return;
     }
 
-    const data: OpenAIResponse = await response.json() as OpenAIResponse;
-    const gptMessage = data.choices[0].message.content.trim();
+    const data: OpenAIResponse = (await response.json()) as OpenAIResponse;
+    let gptMessage = data.choices[0]?.message?.content?.trim() || "";
+
+    gptMessage = gptMessage.replace(/recommended comment[:]?/gi, "").trim();
+    gptMessage = gptMessage.replace(/^"(.*)"$/, "$1").trim();
 
     cache.set(message, gptMessage);
 
