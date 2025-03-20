@@ -170,7 +170,10 @@ const generateSuggestedComment = async (req: Request, res: Response) => {
     
     const { title, content, author } = post;
 
-    const prompt = `Title: "${title}"\nContent: "${content}"\n Auther: "${author}"\n\nWrite a recommended comment for this post.`;
+    const prompt = `Title: ${title}\nContent: ${content}\nAuthor: ${author}\n
+    \nGenerate a natural and relevant comment for this post.
+    Do not include any formatting,
+    quotes, or extra words—only the comment itself.`;
 
     const openAIResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",

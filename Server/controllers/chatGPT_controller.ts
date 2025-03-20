@@ -62,8 +62,8 @@ export const chatWithGPT = async (
         messages: [
           {
             role: "system",
-            content:
-              "You are a helpful assistant that provides short, relevant comments about the user's topic. Do not include the text 'recommended comment' or quotes in your answer.",
+            content: "You are an AI assistant for doctors. Your task is to provide concise, accurate, and relevant answers to medical questions. Focus on health-related topics, and avoid giving personal advice or recommending specific treatments unless asked.",
+
           },
           {
             role: "user",

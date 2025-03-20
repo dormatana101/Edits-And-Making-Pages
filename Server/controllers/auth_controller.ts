@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import userModel, { IUser } from '../models/Users';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { Secret } from 'jsonwebtoken';
 import { Document } from 'mongoose';
 
 const CLIENT_CONNECT = process.env.CLIENT_CONNECT;
@@ -15,17 +15,19 @@ const generateToken = (userId: string): tTokens | null => {
   if (!process.env.TOKEN_SECRET) {
     return null;
   }
+
   const random = Math.random().toString();
+
   const accessToken = jwt.sign(
     { _id: userId, random },
-    process.env.TOKEN_SECRET,
-    { expiresIn: process.env.TOKEN_EXPIRES }
+    process.env.TOKEN_SECRET as Secret, 
+    { expiresIn: process.env.TOKEN_EXPIRES as string } as jwt.SignOptions
   );
 
   const refreshToken = jwt.sign(
     { _id: userId, random },
-    process.env.TOKEN_SECRET,
-    { expiresIn: process.env.REFRESH_TOKEN_EXPIRES } 
+    process.env.TOKEN_SECRET as Secret,
+    { expiresIn: process.env.REFRESH_TOKEN_EXPIRES as string } as jwt.SignOptions 
   );
 
   return { accessToken, refreshToken };

@@ -30,13 +30,13 @@ const Layout: React.FC = () => {
       <aside className={styles.sidebar}>
         <ul className={styles.sidebarList}>
           <li className={styles.sidebarItem}>
-            <Link to="/profile" className={styles.sidebarLink}>
-              <FaUser className={styles.icon} /> Profile
+            <Link to="/all-posts" className={styles.sidebarLink}>
+              <FaClipboard className={styles.icon} /> Feed
             </Link>
           </li>
           <li className={styles.sidebarItem}>
-            <Link to="/all-posts" className={styles.sidebarLink}>
-              <FaClipboard className={styles.icon} /> Posts
+            <Link to="/profile" className={styles.sidebarLink}>
+              <FaUser className={styles.icon} /> Profile
             </Link>
           </li>
           <li className={styles.sidebarItem}>
@@ -57,7 +57,7 @@ const Layout: React.FC = () => {
           </li>*/}
           <li className={styles.sidebarItem}>
             <Link to="/chatgpt" className={styles.sidebarLink}>
-              <FaRobot className={styles.icon} /> ChatGPT
+              <FaRobot className={styles.icon} /> AI Assistant
             </Link>
           </li>
         </ul>

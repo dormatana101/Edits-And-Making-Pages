@@ -1,15 +1,11 @@
-/* client/src/css/UserProfile.module.css */
-
-/* Контейнер профиля пользователя */
 .userProfileContainer {
   display: flex;
   justify-content: center;
   padding: 20px;
-  background-color: #f0f2f5; /* Светлый фон, похожий על Facebook */
+  background-color: #f0f2f5; 
   min-height: 100vh;
 }
 
-/* Карточка профиля */
 .userProfileCard {
   background-color: #ffffff;
   width: 100%;
@@ -22,7 +18,6 @@
   position: relative;
 }
 
-/* סדנת כיסוי */
 .userInfo {
   display: flex;
   justify-content: flex-start;
@@ -37,7 +32,7 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #1877f2; /* סיומת כחולה, דומה לפייסבוק */
+  border: 4px solid #1877f2; 
   background-color: #fff;
 }
 
@@ -60,7 +55,7 @@
 
 .editButton {
   padding: 8px 20px;
-  background-color: #ffa500; /* כתום */
+  background-color: #ffa500;
   border: none;
   color: white;
   cursor: pointer;
@@ -69,7 +64,7 @@
 }
 
 .editButton:hover {
-  background-color: #cc8400; /* כהה יותר בכתום */
+  background-color: #cc8400;
 }
 
 .editForm {
@@ -128,7 +123,7 @@
 
 .saveButton {
   padding: 8px 20px;
-  background-color: #28a745; /* ירוק */
+  background-color: #28a745; 
   border: none;
   color: white;
   cursor: pointer;
@@ -137,12 +132,12 @@
 }
 
 .saveButton:hover {
-  background-color: #218838; /* ירוק כהה יותר */
+  background-color: #218838; 
 }
 
 .cancelButton {
   padding: 8px 20px;
-  background-color: #6c757d; /* אפור */
+  background-color: #6c757d;
   border: none;
   color: white;
   cursor: pointer;
@@ -151,7 +146,7 @@
 }
 
 .cancelButton:hover {
-  background-color: #5a6268; /* אפור כהה יותר */
+  background-color: #5a6268; 
 }
 
 .viewDetails h1 {
@@ -171,7 +166,6 @@
   text-align: left;
 }
 
-/* סשניית פוסטים */
 .userPosts {
   padding: 20px;
 }
@@ -233,7 +227,7 @@
 
 .editButton {
   padding: 6px 12px;
-  background-color: #ffa500; /* כתום */
+  background-color: #ffa500; 
   border: none;
   color: white;
   cursor: pointer;
@@ -242,12 +236,12 @@
 }
 
 .editButton:hover {
-  background-color: #cc8400; /* כהה יותר בכתום */
+  background-color: #cc8400; 
 }
 
 .deleteButton {
   padding: 6px 12px;
-  background-color: #dc3545; /* אדום */
+  background-color: #dc3545; 
   border: none;
   color: white;
   cursor: pointer;
@@ -256,7 +250,7 @@
 }
 
 .deleteButton:hover {
-  background-color: #c82333; /* אדום כהה יותר */
+  background-color: #c82333;
 }
 
 .noPosts {
@@ -294,18 +288,17 @@
   margin-top: 20px;
 }
 
-/* וופפוי אישור מחיקה */
 .modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* רקע שחור שקוף */
+  background-color: rgba(0, 0, 0, 0.5); 
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* מעל לכל שאר האלמנטים */
+  z-index: 1000; 
 }
 
 .modal {
@@ -331,7 +324,7 @@
 
 .confirmDeleteButton {
   padding: 8px 20px;
-  background-color: #dc3545; /* אדום */
+  background-color: #dc3545; 
   border: none;
   color: white;
   cursor: pointer;
@@ -340,12 +333,12 @@
 }
 
 .confirmDeleteButton:hover {
-  background-color: #c82333; /* אדום כהה יותר */
+  background-color: #c82333; 
 }
 
 .cancelDeleteButton {
   padding: 8px 20px;
-  background-color: #6c757d; /* אפור */
+  background-color: #6c757d; 
   border: none;
   color: white;
   cursor: pointer;
@@ -354,10 +347,9 @@
 }
 
 .cancelDeleteButton:hover {
-  background-color: #5a6268; /* אפור כהה יותר */
+  background-color: #5a6268;
 }
 
-/* טעינה בתוך פוסטים נוספים */
 .loadingMore {
   display: flex;
   align-items: center;
