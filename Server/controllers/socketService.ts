@@ -35,7 +35,7 @@ export const setupSocket = (io: Server) => {
           console.warn(`[SOCKET] Receiver ${toUserId} is not connected`);
         }
       } catch (error) {
-        console.error("[SOCKET] Error saving message:", error);
+        // console.error("[SOCKET] Error saving message:", error);
       }
     });
 

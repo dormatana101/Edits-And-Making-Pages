@@ -19,8 +19,6 @@ const router = express.Router();
  *   schemas:
  *     Comment:
  *       type: object
- *     security:
- *      - bearerAuth: []
  *       required:
  *         - content
  *         - postId
@@ -101,7 +99,7 @@ router.post("/", authMiddleware, (req, res) => {
  *     summary: Get all comments
  *     tags: [Comments]
  *     security:
- *      - bearerAuth: []
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of all comments
@@ -125,7 +123,7 @@ router.get("/", (req, res) => {
  *     summary: Get a comment by ID
  *     tags: [Comments]
  *     security:
- *      - bearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -156,7 +154,7 @@ router.get("/:id", (req, res) => {
  *     summary: Update a comment by ID
  *     tags: [Comments]
  *     security:
- *      - bearerAuth: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id

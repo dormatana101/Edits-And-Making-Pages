@@ -44,7 +44,7 @@ export const createComment = async (req: Request, res: Response): Promise<void> 
     
     res.status(201).json(comment);
   } catch (err: any) {
-    console.error("Error creating comment:", err);
+    //console.error("Error creating comment:", err);
     res.status(500).json({ message: "Error creating comment", error: err.message });
   }
 };
@@ -194,7 +194,6 @@ const generateSuggestedComment = async (req: Request, res: Response) => {
 
     if (!openAIResponse.ok) {
       const errorData = await openAIResponse.json();
-      console.error("OpenAI API Error:", errorData);
       return res.status(openAIResponse.status).json({ message: "Error generating comment", error: errorData });
     }
 
@@ -203,7 +202,6 @@ const generateSuggestedComment = async (req: Request, res: Response) => {
 
     res.status(200).json({ suggestedComment });
   } catch (error: any) {
-    console.error("Error generating comment:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

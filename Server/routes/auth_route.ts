@@ -95,9 +95,9 @@ router.post("/login", authController.login);
  *   post:
  *     summary: Logout a user by invalidating the refresh token.
  *     tags: [Auth]
- *      security:
+ *     security:
  *       - bearerAuth: []
- *      requestBody:
+ *     requestBody:
  *       required: true
  *       content:
  *         application/json:
@@ -126,7 +126,7 @@ router.post("/logout", authController.logout);
  *     summary: Refresh authentication tokens.
  *     tags: [Auth]
  *     security:
- *      - bearerAuth: []
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:

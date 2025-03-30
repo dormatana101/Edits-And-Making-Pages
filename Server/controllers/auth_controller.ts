@@ -86,7 +86,6 @@ const register = async (req: Request, res: Response, next: NextFunction): Promis
       },
     });
   } catch (error) {
-    console.error('Error during registration:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -145,7 +144,6 @@ const login = async (req: Request, res: Response): Promise<void> => {
       likedPosts: user.likedPosts,
     });
   } catch (err) {
-    console.error('Error during login:', err);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -304,7 +302,6 @@ const googleCallback = async (req: Request, res: Response) => {
 
     res.redirect(`${CLIENT_CONNECT}/oauth/callback?token=${tokens.accessToken}&userId=${user._id}&username=${encodeURIComponent(user.username)}`);
   } catch (err) {
-    console.error('Error googleCallback:', err);
     res.status(500).json({ message: 'Error' });
   }
 };

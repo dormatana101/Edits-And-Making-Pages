@@ -38,7 +38,7 @@ afterAll(async () => {
   if (clientSocket1) clientSocket1.disconnect();
   if (clientSocket2) clientSocket2.disconnect();
   io.close();
-  if (server) await server.close();
+ // if (server) await server.close();
   await mongoose.disconnect();
 });
 

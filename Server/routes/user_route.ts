@@ -17,8 +17,9 @@ const router = Router();
  *   schemas:
  *     User:
  *       type: object
- *    security:
- *       - bearerAuth: []
+ *       required:
+ *         - username
+ *         - email
  *       properties:
  *         _id:
  *           type: string

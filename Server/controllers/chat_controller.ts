@@ -39,7 +39,6 @@ export const getMessages = async (req: Request, res: Response) => {
 
     res.status(200).json(transformed);
   } catch (error) {
-    console.error("Error fetching chat history:", error);
     res.status(500).send("Server error");
   }
 };

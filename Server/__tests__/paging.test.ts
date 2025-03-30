@@ -53,7 +53,7 @@ afterAll(async () => {
   await postModel.deleteMany({});
   await userModel.deleteMany({});
 
-  await server.close();
+//  await server.close();
   await mongoose.disconnect();
 });
 

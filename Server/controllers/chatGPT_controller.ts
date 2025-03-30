@@ -76,9 +76,6 @@ export const chatWithGPT = async (
 
     if (!response.ok) {
       const errorData = await response.json();
-      if (process.env.NODE_ENV !== "test") {
-        console.error("OpenAI API Error:", errorData.error);
-      }
       res.status(response.status).json({ error: errorData });
       return;
     }
@@ -94,7 +91,6 @@ export const chatWithGPT = async (
     res.json({ message: gptMessage });
   } catch (error: any) {
     if (process.env.NODE_ENV !== "test") {
-      console.error("Error communicating with OpenAI API:", error);
     }
     res.status(500).json({ error: "Internal server error" });
   }

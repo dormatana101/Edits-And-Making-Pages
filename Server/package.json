@@ -8,7 +8,7 @@
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand --testPathPattern=__tests__/chatGPT.test.ts",
     "dev": "nodemon app.ts",
     "start": "SET NODE_ENV=local && nodemon app.ts",
-    "test": "copy .env_test .env && jest --detectOpenHandles --forceExit --runInBand --coverage",
+    "test": "cp .env_test .env && jest --detectOpenHandles --forceExit --runInBand --coverage",
     "devstart": "nodemon app.ts"
   },
   "author": "Dor",
@@ -54,12 +54,13 @@
     "swagger-ui-express": "^5.0.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
-  },
-  "devDependencies": {
+    "typescript": "^5.7.3",
     "@types/jest": "^29.5.14",
     "@types/supertest": "^6.0.2",
     "jest": "^29.7.0",
     "supertest": "^7.0.0"
+  },
+  "devDependencies": {
+
   }
 }

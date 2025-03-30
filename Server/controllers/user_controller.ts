@@ -112,7 +112,7 @@ export const updateUserProfile = async (req: Request, res: Response): Promise<vo
       updatedPostsCount: updateResult.modifiedCount
     });
   } catch (error) {
-    console.error('Error updating user:', error);
+    // console.error('Error updating user:', error);
     res.status(500).json({ message: 'Server error.' });
   }
 };
